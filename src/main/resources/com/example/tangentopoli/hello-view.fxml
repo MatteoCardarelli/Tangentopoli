@@ -12,6 +12,7 @@
   </padding>
 
   <Label fx:id="welcomeText" />
+
   <Button onAction="#onHelloButtonClick" text="Hello!" textAlignment="CENTER" textFill="#ff6dc9" underline="true">
       <font>
          <Font name="Comic Sans MS" size="39.0" />
