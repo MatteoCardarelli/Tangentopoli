@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="178.0" prefWidth="197.0" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="com.example.tangentopoli.HelloController">
+<?import javafx.scene.control.Button?>
+<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.tangentopoli.HelloController">
   <padding>
-    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
   </padding>
 
-  <Label fx:id="welcomeText" />
-  <Button onAction="#onHelloButtonClick" text="Hello!" textFill="RED" underline="true">
-      <font>
-         <Font name="Comic Sans MS" size="21.0" />
-      </font></Button>
+  <Label fx:id="welcomeText"/>
+  <Button text="Hello!" onAction="#onHelloButtonClick"/>
 </VBox>
