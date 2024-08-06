@@ -1,11 +1,15 @@
 package com.example.tangentopoli.model;
 
+import java.util.ArrayList;
+
 public class Game {
+    private Board board;
+    ArrayList<Player> players;
+    Deck communityChests;
+    Deck chanches;
 
-    public Game(){
-        Board board = new Board();
-
+    //FAI SINGLETON
+    public Game(int playersN){
+        board = new Board(playersN);
     }
-
-
 }

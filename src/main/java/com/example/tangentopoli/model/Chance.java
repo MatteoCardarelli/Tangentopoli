@@ -1,4 +1,4 @@
 package com.example.tangentopoli.model;
 
-public class Change {
+public class Chance {
 }
