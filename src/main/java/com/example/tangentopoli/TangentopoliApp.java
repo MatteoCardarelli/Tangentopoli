@@ -1,5 +1,6 @@
 package com.example.tangentopoli;
 
+import com.example.tangentopoli.controller.MenuController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,5 +21,6 @@ public class TangentopoliApp extends Application {
 
     public static void main(String[] args) {
         launch();
+        MenuController menu = new MenuController();
     }
 }
