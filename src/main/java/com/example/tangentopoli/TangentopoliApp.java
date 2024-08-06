@@ -1,7 +1,24 @@
 package com.example.tangentopoli;
 
-public class TangentopoliApp {
-    public static void main(String[] args) {
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
+import java.util.Objects;
+
+public class TangentopoliApp extends Application {
+    @Override
+    public void start(Stage stage) throws Exception {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/MenuView.fxml")));
+        Scene scene = new Scene(root);
+        stage.setTitle("Tangentopoli");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }
