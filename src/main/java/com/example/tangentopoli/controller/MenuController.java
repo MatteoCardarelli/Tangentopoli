@@ -45,7 +45,7 @@ public class MenuController implements Initializable {
             String path="";
             switch ((int)selectPlayerN.getValue()) {
                 case 2, 3:
-                    path = "/fxml/SmallBoard.fxml";
+                    path = "/fxml/SmallBoardGrid.fxml";
                     break;
                 case 4, 5:
                     path = "/fxml/MediumBoard.fxml";
