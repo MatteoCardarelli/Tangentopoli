@@ -1,4 +1,28 @@
 package com.example.tangentopoli.model;
 
-public class Player {
+import java.util.ArrayList;
+
+public abstract class Player {
+    private int playerID;
+    private int rowPos = 0;
+    private int columnPos = 0;
+    private int money;
+    private ArrayList<PurchasableBox> purchasedBoxes = new ArrayList<>();
+
+    public Player(int playerID, int money) {
+        this.playerID = playerID;
+        this.money = money;
+    }
+
+    public void setRowPos(int rowPos) {
+        this.rowPos = rowPos;
+    }
+
+    public void setColumnPos(int columnPos) {
+        this.columnPos = columnPos;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
 }

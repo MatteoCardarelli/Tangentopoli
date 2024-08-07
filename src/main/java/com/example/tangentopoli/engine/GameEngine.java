@@ -6,6 +6,5 @@ import com.example.tangentopoli.model.Game;
 public class GameEngine {
      public GameEngine(int playersN){
           Game game= new Game(playersN);
-          BoardController boardController = new BoardController(playersN);
      }
 }

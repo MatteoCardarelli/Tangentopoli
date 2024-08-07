@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tangentopoli.controller.BoardController">
    <children>
       <ImageView fitHeight="1143.0" fitWidth="1603.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -62,32 +62,32 @@
             <Circle fill="#ff341f" radius="27.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM" />
          </children>
       </GridPane>
-      <Button layoutX="995.0" layoutY="405.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="218.0" text="ACQUISTA">
+      <Button fx:id="buyBtn" layoutX="995.0" layoutY="405.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="218.0" text="ACQUISTA">
          <font>
             <Font size="30.0" />
          </font>
       </Button>
-      <Button layoutX="1257.0" layoutY="406.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="218.0" text="TIRA I DADI">
+      <Button fx:id="diceBtn" layoutX="1257.0" layoutY="406.0" mnemonicParsing="false" onAction="#launchDices" prefHeight="57.0" prefWidth="218.0" text="TIRA I DADI">
          <font>
             <Font size="30.0" />
          </font>
       </Button>
-      <TextArea layoutX="990.0" layoutY="128.0" prefHeight="209.0" prefWidth="505.0" text="Giocatore 1  |  1344$ &#10;- Piazza D'Armi&#10;- Via Rossi&#10;- Stazione Est&#10;&#10;">
+      <TextArea fx:id="playerInfo" layoutX="990.0" layoutY="128.0" prefHeight="209.0" prefWidth="505.0" text="Giocatore 1  |  1344$ &#10;- Piazza D'Armi&#10;- Via Rossi&#10;- Stazione Est&#10;&#10;">
          <font>
             <Font size="28.0" />
          </font>
       </TextArea>
-      <Button layoutX="995.0" layoutY="500.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="218.0" text="ASTA">
+      <Button fx:id="auctionBtn" layoutX="995.0" layoutY="500.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="218.0" text="ASTA">
          <font>
             <Font size="30.0" />
          </font>
       </Button>
-      <Button layoutX="1257.0" layoutY="501.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="218.0" text="COSTRUISCI">
+      <Button fx:id="buildBtn" layoutX="1257.0" layoutY="501.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="218.0" text="COSTRUISCI">
          <font>
             <Font size="30.0" />
          </font>
       </Button>
-      <TextArea layoutX="990.0" layoutY="600.0" prefHeight="200.0" prefWidth="505.0" text="Ti trovi su: Via Garbatella&#10;Costo: 250$&#10;">
+      <TextArea fx:id="boxInfo" layoutX="990.0" layoutY="600.0" prefHeight="200.0" prefWidth="505.0" text="Ti trovi su: Via Garbatella&#10;Costo: 250$&#10;">
          <font>
             <Font size="28.0" />
          </font>

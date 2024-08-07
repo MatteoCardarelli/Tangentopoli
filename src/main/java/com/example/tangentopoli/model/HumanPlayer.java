@@ -1,4 +1,5 @@
 package com.example.tangentopoli.model;
 
-public class HumanPlayer {
+public class HumanPlayer extends Player {
 }
+
