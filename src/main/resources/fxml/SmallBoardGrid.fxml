@@ -60,6 +60,8 @@
             <Circle fill="#ff341f" radius="27.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="LEFT" GridPane.valignment="TOP" />
             <Circle fill="#ff341f" radius="27.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
             <Circle fill="#ff341f" radius="27.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM" />
+            <ImageView fx:id="dice1ImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <ImageView fx:id="dice2ImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="3" />
          </children>
       </GridPane>
       <Button fx:id="buyBtn" layoutX="995.0" layoutY="405.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="218.0" text="ACQUISTA">

@@ -1,4 +1,5 @@
 package com.example.tangentopoli.model;
 
-public class Box {
+public interface Box {
+    String getName();
 }
