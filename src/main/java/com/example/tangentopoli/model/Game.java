@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 public class Game {
     private Board board;
-    ArrayList<Player> players;
-    Deck communityChests;
-    Deck chanches;
+    private ArrayList<Player> players;
+    private Deck communityChests;
+    private Deck chanches;
+    private Dice dice;
 
     //FAI SINGLETON
     public Game(int playersN){
