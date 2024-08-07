@@ -21,6 +21,7 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 public class BoardController implements Initializable {
+    private int playerN;
     @FXML
     private Button auctionBtn;
 
@@ -98,6 +99,10 @@ public class BoardController implements Initializable {
         sequentialTransition1.play();
         sequentialTransition2.play();
 
+    }
+
+    public void setPlayerN(int playerN) {
+        this.playerN = playerN;
     }
 
     public void movePlayer(int n) {

@@ -4,7 +4,11 @@ import com.example.tangentopoli.controller.BoardController;
 import com.example.tangentopoli.model.Game;
 
 public class GameEngine {
-     public GameEngine(int playersN){
+     BoardController boardController;
+
+     public GameEngine(int playersN, BoardController boardController){
           Game game= new Game(playersN);
+          this.boardController = boardController;
+          boardController.setPlayerN(playersN);
      }
 }

@@ -1,6 +1,9 @@
 package com.example.tangentopoli.model;
 
+import java.util.ArrayList;
+
 public class Board {
+    private ArrayList<Box> boxes = new ArrayList<>();
 
     public Board(int playerN) {
         switch (playerN) {

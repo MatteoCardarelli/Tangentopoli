@@ -40,7 +40,6 @@ public class MenuController implements Initializable {
     private Slider selectPlayerN;
 
     public void startNewGame(ActionEvent event) throws IOException {
-        new GameEngine((int)selectPlayerN.getValue());
         try {
             String path="";
             switch ((int)selectPlayerN.getValue()) {
@@ -56,12 +55,14 @@ public class MenuController implements Initializable {
                 default:
                     break;
             }
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(path)));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+            Parent root = loader.load();
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setTitle("Tangentopoli - Play!");
             stage.setScene(scene);
             stage.show();
+            new GameEngine((int)selectPlayerN.getValue(), loader.getController());
         } catch (IOException e) {
             e.printStackTrace();
         }
