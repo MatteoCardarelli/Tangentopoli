@@ -1,4 +1,14 @@
 package com.example.tangentopoli.model;
 
-public class Parking {
+public class Parking implements Box {
+    private String name;
+
+    public Parking() {
+        name = "Parking";
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
 }

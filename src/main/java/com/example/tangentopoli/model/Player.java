@@ -35,9 +35,11 @@ public abstract class Player {
         this.position = position;
     }
 
+    //Create PurchasedBoxException
     public void buyPurchasableBox(PurchasableBox purchasableBox) throws NotEnoughMoneyException {
-        if (purchasableBox.getPrice() > this.getMoney()) {
+        if (!purchasableBox.isPurchased() && purchasableBox.getPrice() > this.getMoney()) {
             purchasedBoxes.add(purchasableBox);
+            purchasableBox.setAsPurchased();
         }
 
     }
