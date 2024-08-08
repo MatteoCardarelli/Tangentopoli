@@ -3,8 +3,8 @@ package com.example.tangentopoli.model;
 public class ConcreteBoxFactory implements BoxFactory {
 
     @Override
-    public Property createProperty(String name, int price, int rentPrice, int mortgageValue) {
-        return new Property(name, price, rentPrice, mortgageValue);
+    public Property createProperty(String name, int price, int rentPrice, int mortgageValue, String color) {
+        return new Property(name, price, rentPrice, mortgageValue,color );
     }
 
     @Override
@@ -28,8 +28,8 @@ public class ConcreteBoxFactory implements BoxFactory {
     }
 
     @Override
-    public Tax createTax() {
-        return new Tax();
+    public Tax createTax(String name, int price) {
+        return new Tax(name, price);
     }
 
     @Override

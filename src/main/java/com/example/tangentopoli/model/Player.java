@@ -41,9 +41,14 @@ public abstract class Player {
 
     //TO-DO Create PurchasedBoxException
     public void buyPurchasableBox(PurchasableBox purchasableBox) throws NotEnoughMoneyException {
-        if (!purchasableBox.isPurchased() && purchasableBox.getPrice() > this.getMoney()) {
+        if (!purchasableBox.isPurchased() && purchasableBox.getPrice() <= this.getMoney()) {
+            this.setMoney(this.getMoney()-purchasableBox.getPrice());
             purchasedBoxes.add(purchasableBox);
             purchasableBox.setAsPurchased();
+            purchasableBox.setOwner(this);
+        }
+        else if (purchasableBox.getPrice() > this.getMoney()) {
+            throw new NotEnoughMoneyException("Non hai abbastanza denaro per acquistare questa proprietà");
         }
 
     }

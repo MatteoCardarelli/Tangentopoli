@@ -4,15 +4,17 @@ public class Property extends PurchasableBox {
     private int houseN = 0;
     private int hotel = 0;
     private int rentPrice;
-    private int mortgageValue;
+    private String color;
 
-    public Property(String name, int price, int rentPrice, int mortgageValue) {
-        super(name, price);
+
+    public Property(String name, int price, int rentPrice, int mortgageValue, String color) {
+        super(name, price, mortgageValue);
         this.rentPrice = rentPrice;
+        this.color = color;
     }
 
     @Override
     public void calculatePrice() {
-
     }
+
 }

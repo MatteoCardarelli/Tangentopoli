@@ -39,6 +39,7 @@ public class MenuController implements Initializable {
     @FXML
     private Slider selectPlayerN;
 
+    //decide quale tabellone aprire e inizializza il GameEngine
     public void startNewGame(ActionEvent event) throws IOException {
         try {
             String path="";
@@ -62,7 +63,9 @@ public class MenuController implements Initializable {
             stage.setTitle("Tangentopoli - Play!");
             stage.setScene(scene);
             stage.show();
+
             new GameEngine((int)selectPlayerN.getValue(), loader.getController());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
