@@ -124,11 +124,8 @@ public class BoardController implements Initializable {
 
         //muove la pedina
         movePlayer(diceValue);
-        nextTurn();
+        diceBtn.setDisable(true);
     }
-
-
-
 
     //metodo che imposta il numero di pedine
     public void setPlayerN() {
@@ -146,6 +143,8 @@ public class BoardController implements Initializable {
     public void nextTurn() {
         game.changeTurn();
         displayPlayerInfo(game.getPlayerInTurn());
+        displayBoxInfo(game.getPlayerInTurn());
+        diceBtn.setDisable(false);
     }
 
     //Displays player data in the top textArea

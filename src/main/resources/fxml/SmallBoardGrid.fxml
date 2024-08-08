@@ -75,7 +75,7 @@
             <Font size="28.0" />
          </font>
       </TextArea>
-      <Button fx:id="auctionBtn" layoutX="1000.0" layoutY="500.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="220.0" text="ASTA">
+      <Button fx:id="auctionBtn" onAction="#nextTurn" layoutX="1000.0" layoutY="500.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="220.0" text="ASTA">
          <font>
             <Font size="30.0" />
          </font>
