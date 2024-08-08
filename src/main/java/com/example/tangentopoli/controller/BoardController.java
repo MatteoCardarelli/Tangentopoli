@@ -32,7 +32,7 @@ public class BoardController implements Initializable {
 
     private Game game;
     @FXML
-    private Button auctionBtn;
+    private Button nextBtn;
 
     @FXML
     private TextArea boxInfo;
@@ -69,7 +69,7 @@ public class BoardController implements Initializable {
 
     }
 
-    public void launchDices(ActionEvent actionEvent) throws InterruptedException {
+    public void launchDices(ActionEvent actionEvent) {
         Random movement = new Random();
         int x1 = movement.nextInt(200) - 100; //numeri random per lanciare i dadi
         int x2 = movement.nextInt(200) - 100;
@@ -78,6 +78,7 @@ public class BoardController implements Initializable {
         int n = Dice.launch();
         int k = Dice.launch();
         int diceValue = n + k;
+
         // Crea l'animazione di rotazione per il primo dado
         RotateTransition rotateTransition1 = new RotateTransition(Duration.seconds(1), dice1ImageView);
         rotateTransition1.setByAngle(720);
@@ -102,7 +103,6 @@ public class BoardController implements Initializable {
         rotateTransition2.setByAngle(720);
         rotateTransition2.setCycleCount(1);
 
-
         // Crea l'animazione di traslazione per il secondo dado
         TranslateTransition translateTransition2 = new TranslateTransition(Duration.seconds(0.3), dice2ImageView);
         translateTransition2.setFromX(-10);
@@ -111,21 +111,25 @@ public class BoardController implements Initializable {
         translateTransition2.setByX(x2); // Imposta la distanza X di traslazione
         translateTransition2.setByY(y2); // Imposta la distanza Y di traslazione
 
-
         // Combina le animazioni per il secondo dado
         SequentialTransition sequentialTransition2 = new SequentialTransition(translateTransition2, rotateTransition2);
         sequentialTransition2.setOnFinished(event ->
                 dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice" + k + ".png")))
         );
 
-        // Avvia le animazioni
-        sequentialTransition1.play();
-        sequentialTransition2.play();
+        // Combina le animazioni di entrambi i dadi in un'unica transizione parallela
+        ParallelTransition parallelTransition = new ParallelTransition(sequentialTransition1, sequentialTransition2);
 
-        //muove la pedina
-        movePlayer(diceValue);
-        diceBtn.setDisable(true);
+        // Aggiungi un listener per eseguire il movimento del giocatore dopo il completamento delle animazioni
+        parallelTransition.setOnFinished(event -> {
+            movePlayer(diceValue);
+            diceBtn.setDisable(true); // Disabilita il bottone dopo aver mosso la pedina
+        });
+
+        // Avvia la transizione parallela (che avvierà tutte le animazioni)
+        parallelTransition.play();
     }
+
 
     //metodo che imposta il numero di pedine
     public void setPlayerN() {
