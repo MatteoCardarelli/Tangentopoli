@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
@@ -19,7 +18,7 @@
             <Image url="@../img/boardBG.png" />
          </image>
       </ImageView>
-      <GridPane layoutX="59.0" layoutY="52.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="804.0" prefWidth="804.0">
+      <GridPane fx:id="boardGrid" layoutX="59.0" layoutY="52.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="804.0" prefWidth="804.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="150.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -57,9 +56,6 @@
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8c663" height="150.0" stroke="BLACK" strokeType="INSIDE" width="150.0" GridPane.rowIndex="5" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8c663" height="150.0" stroke="BLACK" strokeType="INSIDE" width="150.0" GridPane.columnIndex="5" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8c663" height="150.0" stroke="BLACK" strokeType="INSIDE" width="150.0" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-            <Circle fill="#ff341f" radius="27.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="LEFT" GridPane.valignment="TOP" />
-            <Circle fill="#ff341f" radius="27.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Circle fill="#ff341f" radius="27.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM" />
             <ImageView fx:id="dice1ImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <ImageView fx:id="dice2ImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="3" />
          </children>

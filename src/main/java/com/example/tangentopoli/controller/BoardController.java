@@ -12,11 +12,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -45,6 +50,12 @@ public class BoardController implements Initializable {
 
     @FXML
     private ImageView dice2ImageView;
+
+    @FXML
+    private GridPane boardGrid;
+
+    @FXML
+    private List<Circle> playerTokens;
 
 
     public void launchDices(ActionEvent actionEvent) {
@@ -84,7 +95,7 @@ public class BoardController implements Initializable {
         TranslateTransition translateTransition2 = new TranslateTransition(Duration.seconds(0.3), dice2ImageView);
         translateTransition2.setFromX(-10);
         translateTransition2.setFromY(50);
-        translateTransition2.setDelay(Duration.millis(200));
+        translateTransition2.setDelay(Duration.millis(199));
         translateTransition2.setByX(x2); // Imposta la distanza X di traslazione
         translateTransition2.setByY(y2); // Imposta la distanza Y di traslazione
 
@@ -105,13 +116,40 @@ public class BoardController implements Initializable {
         this.playerN = playerN;
     }
 
+
+    public void setPlayerTokenPosition(int playerIndex, int row, int column) {
+        Circle playerToken = playerTokens.get(playerIndex);
+        GridPane.setRowIndex(playerToken, row);
+        GridPane.setColumnIndex(playerToken, column);
+    }
+
+    public void createPlayerTokens(int playerN){
+        for (int i = 0; i < playerN; i++) {
+            Circle playerToken = new Circle(10, Color.RED); // Cerchio rosso con raggio 10
+            playerTokens.add(playerToken);
+            boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
+            setPlayerTokenPosition(i, 0, i); // Sposta il giocatore 0 alla cella (2,2)
+        }
+    }
+
     public void movePlayer(int n) {
+        // Logica per muovere il giocatore di 'n' spazi
+        // Aggiorna l'interfaccia utente o altri elementi secondo necessità
+        playerInfo.appendText("Player moves " + n + " spaces.\n");
+
 
     }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
         dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
+
+
+        playerTokens = new ArrayList<>();
+        createPlayerTokens(playerN);
     }
+
+
 }
