@@ -145,13 +145,16 @@ public class BoardController implements Initializable {
         displayPlayerInfo(game.getPlayerInTurn());
     }
 
+    //Displays player data in the top textArea
     private void displayPlayerInfo(Player player) {
         String playerInfoStr = player.toString();
         playerInfo.setText(playerInfoStr);
     }
 
+    //Displays the current player's Box infos
     private void displayBoxInfo(Player player) {
-        boxInfo.setText(player.getPosition().getDescription());
+        String boxInfoStr = player.getPosition().getDescription();
+        boxInfo.setText(boxInfoStr);
     }
 
     //metodo che posiziona le pedine nel tabellone piccolo
