@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tangentopoli.controller.BoardController">
    <children>
       <ImageView fitHeight="1140.0" fitWidth="1600.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -87,7 +87,7 @@
             <Font size="30.0" />
          </font>
       </Button>
-      <Button fx:id="diceBtn" layoutX="1260.0" layoutY="400.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="60.0" prefWidth="220.0" text="TIRA I DADI">
+      <Button fx:id="diceBtn" layoutX="1260.0" layoutY="400.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="60.0" prefWidth="220.0" onAction="#launchDices" text="TIRA I DADI">
          <font>
             <Font size="30.0" />
          </font>
