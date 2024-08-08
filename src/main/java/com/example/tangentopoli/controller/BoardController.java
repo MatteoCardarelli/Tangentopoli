@@ -114,8 +114,8 @@ public class BoardController implements Initializable {
 
     public void setPlayerN(int playerN) {
         this.playerN = playerN;
+        createPlayerTokens();
     }
-
 
     public void setPlayerTokenPosition(int playerIndex, int row, int column) {
         Circle playerToken = playerTokens.get(playerIndex);
@@ -123,12 +123,13 @@ public class BoardController implements Initializable {
         GridPane.setColumnIndex(playerToken, column);
     }
 
-    public void createPlayerTokens(int playerN){
+    public void createPlayerTokens() {
+        playerTokens = new ArrayList<>();
         for (int i = 0; i < playerN; i++) {
             Circle playerToken = new Circle(10, Color.RED); // Cerchio rosso con raggio 10
             playerTokens.add(playerToken);
             boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
-            setPlayerTokenPosition(i, 0, i); // Sposta il giocatore 0 alla cella (2,2)
+            setPlayerTokenPosition(i, 0, i); // Sposta il giocatore alla cella iniziale
         }
     }
 
@@ -136,20 +137,14 @@ public class BoardController implements Initializable {
         // Logica per muovere il giocatore di 'n' spazi
         // Aggiorna l'interfaccia utente o altri elementi secondo necessità
         playerInfo.appendText("Player moves " + n + " spaces.\n");
-
-
     }
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
         dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
 
-
+        // Assicurati che la lista di pedine sia inizializzata
         playerTokens = new ArrayList<>();
-        createPlayerTokens(playerN);
     }
-
-
 }
