@@ -24,6 +24,12 @@ public abstract class PurchasableBox implements Box {
         return name;
     }
 
+    @Override
+    public String getDescription() {
+        String str = this.name + " Costo: " + this.price + " Val ipotecario: " + this.mortgageValue;
+        return str;
+    }
+
     public boolean isPurchased() {
         return purchased;
     }

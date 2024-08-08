@@ -23,6 +23,7 @@ public class Game {
         for (int i = 0; i < playersN; i++) {
             HumanPlayer player = new HumanPlayer(i+1, 1500);
             players.add(player);
+            player.setPosition(board.getBoxFromIndex(0));   //Set player to start position
         }
     }
 
@@ -40,6 +41,15 @@ public class Game {
     }
 
     public int getPlayerTurn() { return playerInTurn; }
+
+    public void movePlayer(int diceValue) {
+        Player p = getPlayerInTurn();
+        Box currentPosition = p.getPosition();
+        int currentPosIndex = board.getBoxIndex(currentPosition);
+        int nextPosIndex = currentPosIndex + diceValue;
+        Box nextPos = board.getBoxFromIndex(nextPosIndex);
+        p.setPosition(nextPos);
+    }
 }
 
 

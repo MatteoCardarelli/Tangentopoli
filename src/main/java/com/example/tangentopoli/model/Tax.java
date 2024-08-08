@@ -15,6 +15,11 @@ public class Tax implements Box {
         return name;
     }
 
+    @Override
+    public String getDescription() {
+        return this.name + " " + this.price;
+    }
+
     public void setName(String name) { this.name = name; }
 
     public int getPrice() { return price; }

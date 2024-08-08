@@ -122,7 +122,6 @@ public class BoardController implements Initializable {
 
         movePlayer(diceValue);
         nextTurn();
-
     }
 
 
@@ -132,12 +131,13 @@ public class BoardController implements Initializable {
     public void setPlayerN() {
         this.playerN = game.getPlayersN();
         createPlayerTokens();
-        displayPlayerInfo(game.getPlayerInTurn());
     }
 
     public void setGame(Game game) {
         this.game = game;
         setPlayerN();
+        displayPlayerInfo(game.getPlayerInTurn());
+        displayBoxInfo(game.getPlayerInTurn());
     }
 
     public void nextTurn() {
@@ -148,6 +148,10 @@ public class BoardController implements Initializable {
     private void displayPlayerInfo(Player player) {
         String playerInfoStr = player.toString();
         playerInfo.setText(playerInfoStr);
+    }
+
+    private void displayBoxInfo(Player player) {
+        boxInfo.setText(player.getPosition().getDescription());
     }
 
     //metodo che posiziona le pedine nel tabellone piccolo
@@ -311,10 +315,9 @@ public class BoardController implements Initializable {
                 default:
                     break;
             }
-
-
-
         }
+        game.movePlayer(diceValue);
+        displayBoxInfo(game.getPlayerInTurn());
     }
 
 

@@ -11,4 +11,9 @@ public class Parking implements Box {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String getDescription() {
+        return this.name;
+    }
 }

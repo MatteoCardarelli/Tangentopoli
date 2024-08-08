@@ -28,7 +28,7 @@ public class Board {
                 boxes.add(boxFactory.createProperty("Viale Mazzini", 300, 80, 150, "Blu"));
                 boxes.add(boxFactory.createProperty("Viale Monza", 320, 90, 160, "Blu"));
                 boxes.add(boxFactory.createStation( "Milano Centrale", 100, 50, 40));
-
+                boxes.add(boxFactory.createProperty( "Via Aldo Moro", 120, 30, 40, "Blu"));
 
                 boxes.add(boxFactory.createTax("Vai in prigione", 90));//Vai in prigione
 
@@ -47,5 +47,15 @@ public class Board {
             default:
                 break;
         }
+    }
+
+    //Returns a Box from a given index (position)
+    public Box getBoxFromIndex(int boxIndex) {
+        return boxes.get(boxIndex % boxes.size());
+    }
+
+    //Returns the index of a specific Box
+    public int getBoxIndex(Box box) {
+        return boxes.indexOf(box);
     }
 }
