@@ -87,11 +87,9 @@
             <Font size="30.0" />
          </font>
       </Button>
-<<<<<<< Updated upstream
+
       <Button fx:id="diceBtn" layoutX="1260.0" layoutY="400.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="60.0" prefWidth="220.0" onAction="#launchDices" text="TIRA I DADI">
-=======
-      <Button fx:id="diceBtn" layoutX="1260.0" layoutY="400.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="launchDices" prefHeight="60.0" prefWidth="220.0" text="TIRA I DADI">
->>>>>>> Stashed changes
+
          <font>
             <Font size="30.0" />
          </font>
