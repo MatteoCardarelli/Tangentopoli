@@ -121,15 +121,25 @@ public class BoardController implements Initializable {
         Circle playerToken = playerTokens.get(playerIndex);
         GridPane.setRowIndex(playerToken, row);
         GridPane.setColumnIndex(playerToken, column);
+        switch(playerIndex){
+            case 0:playerToken.setTranslateY(-47.0);
+                   playerToken.setTranslateX(5.0);
+            break;
+            case 1:playerToken.setTranslateX(47.0);
+            break;
+            case 2:playerToken.setTranslateX(87.0);
+                   playerToken.setTranslateY(-47.0);
+                   break;
+        }
     }
 
     public void createPlayerTokens() {
         playerTokens = new ArrayList<>();
         for (int i = 0; i < playerN; i++) {
-            Circle playerToken = new Circle(10, Color.RED); // Cerchio rosso con raggio 10
+            Circle playerToken = new Circle(20, Color.RED); // Cerchio rosso con raggio 10
             playerTokens.add(playerToken);
             boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
-            setPlayerTokenPosition(i, 0, i); // Sposta il giocatore alla cella iniziale
+            setPlayerTokenPosition(i, 0, 0); // Sposta il giocatore alla cella iniziale
         }
     }
 
