@@ -1,0 +1,42 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+.property-card {
+    width: 189px;
+    height: 225px;
+    border: 2px solid black;
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: #D8E8E4;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.property-color {
+    height: 50px;
+    width: 100%;
+    border-bottom: 3px solid black;
+}
+
+.property-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.property-price {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
