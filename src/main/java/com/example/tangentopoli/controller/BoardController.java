@@ -65,9 +65,6 @@ public class BoardController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png"))); //inizializzazione dadi
         dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
-
-        // Assicurati che la lista di pedine sia inizializzata
-        playerTokens = new ArrayList<>();
     }
 
     public void launchDices(ActionEvent actionEvent) throws InterruptedException {
@@ -242,10 +239,20 @@ public class BoardController implements Initializable {
     //metodo che crea le pedine
     public void createPlayerTokens() {
         playerTokens = new ArrayList<>();
+        // Definisci una lista di colori
+        List<Color> playerColors = List.of(
+                Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW,
+                Color.ORANGE, Color.PURPLE // Aggiungi altri colori se necessario
+        );
+
         for (int i = 0; i < playerN; i++) {
-            Circle playerToken = new Circle(20, Color.RED); // Cerchio rosso con raggio 10
+            // Usa il colore corrispondente per ogni giocatore
+            Color playerColor = playerColors.get(i % playerColors.size());
+
+            Circle playerToken = new Circle(20, playerColor); // Cerchio con raggio 20 e colore specifico
             playerTokens.add(playerToken);
             boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
+
             switch (playerN) {
                 case 2, 3:
                     setPlayerTokenPositionSmall(i, 0, 0); // Sposta il giocatore alla cella iniziale
