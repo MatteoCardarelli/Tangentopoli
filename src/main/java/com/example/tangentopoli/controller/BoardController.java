@@ -20,7 +20,6 @@ import javafx.util.Duration;
 import com.example.tangentopoli.model.Game;
 import com.example.tangentopoli.model.Player;
 
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,10 +60,9 @@ public class BoardController implements Initializable {
     @FXML
     private List<Circle> playerTokens;
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
+        dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png"))); //inizializzazione dadi
         dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
 
         // Assicurati che la lista di pedine sia inizializzata
@@ -73,7 +71,7 @@ public class BoardController implements Initializable {
 
     public void launchDices(ActionEvent actionEvent) {
         Random movement = new Random();
-        int x1 = movement.nextInt(200) -100;
+        int x1 = movement.nextInt(200) -100; //numeri random per lanciare i dadi
         int x2 = movement.nextInt(200) -100;
         int y1 = movement.nextInt(200) -100;
         int y2 = movement.nextInt(200) -100;
@@ -122,10 +120,12 @@ public class BoardController implements Initializable {
         // Avvia le animazioni
         sequentialTransition1.play();
         sequentialTransition2.play();
+
         nextTurn();
 
     }
 
+    //metodo che imposta il numero di pedine
     public void setPlayerN() {
         this.playerN = game.getPlayersN();
         createPlayerTokens();
@@ -137,9 +137,18 @@ public class BoardController implements Initializable {
         setPlayerN();
     }
 
+    public void nextTurn() {
+        game.changeTurn();
+        displayPlayerInfo(game.getPlayerInTurn());
+    }
 
+    private void displayPlayerInfo(Player player) {
+        String playerInfoStr = player.toString();
+        playerInfo.setText(playerInfoStr);
+    }
 
-    public void setPlayerTokenPosition(int playerIndex, int row, int column) {
+    //metodo che posiziona le pedine nel tabellone piccolo
+    public void setPlayerTokenPositionSmall(int playerIndex, int row, int column) {
         Circle playerToken = playerTokens.get(playerIndex);
         GridPane.setRowIndex(playerToken, row);
         GridPane.setColumnIndex(playerToken, column);
@@ -152,16 +161,83 @@ public class BoardController implements Initializable {
             case 2:playerToken.setTranslateX(87.0);
                    playerToken.setTranslateY(-47.0);
                    break;
+            default:break;
         }
     }
 
+    //metodo che posiziona le pedine nel tabellone medio
+    public void setPlayerTokenPositionMedium(int playerIndex, int row, int column) {
+        Circle playerToken = playerTokens.get(playerIndex);
+        playerToken.setRadius(16);
+        GridPane.setRowIndex(playerToken, row);
+        GridPane.setColumnIndex(playerToken, column);
+        switch(playerIndex){
+            case 0:playerToken.setTranslateY(-42.0);
+                   playerToken.setTranslateX(2.0);
+                break;
+            case 1:playerToken.setTranslateX(20.0);
+                break;
+            case 2:playerToken.setTranslateX(38.0);
+                playerToken.setTranslateY(-42.0);
+                break;
+            case 3:
+                playerToken.setTranslateX(74.0);
+                playerToken.setTranslateY(-42.0);
+                break;
+            case 4:
+                playerToken.setTranslateX(56.0);
+                break;
+            default:break;
+        }
+    }
+
+    public void setPlayerTokenPositionLarge(int playerIndex, int row, int column) {
+        Circle playerToken = playerTokens.get(playerIndex);
+        playerToken.setRadius(12.8);
+        GridPane.setRowIndex(playerToken, row);
+        GridPane.setColumnIndex(playerToken, column);
+        switch(playerIndex){
+            case 0:playerToken.setTranslateY(-32.0);
+                playerToken.setTranslateX(2.0);
+                break;
+            case 1:playerToken.setTranslateX(28.0);
+                break;
+            case 2:playerToken.setTranslateX(28.0);
+                playerToken.setTranslateY(-32.0);
+                break;
+            case 3:
+                playerToken.setTranslateX(54.0);
+                playerToken.setTranslateY(-32.0);
+                break;
+            case 4:
+                playerToken.setTranslateX(54.0);
+                break;
+            case 5:playerToken.setTranslateX(2.0);
+                break;
+            default:break;
+        }
+    }
+
+
+
+
+
+    //metodo che crea le pedine
     public void createPlayerTokens() {
         playerTokens = new ArrayList<>();
         for (int i = 0; i < playerN; i++) {
             Circle playerToken = new Circle(20, Color.RED); // Cerchio rosso con raggio 10
             playerTokens.add(playerToken);
             boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
-            setPlayerTokenPosition(i, 0, 0); // Sposta il giocatore alla cella iniziale
+            switch(playerN) {
+                case 2,3:   setPlayerTokenPositionSmall(i, 0, 0); // Sposta il giocatore alla cella iniziale
+                    break;
+                case 4,5:   setPlayerTokenPositionMedium(i, 0, 0);
+                    break;
+                case 6: setPlayerTokenPositionLarge(i, 0, 0);
+                 break;
+                 default:break;
+            }
         }
     }
 
@@ -169,16 +245,6 @@ public class BoardController implements Initializable {
         // Logica per muovere il giocatore di 'n' spazi
         // Aggiorna l'interfaccia utente o altri elementi secondo necessità
         playerInfo.appendText("Player moves " + n + " spaces.\n");
-    }
-
-    public void nextTurn() {
-        game.changeTurn();
-        displayPlayerInfo(game.getPlayerInTurn());
-    }
-
-    private void displayPlayerInfo(Player player) {
-        String playerInfoStr = player.toString();
-        playerInfo.setText(playerInfoStr);
     }
 
 
