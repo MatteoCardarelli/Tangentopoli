@@ -35,7 +35,11 @@ public abstract class Player {
         this.position = position;
     }
 
-    //Create PurchasedBoxException
+    public String toString() {
+        return "Player " + this.playerID + " | Money: " + this.money + "$\n"/* + purchasedBoxes.toString()*/;
+    }
+
+    //TO-DO Create PurchasedBoxException
     public void buyPurchasableBox(PurchasableBox purchasableBox) throws NotEnoughMoneyException {
         if (!purchasableBox.isPurchased() && purchasableBox.getPrice() > this.getMoney()) {
             purchasedBoxes.add(purchasableBox);

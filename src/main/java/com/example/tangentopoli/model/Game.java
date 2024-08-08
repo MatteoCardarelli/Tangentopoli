@@ -8,9 +8,34 @@ public class Game {
     private Deck communityChests;
     private Deck chanches;
     private Dice dice;
+    private int turn = 0;
+    private int playerInTurn=0;
 
     //FAI SINGLETON
     public Game(int playersN){
         board = new Board(playersN);
+        createPlayers(playersN);
+    }
+
+    //Populates players list, assigning to each player an ID and the initial amount of money
+    private void createPlayers(int playersN) {
+        players = new ArrayList<>(playersN);
+        for (int i = 0; i < playersN; i++) {
+            HumanPlayer player = new HumanPlayer(i+1, 1500);
+            players.add(player);
+        }
+    }
+
+    public int getPlayersN() {
+        return players.size();
+    }
+
+    public void changeTurn() {
+        playerInTurn = (playerInTurn + 1) % players.size();
+        turn++;
+    }
+
+    public Player getPlayerInTurn() {
+        return players.get(playerInTurn);
     }
 }

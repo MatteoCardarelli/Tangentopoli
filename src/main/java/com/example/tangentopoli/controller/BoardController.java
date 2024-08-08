@@ -2,6 +2,8 @@ package com.example.tangentopoli.controller;
 
 import com.example.tangentopoli.TangentopoliApp;
 import com.example.tangentopoli.model.Dice;
+import com.example.tangentopoli.model.Game;
+import com.example.tangentopoli.model.Player;
 import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
@@ -27,6 +29,8 @@ import java.util.ResourceBundle;
 
 public class BoardController implements Initializable {
     private int playerN;
+
+    private Game game;
     @FXML
     private Button auctionBtn;
 
@@ -57,6 +61,14 @@ public class BoardController implements Initializable {
     @FXML
     private List<Circle> playerTokens;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
+        dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
+
+        // Assicurati che la lista di pedine sia inizializzata
+        playerTokens = new ArrayList<>();
+    }
 
     public void launchDices(ActionEvent actionEvent) {
         Random movement = new Random();
@@ -109,12 +121,18 @@ public class BoardController implements Initializable {
         // Avvia le animazioni
         sequentialTransition1.play();
         sequentialTransition2.play();
-
+        nextTurn();
     }
 
-    public void setPlayerN(int playerN) {
-        this.playerN = playerN;
+    public void setPlayerN() {
+        this.playerN = game.getPlayersN();
         createPlayerTokens();
+        displayPlayerInfo(game.getPlayerInTurn());
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+        setPlayerN();
     }
 
     public void setPlayerTokenPosition(int playerIndex, int row, int column) {
@@ -149,12 +167,13 @@ public class BoardController implements Initializable {
         playerInfo.appendText("Player moves " + n + " spaces.\n");
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
-        dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
+    public void nextTurn() {
+        game.changeTurn();
+        displayPlayerInfo(game.getPlayerInTurn());
+    }
 
-        // Assicurati che la lista di pedine sia inizializzata
-        playerTokens = new ArrayList<>();
+    private void displayPlayerInfo(Player player) {
+        String playerInfoStr = player.toString();
+        playerInfo.setText(playerInfoStr);
     }
 }

@@ -9,6 +9,6 @@ public class GameEngine {
      public GameEngine(int playersN, BoardController boardController){
           Game game= new Game(playersN);
           this.boardController = boardController;
-          boardController.setPlayerN(playersN);
+          boardController.setGame(game);
      }
 }
