@@ -38,4 +38,8 @@ public class Game {
     public Player getPlayerInTurn() {
         return players.get(playerInTurn);
     }
+
+    public int getPlayerTurn() { return playerInTurn; }
 }
+
+

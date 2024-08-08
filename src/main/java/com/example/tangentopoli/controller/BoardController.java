@@ -2,9 +2,7 @@ package com.example.tangentopoli.controller;
 
 import com.example.tangentopoli.TangentopoliApp;
 import com.example.tangentopoli.model.Dice;
-import javafx.animation.RotateTransition;
-import javafx.animation.SequentialTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
+
+import static javafx.scene.layout.GridPane.getColumnIndex;
+import static javafx.scene.layout.GridPane.getRowIndex;
 
 public class BoardController implements Initializable {
     private int playerN;
@@ -69,14 +70,15 @@ public class BoardController implements Initializable {
         playerTokens = new ArrayList<>();
     }
 
-    public void launchDices(ActionEvent actionEvent) {
+    public void launchDices(ActionEvent actionEvent) throws InterruptedException {
         Random movement = new Random();
-        int x1 = movement.nextInt(200) -100; //numeri random per lanciare i dadi
-        int x2 = movement.nextInt(200) -100;
-        int y1 = movement.nextInt(200) -100;
-        int y2 = movement.nextInt(200) -100;
+        int x1 = movement.nextInt(200) - 100; //numeri random per lanciare i dadi
+        int x2 = movement.nextInt(200) - 100;
+        int y1 = movement.nextInt(200) - 100;
+        int y2 = movement.nextInt(200) - 100;
         int n = Dice.launch();
         int k = Dice.launch();
+        int diceValue = n + k;
         // Crea l'animazione di rotazione per il primo dado
         RotateTransition rotateTransition1 = new RotateTransition(Duration.seconds(1), dice1ImageView);
         rotateTransition1.setByAngle(720);
@@ -91,7 +93,7 @@ public class BoardController implements Initializable {
         translateTransition1.setByY(y1); // Imposta la distanza Y di traslazione
 
         // Combina le animazioni per il primo dado
-        SequentialTransition sequentialTransition1 = new SequentialTransition(translateTransition1 ,rotateTransition1);
+        SequentialTransition sequentialTransition1 = new SequentialTransition(translateTransition1, rotateTransition1);
         sequentialTransition1.setOnFinished(event ->
                 dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice" + n + ".png")))
         );
@@ -112,7 +114,7 @@ public class BoardController implements Initializable {
 
 
         // Combina le animazioni per il secondo dado
-        SequentialTransition sequentialTransition2 = new SequentialTransition( translateTransition2 ,rotateTransition2);
+        SequentialTransition sequentialTransition2 = new SequentialTransition(translateTransition2, rotateTransition2);
         sequentialTransition2.setOnFinished(event ->
                 dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice" + k + ".png")))
         );
@@ -121,9 +123,13 @@ public class BoardController implements Initializable {
         sequentialTransition1.play();
         sequentialTransition2.play();
 
+        movePlayer(diceValue);
         nextTurn();
 
     }
+
+
+
 
     //metodo che imposta il numero di pedine
     public void setPlayerN() {
@@ -152,16 +158,21 @@ public class BoardController implements Initializable {
         Circle playerToken = playerTokens.get(playerIndex);
         GridPane.setRowIndex(playerToken, row);
         GridPane.setColumnIndex(playerToken, column);
-        switch(playerIndex){
-            case 0:playerToken.setTranslateY(-47.0);
-                   playerToken.setTranslateX(5.0);
-            break;
-            case 1:playerToken.setTranslateX(47.0);
-            break;
-            case 2:playerToken.setTranslateX(87.0);
-                   playerToken.setTranslateY(-47.0);
-                   break;
-            default:break;
+        switch (playerIndex) {
+            case 0:
+                playerToken.setTranslateY(-47.0);
+                playerToken.setTranslateX(5.0);
+
+                break;
+            case 1:
+                playerToken.setTranslateX(47.0);
+                break;
+            case 2:
+                playerToken.setTranslateX(87.0);
+                playerToken.setTranslateY(-47.0);
+                break;
+            default:
+                break;
         }
     }
 
@@ -171,13 +182,16 @@ public class BoardController implements Initializable {
         playerToken.setRadius(16);
         GridPane.setRowIndex(playerToken, row);
         GridPane.setColumnIndex(playerToken, column);
-        switch(playerIndex){
-            case 0:playerToken.setTranslateY(-42.0);
-                   playerToken.setTranslateX(2.0);
+        switch (playerIndex) {
+            case 0:
+                playerToken.setTranslateY(-42.0);
+                playerToken.setTranslateX(2.0);
                 break;
-            case 1:playerToken.setTranslateX(20.0);
+            case 1:
+                playerToken.setTranslateX(20.0);
                 break;
-            case 2:playerToken.setTranslateX(38.0);
+            case 2:
+                playerToken.setTranslateX(38.0);
                 playerToken.setTranslateY(-42.0);
                 break;
             case 3:
@@ -187,7 +201,8 @@ public class BoardController implements Initializable {
             case 4:
                 playerToken.setTranslateX(56.0);
                 break;
-            default:break;
+            default:
+                break;
         }
     }
 
@@ -196,13 +211,16 @@ public class BoardController implements Initializable {
         playerToken.setRadius(12.8);
         GridPane.setRowIndex(playerToken, row);
         GridPane.setColumnIndex(playerToken, column);
-        switch(playerIndex){
-            case 0:playerToken.setTranslateY(-32.0);
+        switch (playerIndex) {
+            case 0:
+                playerToken.setTranslateY(-32.0);
                 playerToken.setTranslateX(2.0);
                 break;
-            case 1:playerToken.setTranslateX(28.0);
+            case 1:
+                playerToken.setTranslateX(28.0);
                 break;
-            case 2:playerToken.setTranslateX(28.0);
+            case 2:
+                playerToken.setTranslateX(28.0);
                 playerToken.setTranslateY(-32.0);
                 break;
             case 3:
@@ -212,14 +230,13 @@ public class BoardController implements Initializable {
             case 4:
                 playerToken.setTranslateX(54.0);
                 break;
-            case 5:playerToken.setTranslateX(2.0);
+            case 5:
+                playerToken.setTranslateX(2.0);
                 break;
-            default:break;
+            default:
+                break;
         }
     }
-
-
-
 
 
     //metodo che crea le pedine
@@ -229,23 +246,71 @@ public class BoardController implements Initializable {
             Circle playerToken = new Circle(20, Color.RED); // Cerchio rosso con raggio 10
             playerTokens.add(playerToken);
             boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
-            switch(playerN) {
-                case 2,3:   setPlayerTokenPositionSmall(i, 0, 0); // Sposta il giocatore alla cella iniziale
+            switch (playerN) {
+                case 2, 3:
+                    setPlayerTokenPositionSmall(i, 0, 0); // Sposta il giocatore alla cella iniziale
                     break;
-                case 4,5:   setPlayerTokenPositionMedium(i, 0, 0);
+                case 4, 5:
+                    setPlayerTokenPositionMedium(i, 0, 0);
                     break;
-                case 6: setPlayerTokenPositionLarge(i, 0, 0);
-                 break;
-                 default:break;
+                case 6:
+                    setPlayerTokenPositionLarge(i, 0, 0);
+                    break;
+                default:
+                    break;
             }
         }
     }
 
-    public void movePlayer(int n) {
-        // Logica per muovere il giocatore di 'n' spazi
-        // Aggiorna l'interfaccia utente o altri elementi secondo necessità
-        playerInfo.appendText("Player moves " + n + " spaces.\n");
+
+
+
+    public void movePlayer(int diceValue) {
+        Circle playerToken = playerTokens.get(game.getPlayerTurn());
+        int rowPos = GridPane.getRowIndex(playerToken) == null ? 0 : GridPane.getRowIndex(playerToken);
+        int columnPos = GridPane.getColumnIndex(playerToken) == null ? 0 : GridPane.getColumnIndex(playerToken);
+        int maxC = boardGrid.getColumnCount();
+        int maxR = boardGrid.getRowCount();
+
+        for (int i = 0; i < diceValue; i++) {
+            // Movimento orizzontale da sinistra a destra
+            if (rowPos == 0 && columnPos < maxC - 1) {
+                columnPos++;
+            }
+            // Movimento verticale giù nella colonna di destra
+            else if (columnPos == maxC - 1 && rowPos < maxR - 1) {
+                rowPos++;
+            }
+            // Movimento orizzontale da destra a sinistra
+            else if (rowPos == maxR - 1 && columnPos > 0) {
+                columnPos--;
+            }
+            // Movimento verticale su nella colonna di sinistra
+            else if (columnPos == 0 && rowPos > 0) {
+                rowPos--;
+            }
+
+            // Aggiorna la posizione della pedina
+            switch(playerN){
+                case 2, 3:
+                    setPlayerTokenPositionSmall(game.getPlayerTurn(), rowPos, columnPos);
+                    break;
+                case 4, 5:
+                    setPlayerTokenPositionMedium(game.getPlayerTurn(), rowPos, columnPos);
+                    break;
+                case 6:
+                    setPlayerTokenPositionLarge(game.getPlayerTurn(), rowPos, columnPos);
+                    break;
+                default:
+                    break;
+            }
+
+
+
+        }
     }
+
+
 
 
 }
