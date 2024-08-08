@@ -36,4 +36,9 @@ public class ConcreteBoxFactory implements BoxFactory {
     public Start createStart() {
         return new Start();
     }
+
+    @Override
+    public GoToPrison createGoToPrison() {
+        return new GoToPrison();
+    }
 }

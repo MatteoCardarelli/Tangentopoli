@@ -65,6 +65,8 @@ public class BoardController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png"))); //inizializzazione dadi
         dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
+
+
     }
 
     public void launchDices(ActionEvent actionEvent) throws InterruptedException {
@@ -120,6 +122,7 @@ public class BoardController implements Initializable {
         sequentialTransition1.play();
         sequentialTransition2.play();
 
+        //muove la pedina
         movePlayer(diceValue);
         nextTurn();
     }

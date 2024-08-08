@@ -8,4 +8,5 @@ public interface BoxFactory {
     Parking createParking();
     Tax createTax(String name, int price);
     Start createStart();
+    GoToPrison createGoToPrison();
 }
