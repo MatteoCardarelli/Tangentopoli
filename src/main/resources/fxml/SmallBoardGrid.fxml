@@ -58,54 +58,104 @@
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8c663" height="150.0" stroke="BLACK" strokeType="INSIDE" width="150.0" GridPane.columnIndex="5" GridPane.rowIndex="5" />
             <ImageView fx:id="dice1ImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <ImageView fx:id="dice2ImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-            <ImageView fitHeight="150.0" fitWidth="126.0" GridPane.columnIndex="1">
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="180.0" GridPane.columnIndex="1">
                <image>
                   <Image url="@../img/smallBoardBoxes/1-piazzaDuomo.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" GridPane.columnIndex="3">
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="180.0" GridPane.columnIndex="3">
                <image>
                   <Image url="@../img/smallBoardBoxes/2-viaDellaSpiga.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="90.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <image>
                   <Image url="@../img/smallBoardBoxes/3-piazzaFontana.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="90.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                <image>
                   <Image url="@../img/smallBoardBoxes/4-piazzaSanBabila.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="90.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <image>
                   <Image url="@../img/smallBoardBoxes/5-piazzaDellaScala.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="180.0" GridPane.columnIndex="4" GridPane.rowIndex="5">
+            <ImageView fitHeight="150.0" fitWidth="126.0" GridPane.columnIndex="4" GridPane.rowIndex="5">
                <image>
                   <Image url="@../img/smallBoardBoxes/6-vialeMazzini.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="180.0" GridPane.columnIndex="3" GridPane.rowIndex="5">
+            <ImageView fitHeight="150.0" fitWidth="126.0" GridPane.columnIndex="3" GridPane.rowIndex="5">
                <image>
                   <Image url="@../img/smallBoardBoxes/7-vialeMonza.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="180.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
-               <image>
-                  <Image url="@../img/smallBoardBoxes/8-viaCaetani.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="-90.0" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <image>
                   <Image url="@../img/smallBoardBoxes/9-corsoBuenosAires.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="-90.0" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <image>
                   <Image url="@../img/smallBoardBoxes/10-corsoGaribaldi.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="180.0" GridPane.columnIndex="4">
+               <image>
+                  <Image url="@../img/smallBoardBoxes/IMPREVISTO.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+               <image>
+                  <Image url="@../img/smallBoardBoxes/13-mediaset.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="126.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+               <image>
+                  <Image url="@../img/smallBoardBoxes/11-milanoCentrale.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="126.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <image>
+                  <Image url="@../img/smallBoardBoxes/PROBABILITA.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+               <image>
+                  <Image url="@../img/smallBoardBoxes/12-veneziaSL.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@../img/smallBoardBoxes/14-montedison.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="180.0" GridPane.columnIndex="2">
+               <image>
+                  <Image url="@../img/smallBoardBoxes/TANGENTE.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="150.0">
+               <image>
+                  <Image url="@../img/smallBoardBoxes/START!.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="150.0" GridPane.rowIndex="5">
+               <image>
+                  <Image url="@../img/smallBoardBoxes/goToPrison.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="5">
+               <image>
+                  <Image url="@../img/smallBoardBoxes/PARKING.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="150.0" rotate="270.0" GridPane.columnIndex="5">
+               <image>
+                  <Image url="@../img/smallBoardBoxes/inPrison.png" />
                </image>
             </ImageView>
          </children>

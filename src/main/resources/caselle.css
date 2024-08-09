@@ -40,3 +40,47 @@ body {
     font-weight: bold;
     margin-bottom: 20px;
 }
+
+
+.card {
+    width: 189px;
+    height: 225px;
+    background-color: #e0e0e0;
+    border: 1px solid #000;
+    text-align: center;
+    margin: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 100px;
+    margin: 10px 0;
+    background-color: #fff;
+    border: 1px solid #000;
+}
+
+.price {
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* Specifico per Non-Purchasable */
+.non-purchasable .name {
+    margin-bottom: 20px;
+}
+
+/* Specifico per Stazioni e Società */
+.station-society .name {
+    margin-bottom: 10px;
+}
+.station-society .price {
+    margin-top: 10px;
+}

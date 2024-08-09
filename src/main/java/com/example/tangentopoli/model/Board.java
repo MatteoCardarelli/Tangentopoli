@@ -28,7 +28,7 @@ public class Board {
                 boxes.add(boxFactory.createProperty("Viale Mazzini", 300, 80, 150, "Blue"));
                 boxes.add(boxFactory.createProperty("Viale Monza", 320, 90, 160, "Blue"));
                 boxes.add(boxFactory.createStation( "Milano Centrale", 100, 50, 40));
-                boxes.add(boxFactory.createProperty( "Via Caetani", 280, 30, 40, "Blue"));
+                boxes.add(boxFactory.createTax("Probabilità", 90));//imprevisto
 
                 boxes.add(boxFactory.createGoToPrison());
 
