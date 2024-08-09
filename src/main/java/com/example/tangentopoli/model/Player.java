@@ -37,7 +37,12 @@ public abstract class Player {
     }
 
     public String toString() {
-        return "Player " + this.playerID + " | Money: " + this.money + "$\n"/* + purchasedBoxes.toString()*/;
+        String str = "Giocatore " + this.playerID + " | Patrimonio: " + this.money + "€\n";
+        for(PurchasableBox box : this.purchasedBoxes) {
+            str += "- " + box.getName() + "\n";
+        }
+
+        return str;
     }
 
     public void buyPurchasableBox(PurchasableBox purchasableBox) throws NotEnoughMoneyException, BoxAlreadyPurchasedException {

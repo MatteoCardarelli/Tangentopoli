@@ -62,6 +62,7 @@ public class BoardController implements Initializable {
         dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
 
         nextBtn.setDisable(true);
+        buyBtn.setDisable(true);
     }
 
 
@@ -130,6 +131,7 @@ public class BoardController implements Initializable {
             else {
                 diceBtn.setDisable(true);   // Disabilita il bottone dopo aver mosso la pedina
                 nextBtn.setDisable(false);  // Abilita il bottono
+                buyBtn.setDisable(false);
             }
         });
 
@@ -155,10 +157,9 @@ public class BoardController implements Initializable {
         game.changeTurn();
         displayPlayerInfo(game.getPlayerInTurn());
         displayBoxInfo(game.getPlayerInTurn());
-        buyBtn.setDisable(false);
         diceBtn.setDisable(false);
         nextBtn.setDisable(true);
-
+        buyBtn.setDisable(true);
     }
 
     //Displays player data in the top textArea
