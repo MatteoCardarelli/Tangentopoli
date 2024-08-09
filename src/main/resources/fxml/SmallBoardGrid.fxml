@@ -160,7 +160,7 @@
             </ImageView>
          </children>
       </GridPane>
-      <Button fx:id="buyBtn" layoutX="1000.0" layoutY="400.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="220.0" text="ACQUISTA">
+      <Button fx:id="buyBtn" onAction="#buyPress" layoutX="1000.0" layoutY="400.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="220.0" text="ACQUISTA">
          <font>
             <Font size="30.0" />
          </font>

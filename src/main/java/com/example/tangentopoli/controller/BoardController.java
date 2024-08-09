@@ -1,7 +1,7 @@
 package com.example.tangentopoli.controller;
 
-import com.example.tangentopoli.TangentopoliApp;
-import com.example.tangentopoli.model.Dice;
+import com.example.tangentopoli.exception.NotEnoughMoneyException;
+import com.example.tangentopoli.model.*;
 import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,19 +13,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
-import com.example.tangentopoli.model.Game;
-import com.example.tangentopoli.model.Player;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
-
-import static javafx.scene.layout.GridPane.getColumnIndex;
-import static javafx.scene.layout.GridPane.getRowIndex;
 
 public class BoardController implements Initializable {
     private int playerN;
@@ -66,8 +60,9 @@ public class BoardController implements Initializable {
         dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png"))); //inizializzazione dadi
         dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
 
-
+        nextBtn.setDisable(true);
     }
+
 
     public void launchDices(ActionEvent actionEvent) {
         Random movement = new Random();
@@ -75,9 +70,10 @@ public class BoardController implements Initializable {
         int x2 = movement.nextInt(200) - 100;
         int y1 = movement.nextInt(200) - 100;
         int y2 = movement.nextInt(200) - 100;
-        int n = Dice.launch();
-        int k = Dice.launch();
-        int diceValue = n + k;
+
+        int diceValue1 = Dice.launch();
+        int diceValue2 = Dice.launch();
+        int diceValue = diceValue1 + diceValue2;
 
         // Crea l'animazione di rotazione per il primo dado
         RotateTransition rotateTransition1 = new RotateTransition(Duration.seconds(1), dice1ImageView);
@@ -95,7 +91,7 @@ public class BoardController implements Initializable {
         // Combina le animazioni per il primo dado
         SequentialTransition sequentialTransition1 = new SequentialTransition(translateTransition1, rotateTransition1);
         sequentialTransition1.setOnFinished(event ->
-                dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice" + n + ".png")))
+                dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice" + diceValue1 + ".png")))
         );
 
         // Crea l'animazione di rotazione per il secondo dado
@@ -114,7 +110,7 @@ public class BoardController implements Initializable {
         // Combina le animazioni per il secondo dado
         SequentialTransition sequentialTransition2 = new SequentialTransition(translateTransition2, rotateTransition2);
         sequentialTransition2.setOnFinished(event ->
-                dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice" + k + ".png")))
+                dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice" + diceValue2 + ".png")))
         );
 
         // Combina le animazioni di entrambi i dadi in un'unica transizione parallela
@@ -123,7 +119,17 @@ public class BoardController implements Initializable {
         // Aggiungi un listener per eseguire il movimento del giocatore dopo il completamento delle animazioni
         parallelTransition.setOnFinished(event -> {
             movePlayer(diceValue);
-            diceBtn.setDisable(true); // Disabilita il bottone dopo aver mosso la pedina
+
+            //se il valore dei dadi è lo stesso lancia di nuovo
+            if (diceValue1 == diceValue2){
+                diceBtn.setDisable(false);  //abilita il bottone
+                nextBtn.setDisable(true);//disabilita il bottone
+                buyBtn.setDisable(false);
+            }
+            else {
+                diceBtn.setDisable(true);   // Disabilita il bottone dopo aver mosso la pedina
+                nextBtn.setDisable(false);  // Abilita il bottono
+            }
         });
 
         // Avvia la transizione parallela (che avvierà tutte le animazioni)
@@ -148,7 +154,10 @@ public class BoardController implements Initializable {
         game.changeTurn();
         displayPlayerInfo(game.getPlayerInTurn());
         displayBoxInfo(game.getPlayerInTurn());
+        buyBtn.setDisable(false);
         diceBtn.setDisable(false);
+        nextBtn.setDisable(true);
+
     }
 
     //Displays player data in the top textArea
@@ -284,7 +293,6 @@ public class BoardController implements Initializable {
 
 
 
-
     public void movePlayer(int diceValue) {
         Circle playerToken = playerTokens.get(game.getPlayerTurn());
         int rowPos = GridPane.getRowIndex(playerToken) == null ? 0 : GridPane.getRowIndex(playerToken);
@@ -327,6 +335,36 @@ public class BoardController implements Initializable {
         }
         game.movePlayer(diceValue);
         displayBoxInfo(game.getPlayerInTurn());
+    }
+
+    public void buyPress( ) throws NotEnoughMoneyException {
+        // Ottieni il giocatore corrente
+        Player currentPlayer = game.getPlayerInTurn();
+
+        // Ottieni la casella su cui si trova il giocatore
+        Box currentBox = currentPlayer.getPosition();
+
+        // Controlla se la casella corrente è una PurchasableBox
+        if (currentBox instanceof PurchasableBox purchasableBox) {
+            try {
+                // Tenta di acquistare la casella
+                currentPlayer.buyPurchasableBox(purchasableBox);
+
+                // Aggiorna l'interfaccia con le nuove informazioni
+                displayPlayerInfo(currentPlayer);
+                displayBoxInfo(currentPlayer);
+
+                // Notifica all'utente dell'acquisto avvenuto con successo
+                boxInfo.setText("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "$!");
+                buyBtn.setDisable(true);
+            } catch (NotEnoughMoneyException e) {
+                // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
+                boxInfo.setText("Non hai abbastanza denaro per acquistare questa proprietà.");
+            }
+        } else {
+            // Gestisci il caso in cui la casella non sia acquistabile (non è necessario ma aggiunge sicurezza)
+            boxInfo.setText("Questa casella non è acquistabile.");
+        }
     }
 
 
