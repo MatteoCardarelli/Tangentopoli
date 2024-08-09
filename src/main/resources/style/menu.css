@@ -1,0 +1,28 @@
+.pane {
+    -fx-font-family: Verdana;
+}
+
+.button {
+    -fx-background-color: #f16d50;
+    -fx-background-radius: 15;
+}
+
+
+.loadBtn {
+    -fx-background-color: rgb(243, 160, 151);
+}
+
+.slider {
+    -fx-pref-width: 200;
+}
+
+.slider .track {
+    -fx-background-color: linear-gradient(to right, #95e1b1, #e4a177);
+}
+
+.slider .thumb {
+    -fx-pref-height: 20px;
+    -fx-background-radius: 5;
+}
+
+

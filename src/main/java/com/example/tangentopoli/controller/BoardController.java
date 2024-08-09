@@ -159,7 +159,7 @@ public class BoardController implements Initializable {
 
     //Displays the current player's Box infos
     private void displayBoxInfo(Player player) {
-        String boxInfoStr = player.getPosition().getDescription();
+        String boxInfoStr = "Ti trovi su:\n" + player.getPosition().getDescription();
         boxInfo.setText(boxInfoStr);
     }
 
