@@ -8,7 +8,7 @@ public class Station extends PurchasableBox {
     }
 
     @Override
-    public void calculatePrice() {
-
+    public int calculatePrice() {
+        return 0;
     }
 }

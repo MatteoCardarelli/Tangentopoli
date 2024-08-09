@@ -60,4 +60,20 @@ public abstract class Player {
         }
 
     }
+
+    public void payProperty (Property property ){
+        this.setMoney(this.getMoney()-property.calculatePrice());
+    }
+
+    public void paySociety (Society society){
+        this.setMoney(this.getMoney()-society.calculatePrice());
+    }
+
+    public void payStation (Station station){
+        this.setMoney(this.getMoney()-station.calculatePrice());
+    }
+
+    public void payTax  (Tax tax){
+        this.setMoney(this.getMoney()-tax.getPrice());
+    }
 }

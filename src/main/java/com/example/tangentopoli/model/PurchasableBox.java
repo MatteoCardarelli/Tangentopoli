@@ -42,6 +42,6 @@ public abstract class PurchasableBox implements Box {
 
     public void setOwner(Player owner) {this.owner = owner;}
 
-    public abstract void calculatePrice();
+    public abstract int calculatePrice();
 
 }

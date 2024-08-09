@@ -14,6 +14,7 @@ public class Property extends PurchasableBox {
     }
 
     @Override
-    public void calculatePrice() {
+    public int calculatePrice() {
+        return rentPrice;
     }
 }
