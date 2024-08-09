@@ -1,5 +1,6 @@
 package com.example.tangentopoli.controller;
 
+import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.model.*;
 import javafx.animation.*;
@@ -337,7 +338,7 @@ public class BoardController implements Initializable {
         displayBoxInfo(game.getPlayerInTurn());
     }
 
-    public void buyPress( ) throws NotEnoughMoneyException {
+    public void buyPress( ) throws NotEnoughMoneyException,BoxAlreadyPurchasedException {
         // Ottieni il giocatore corrente
         Player currentPlayer = game.getPlayerInTurn();
 
@@ -360,14 +361,15 @@ public class BoardController implements Initializable {
             } catch (NotEnoughMoneyException e) {
                 // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
                 boxInfo.setText("Non hai abbastanza denaro per acquistare questa proprietà.");
+
+            }
+            catch (BoxAlreadyPurchasedException e) {
+                boxInfo.setText("Questa proprietà è già ststa acquistata.");
             }
         } else {
             // Gestisci il caso in cui la casella non sia acquistabile (non è necessario ma aggiunge sicurezza)
             boxInfo.setText("Questa casella non è acquistabile.");
         }
     }
-
-
-
 
 }

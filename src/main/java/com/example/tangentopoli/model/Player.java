@@ -1,5 +1,6 @@
 package com.example.tangentopoli.model;
 
+import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public abstract class Player {
         return "Player " + this.playerID + " | Money: " + this.money + "$\n"/* + purchasedBoxes.toString()*/;
     }
 
-    public void buyPurchasableBox(PurchasableBox purchasableBox) throws NotEnoughMoneyException {
+    public void buyPurchasableBox(PurchasableBox purchasableBox) throws NotEnoughMoneyException, BoxAlreadyPurchasedException {
         if (!purchasableBox.isPurchased() && purchasableBox.getPrice() <= this.getMoney()) {
             this.setMoney(this.getMoney()-purchasableBox.getPrice());
             purchasedBoxes.add(purchasableBox);
@@ -48,6 +49,9 @@ public abstract class Player {
         }
         else if (purchasableBox.getPrice() > this.getMoney()) {
             throw new NotEnoughMoneyException("Non hai abbastanza denaro per acquistare questa proprietà");
+        }
+        else if(purchasableBox.isPurchased()) {
+            throw new BoxAlreadyPurchasedException();
         }
 
     }
