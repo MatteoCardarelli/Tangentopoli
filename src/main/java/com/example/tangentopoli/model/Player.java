@@ -72,6 +72,7 @@ public abstract class Player {
         // Ottieni la casella su cui si trova il giocatore
         Box currentBox = this.getPosition();
         launchValue = boardController.getDiceValue();
+        System.out.println(getPlayerID()+" "+launchValue);
 
         // Controlla se la casella corrente è una proprietà acquistabile e se è stata acquistata da un altro giocatore
         if (currentBox instanceof PurchasableBox purchasableBox && purchasableBox.isPurchased()) {
@@ -113,6 +114,7 @@ public abstract class Player {
             if(b.isSociety())
                 count++;
         }
+        System.out.println("N" + count);
         return count;
     }
 }

@@ -20,7 +20,7 @@ public class Board {
 
                 boxes.add(boxFactory.createProperty("Piazza Fontana", 200, 50, 100, "Gray"));
                 boxes.add(boxFactory.createProperty("Piazza San Babila", 220, 60, 110, "Gray"));
-                boxes.add(boxFactory.createSociety("Mediaset", 100, 40, 30));
+                boxes.add(boxFactory.createSociety("Mediaset", 100, 40));
                 boxes.add(boxFactory.createProperty("Piazza della Scala", 240, 70, 120, "Gray"));
 
                 boxes.add(boxFactory.createParking());
@@ -34,7 +34,7 @@ public class Board {
 
                 boxes.add(boxFactory.createProperty("Corso Buenos Aires", 400, 100, 200, "Green"));
                 boxes.add(boxFactory.createStation( "Venezia Santa Lucia", 100, 50, 40));
-                boxes.add(boxFactory.createSociety("Montedison", 100, 40, 30));
+                boxes.add(boxFactory.createSociety("Montedison", 100, 40));
                 boxes.add(boxFactory.createProperty("Corso Garibaldi", 420, 110, 210, "Green"));
 
                 break;
