@@ -67,6 +67,7 @@ public class BoardController implements Initializable {
 
     public void launchDices(ActionEvent actionEvent) {
         Random movement = new Random();
+        Player playerInTurn = game.getPlayerInTurn();
         int x1 = movement.nextInt(200) - 100; //numeri random per lanciare i dadi
         int x2 = movement.nextInt(200) - 100;
         int y1 = movement.nextInt(200) - 100;
@@ -132,7 +133,11 @@ public class BoardController implements Initializable {
                 nextBtn.setDisable(false);  // Abilita il bottono
                 buyBtn.setDisable(false);
             }
-            payRent();
+            try {
+                playerInTurn.payRent(this);
+            } catch (NotEnoughMoneyException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         // Avvia la transizione parallela (che avvierà tutte le animazioni)
@@ -163,9 +168,13 @@ public class BoardController implements Initializable {
     }
 
     //Displays player data in the top textArea
-    private void displayPlayerInfo(Player player) {
+    public void displayPlayerInfo(Player player) {
         String playerInfoStr = player.toString();
         playerInfo.setText(playerInfoStr);
+    }
+
+    public void updateBoxInfo(String message) {
+        boxInfo.setText(message);
     }
 
     //Displays the current player's Box infos
@@ -370,38 +379,6 @@ public class BoardController implements Initializable {
         } else {
             // Gestisci il caso in cui la casella non sia acquistabile (non è necessario ma aggiunge sicurezza)
             boxInfo.setText("Questa casella non è acquistabile.");
-        }
-    }
-
-    private void payRent() {
-        // Ottieni il giocatore corrente
-        Player currentPlayer = game.getPlayerInTurn();
-
-        // Ottieni la casella su cui si trova il giocatore
-        Box currentBox = currentPlayer.getPosition();
-
-        // Controlla se la casella corrente è una proprietà acquistabile e se è stata acquistata da un altro giocatore
-        if (currentBox instanceof PurchasableBox purchasableBox && purchasableBox.isPurchased()) {
-            Player owner = purchasableBox.getOwner();
-
-            // Controlla se il proprietario non è il giocatore corrente (per evitare di pagare a se stessi)
-            if (!owner.equals(currentPlayer)) {
-                int rentToPay = purchasableBox.calculatePrice();
-
-                // Il giocatore corrente paga il proprietario
-                try {
-                    currentPlayer.setMoney(currentPlayer.getMoney() - rentToPay);
-                    owner.setMoney(owner.getMoney() + rentToPay);
-
-                    // Aggiorna le informazioni del giocatore e della casella
-                    displayPlayerInfo(currentPlayer);
-                    displayPlayerInfo(owner);
-                    boxInfo.setText("Hai pagato " + rentToPay + "€ di affitto a Player" + owner.getPlayerID() + " per la proprietà " + purchasableBox.getName());
-                } catch (Exception e) {
-                    // Gestisci eventuali eccezioni come NotEnoughMoneyException se desiderato
-                    boxInfo.setText("Non hai abbastanza denaro per pagare l'affitto.");
-                }
-            }
         }
     }
 

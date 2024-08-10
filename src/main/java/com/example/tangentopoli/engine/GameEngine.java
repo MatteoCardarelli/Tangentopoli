@@ -10,7 +10,6 @@ public class GameEngine {
      // Costruttore privato per evitare l'istanza diretta
      public GameEngine(int playersN, BoardController boardController) {
           Game game = new Game(playersN);
-          this.boardController = boardController;
           boardController.setGame(game);
      }
 

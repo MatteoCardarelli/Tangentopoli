@@ -1,7 +1,7 @@
 package com.example.tangentopoli.model;
 
 public class Station extends PurchasableBox {
-    private int transitPrice;
+    private int rentPrice;
 
     public Station(String name, int price, int transitPrice, int mortgageValue) {
         super(name, price, mortgageValue);
@@ -9,6 +9,6 @@ public class Station extends PurchasableBox {
 
     @Override
     public int calculatePrice() {
-        return 0;
+        return rentPrice;
     }
 }

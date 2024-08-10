@@ -1,5 +1,6 @@
 package com.example.tangentopoli.model;
 
+import com.example.tangentopoli.controller.BoardController;
 import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 
@@ -10,6 +11,7 @@ public abstract class Player {
     private Box position;
     private int money;
     private ArrayList<PurchasableBox> purchasedBoxes = new ArrayList<>();
+
 
     public Player(int playerID, int money) {
         this.playerID = playerID;
@@ -61,19 +63,34 @@ public abstract class Player {
 
     }
 
-    public void payProperty (Property property ){
-        this.setMoney(this.getMoney()-property.calculatePrice());
-    }
+    public void payRent(BoardController boardController) throws NotEnoughMoneyException {
+        // Ottieni la casella su cui si trova il giocatore
+        Box currentBox = this.getPosition();
 
-    public void paySociety (Society society){
-        this.setMoney(this.getMoney()-society.calculatePrice());
-    }
+        // Controlla se la casella corrente è una proprietà acquistabile e se è stata acquistata da un altro giocatore
+        if (currentBox instanceof PurchasableBox purchasableBox && purchasableBox.isPurchased()) {
+            Player owner = purchasableBox.getOwner();
 
-    public void payStation (Station station){
-        this.setMoney(this.getMoney()-station.calculatePrice());
-    }
+            // Controlla se il proprietario non è il giocatore corrente (per evitare di pagare a se stessi)
+            if (!owner.equals(this)) {
+                int rentToPay = purchasableBox.calculatePrice();
 
-    public void payTax  (Tax tax){
-        this.setMoney(this.getMoney()-tax.getPrice());
+                // Il giocatore corrente paga il proprietario
+                try {
+                    this.setMoney(this.getMoney() - rentToPay);
+                    owner.setMoney(owner.getMoney() + rentToPay);
+
+                    // Aggiorna le informazioni del giocatore e della casella
+                    boardController.displayPlayerInfo(this);
+                    boardController.displayPlayerInfo(owner);
+                    boardController.updateBoxInfo("Hai pagato " + rentToPay + "€ di affitto a Player" + owner.getPlayerID() + " per la proprietà " + purchasableBox.getName());
+                } catch (Exception e) {
+                    // Gestisci eventuali eccezioni come NotEnoughMoneyException se desiderato
+                    boardController.updateBoxInfo("Non hai abbastanza denaro per pagare l'affitto.");
+                }
+            }
+        }
     }
 }
+
+

@@ -8,8 +8,8 @@ public class ConcreteBoxFactory implements BoxFactory {
     }
 
     @Override
-    public Station createStation(String name, int price, int transitPrice, int mortgageValue) {
-        return new Station(name, price, transitPrice, mortgageValue);
+    public Station createStation(String name, int price, int rentPrice, int mortgageValue) {
+        return new Station(name, price, rentPrice, mortgageValue);
     }
 
     @Override
