@@ -11,6 +11,7 @@ public abstract class Player {
     private Box position;
     private int money;
     private int launchValue;
+    private boolean inPrison = false;
     private ArrayList<PurchasableBox> purchasedBoxes = new ArrayList<>();
 
 
@@ -43,13 +44,12 @@ public abstract class Player {
         this.position = position;
     }
 
-    public String toString() {
-        String str = "Giocatore " + this.playerID + " | Patrimonio: " + this.money + "€\n";
-        for(PurchasableBox box : this.purchasedBoxes) {
-            str += "- " + box.getName() + "\n";
-        }
+    public void setInPrison(boolean inPrison) {
+        this.inPrison = inPrison;
+    }
 
-        return str;
+    public boolean isInPrison() {
+        return this.inPrison;
     }
 
     public void buyPurchasableBox(PurchasableBox purchasableBox) throws NotEnoughMoneyException, BoxAlreadyPurchasedException {
@@ -116,6 +116,15 @@ public abstract class Player {
         }
         System.out.println("N" + count);
         return count;
+    }
+
+    public String toString() {
+        String str = "Giocatore " + this.playerID + " | Patrimonio: " + this.money + "€\n";
+        for(PurchasableBox box : this.purchasedBoxes) {
+            str += "- " + box.getName() + "\n";
+        }
+
+        return str;
     }
 }
 

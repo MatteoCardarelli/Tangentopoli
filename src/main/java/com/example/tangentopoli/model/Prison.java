@@ -4,7 +4,7 @@ public class Prison implements Box {
     private String name;
 
     public Prison() {
-        name = "Prison";
+        name = "Prigione";
     }
     @Override
     public String getName() {

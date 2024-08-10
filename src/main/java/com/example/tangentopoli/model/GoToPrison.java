@@ -3,11 +3,11 @@ package com.example.tangentopoli.model;
 public class GoToPrison implements Box {
     @Override
     public String getName() {
-        return "";
+        return "GoToPrison";
     }
 
     @Override
     public String getDescription() {
-        return "";
+        return "Vai in prigione!";
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Board {
     private ArrayList<Box> boxes = new ArrayList<>();
+    private int size;
 
     public Board(int playerN) {
         ConcreteBoxFactory boxFactory = new ConcreteBoxFactory();
@@ -47,6 +48,16 @@ public class Board {
             default:
                 break;
         }
+
+        size = boxes.size();
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public ArrayList<Box> getBoxes() {
+        return boxes;
     }
 
     //Returns a Box from a given index (position)

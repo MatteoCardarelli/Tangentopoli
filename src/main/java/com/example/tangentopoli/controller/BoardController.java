@@ -374,7 +374,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < diceValue; i++) {
+        for (int i = 0; i < 1; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -391,23 +391,29 @@ public class BoardController implements Initializable {
             else if (columnPos == 0 && rowPos > 0) {
                 rowPos--;
             }
-
-            // Aggiorna la posizione della pedina
-            switch(playerN){
-                case 2, 3:
-                    setPlayerTokenPositionSmall(game.getPlayerTurn(), rowPos, columnPos);
-                    break;
-                case 4, 5:
-                    setPlayerTokenPositionMedium(game.getPlayerTurn(), rowPos, columnPos);
-                    break;
-                case 6:
-                    setPlayerTokenPositionLarge(game.getPlayerTurn(), rowPos, columnPos);
-                    break;
-                default:
-                    break;
-            }
         }
-        game.movePlayer(diceValue);
+
+        //If the player is on the GoToPrison box
+        if(rowPos == maxR-1 && columnPos == 0) {
+            rowPos = 0;
+            columnPos = maxC-1;
+        }
+
+        // Aggiorna la posizione della pedina
+        switch(playerN){
+            case 2, 3:
+                setPlayerTokenPositionSmall(game.getPlayerTurn(), rowPos, columnPos);
+                break;
+            case 4, 5:
+                setPlayerTokenPositionMedium(game.getPlayerTurn(), rowPos, columnPos);
+                break;
+            case 6:
+                setPlayerTokenPositionLarge(game.getPlayerTurn(), rowPos, columnPos);
+                break;
+            default:
+                break;
+        }
+        game.movePlayer(1);
         displayBoxInfo(game.getPlayerInTurn());
     }
 

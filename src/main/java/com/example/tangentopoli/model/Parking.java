@@ -4,7 +4,7 @@ public class Parking implements Box {
     private String name;
 
     public Parking() {
-        name = "Parking";
+        name = "Parcheggio";
     }
 
     @Override
