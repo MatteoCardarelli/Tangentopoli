@@ -9,9 +9,7 @@ public class Society extends PurchasableBox{
 
     @Override
     public int calculatePrice() {
-        if(getOwner().countOwnedSocieties() == 2)
-            return getOwner().getLaunchValue() * 10;
-        else
-            return getOwner().getLaunchValue() * 4;
+        int multiplier = getOwner().countOwnedSocieties() == 2 ? 10 : 4;
+        return multiplier * getOwner().getLaunchValue();
     }
 }

@@ -44,16 +44,21 @@ public class Game {
 
     public void goToPrison(Player player) {
         player.setInPrison(true);
-        player.setPosition(board.getBoxes().get(board.getSize() / 4));
+        player.setPosition(board.getBoxes().get((board.getSize() / 4)));
     }
 
     public void movePlayer(int diceValue) {
         Player player = getPlayerInTurn();
+
+        //il giocatore non può muoversi
+        if (player.isInPrison()) return;
+
         Box currentPosition = player.getPosition();
         int currentPosIndex = board.getBoxIndex(currentPosition);
         int nextPosIndex = currentPosIndex + diceValue;
         Box nextPos = board.getBoxFromIndex(nextPosIndex);
         int nextPosIndexMod = board.getBoxIndex(nextPos);
+
         //Once the player passes on the START the game gives him 200€
         if(nextPosIndexMod < currentPosIndex) {
             player.setMoney(player.getMoney() + 200);

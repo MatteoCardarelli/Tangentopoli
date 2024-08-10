@@ -69,8 +69,17 @@ public class BoardController implements Initializable {
 
 
     public void launchDices(ActionEvent actionEvent) {
-        Random movement = new Random();
+
         Player playerInTurn = game.getPlayerInTurn();
+
+        if (playerInTurn.isInPrison()) {
+            // Mostra un messaggio o un avviso che il giocatore è in prigione
+            boxInfo.setText("Non puoi muoverti mentre sei in prigione. Devi tirare i dadi.");
+            nextBtn.setDisable(false);
+            return;
+        }
+
+        Random movement = new Random();
         int x1 = movement.nextInt(200) - 100; //numeri random per lanciare i dadi
         int x2 = movement.nextInt(200) - 100;
         int y1 = movement.nextInt(200) - 100;
@@ -374,7 +383,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < diceValue; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -393,10 +402,13 @@ public class BoardController implements Initializable {
             }
         }
 
+        game.movePlayer(diceValue);
+
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
             rowPos = 0;
             columnPos = maxC-1;
+            game.goToPrison(game.getPlayerInTurn());
         }
 
         // Aggiorna la posizione della pedina
@@ -413,7 +425,7 @@ public class BoardController implements Initializable {
             default:
                 break;
         }
-        game.movePlayer(1);
+
         displayBoxInfo(game.getPlayerInTurn());
     }
 

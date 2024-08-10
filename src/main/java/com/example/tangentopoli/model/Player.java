@@ -32,16 +32,16 @@ public abstract class Player {
         return this.playerID;
     }
 
+    public void setPosition(Box position) {
+        this.position = position;
+    }
+
     public Box getPosition() {
         return this.position;
     }
 
     public int getLaunchValue() {
         return this.launchValue;
-    }
-
-    public void setPosition(Box position) {
-        this.position = position;
     }
 
     public void setInPrison(boolean inPrison) {
@@ -89,7 +89,6 @@ public abstract class Player {
 
                     // Aggiorna le informazioni del giocatore e della casella
                     boardController.displayPlayerInfo(this);
-                    boardController.displayPlayerInfo(owner);
                     boardController.updateBoxInfo("Hai pagato " + rentToPay + "€ di affitto a Player" + owner.getPlayerID() + " per la proprietà " + purchasableBox.getName());
                 } catch (Exception e) {
                     // Gestisci eventuali eccezioni come NotEnoughMoneyException se desiderato
