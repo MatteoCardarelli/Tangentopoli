@@ -25,6 +25,8 @@ import java.util.ResourceBundle;
 public class BoardController implements Initializable {
     private int playerN;
 
+    private int diceValue;
+
     private Game game;
     @FXML
     private Button nextBtn;
@@ -76,7 +78,7 @@ public class BoardController implements Initializable {
 
         int diceValue1 = Dice.launch();
         int diceValue2 = Dice.launch();
-        int diceValue = diceValue1 + diceValue2;
+        diceValue = diceValue1 + diceValue2;
 
         // Crea l'animazione di rotazione per il primo dado
         RotateTransition rotateTransition1 = new RotateTransition(Duration.seconds(1), dice1ImageView);
@@ -149,6 +151,10 @@ public class BoardController implements Initializable {
     public void setPlayerN() {
         this.playerN = game.getPlayersN();
         createPlayerTokens();
+    }
+
+    public int getDiceValue() {
+        return diceValue;
     }
 
     public void setGame(Game game) {

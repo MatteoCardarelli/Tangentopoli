@@ -13,8 +13,8 @@ public class ConcreteBoxFactory implements BoxFactory {
     }
 
     @Override
-    public Society createSociety(String name, int price, int rentPrice, int mortgageValue) {
-        return new Society(name, price, rentPrice, mortgageValue);
+    public Society createSociety(String name, int price, int mortgageValue) {
+        return new Society(name, price, mortgageValue);
     }
 
     @Override

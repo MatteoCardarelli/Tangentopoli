@@ -5,7 +5,6 @@ import com.example.tangentopoli.model.Game;
 
 public class GameEngine {
      private static GameEngine instance; // Istanza Singleton
-     private BoardController boardController;
 
      // Costruttore privato per evitare l'istanza diretta
      public GameEngine(int playersN, BoardController boardController) {

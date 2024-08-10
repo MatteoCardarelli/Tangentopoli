@@ -10,6 +10,7 @@ public abstract class Player {
     private int playerID;
     private Box position;
     private int money;
+    private int launchValue;
     private ArrayList<PurchasableBox> purchasedBoxes = new ArrayList<>();
 
 
@@ -32,6 +33,10 @@ public abstract class Player {
 
     public Box getPosition() {
         return this.position;
+    }
+
+    public int getLaunchValue() {
+        return this.launchValue;
     }
 
     public void setPosition(Box position) {
@@ -66,6 +71,7 @@ public abstract class Player {
     public void payRent(BoardController boardController) throws NotEnoughMoneyException {
         // Ottieni la casella su cui si trova il giocatore
         Box currentBox = this.getPosition();
+        launchValue = boardController.getDiceValue();
 
         // Controlla se la casella corrente è una proprietà acquistabile e se è stata acquistata da un altro giocatore
         if (currentBox instanceof PurchasableBox purchasableBox && purchasableBox.isPurchased()) {
@@ -90,6 +96,24 @@ public abstract class Player {
                 }
             }
         }
+    }
+
+    public int countOwnedStations() {
+        int count = 0;
+        for(PurchasableBox b : purchasedBoxes) {
+            if(b.isStation())
+                count++;
+        }
+        return count;
+    }
+
+    public int countOwnedSocieties() {
+        int count = 0;
+        for(PurchasableBox b : purchasedBoxes) {
+            if(b.isSociety())
+                count++;
+        }
+        return count;
     }
 }
 

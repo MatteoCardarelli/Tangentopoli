@@ -30,6 +30,18 @@ public abstract class PurchasableBox implements Box {
         return str;
     }
 
+    public boolean isStation() {
+        return (this instanceof Station);
+    }
+
+    public boolean isProperty() {
+        return (this instanceof Property);
+    }
+
+    public boolean isSociety() {
+        return (this instanceof Society);
+    }
+
     public boolean isPurchased() {
         return purchased;
     }
