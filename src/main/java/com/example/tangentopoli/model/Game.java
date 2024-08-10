@@ -63,7 +63,7 @@ public class Game {
         if(nextPosIndexMod < currentPosIndex) {
             player.setMoney(player.getMoney() + 200);
         }
-        if(nextPos.getName().equals("Prigione"))
+        if(nextPos.getName().equals("GoToPrison"))
             goToPrison(player);
         else
             player.setPosition(nextPos);

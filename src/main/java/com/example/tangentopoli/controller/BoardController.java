@@ -67,6 +67,171 @@ public class BoardController implements Initializable {
         buyBtn.setDisable(true);
     }
 
+    //Logica
+
+    public void setGame(Game game) {
+        this.game = game;
+        setPlayerN();
+        displayPlayerInfo(game.getPlayerInTurn());
+        displayBoxInfo(game.getPlayerInTurn());
+    }
+
+    //metodo che imposta il numero di pedine
+    public void setPlayerN() {
+        this.playerN = game.getPlayersN();
+        createPlayerTokens();
+    }
+
+    public void nextTurn() {
+        game.changeTurn();
+        displayPlayerInfo(game.getPlayerInTurn());
+        displayBoxInfo(game.getPlayerInTurn());
+        diceBtn.setDisable(false);
+        nextBtn.setDisable(true);
+        buyBtn.setDisable(true);
+    }
+
+
+
+    //Dadi
+
+    //metodo che restitusci il valore dei dadi
+    public int getDiceValue() {
+        return diceValue;
+    }
+
+    //metodo che gestisce i dadi se sono uguali o non
+    public void dicesEquals(int diceValue1, int diceValue2) {
+        if (diceValue1 == diceValue2) {
+            diceBtn.setDisable(false);  //abilita il bottone
+            nextBtn.setDisable(true);   //disabilita il bottone
+            buyBtn.setDisable(false);
+        } else {
+            diceBtn.setDisable(true);   // Disabilita il bottone dopo aver mosso la pedina
+            nextBtn.setDisable(false);  // Abilita il bottono
+            buyBtn.setDisable(false);
+        }
+    }
+
+
+
+    //Display
+
+    //Displays player data in the top textArea
+    public void displayPlayerInfo(Player player) {
+        String playerInfoStr = player.toString();
+        playerInfo.setText(playerInfoStr);
+    }
+
+    //Displays the current player's Box infos
+    private void displayBoxInfo(Player player) {
+        String boxInfoStr = "Ti trovi su:\n" + player.getPosition().getDescription();
+        boxInfo.setText(boxInfoStr);
+    }
+
+    public void updateBoxInfo(String message) {
+        boxInfo.setText(message);
+    }
+
+
+    //metodo per acquistare qualsiasi purchasablebox
+    public void buyPress( ) throws NotEnoughMoneyException,BoxAlreadyPurchasedException {
+        // Ottieni il giocatore corrente
+        Player currentPlayer = game.getPlayerInTurn();
+
+        // Ottieni la casella su cui si trova il giocatore
+        Box currentBox = currentPlayer.getPosition();
+
+        // Controlla se la casella corrente è una PurchasableBox
+        if (currentBox instanceof PurchasableBox purchasableBox) {
+            try {
+                // Tenta di acquistare la casella
+                currentPlayer.buyPurchasableBox(purchasableBox);
+
+                // Aggiorna l'interfaccia con le nuove informazioni
+                displayPlayerInfo(currentPlayer);
+                displayBoxInfo(currentPlayer);
+
+                // Notifica all'utente dell'acquisto avvenuto con successo
+                boxInfo.setText("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "$!");
+                createPropertyMarker(game.getPlayerTurn());
+                buyBtn.setDisable(true);
+            } catch (NotEnoughMoneyException e) {
+                // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
+                boxInfo.setText("Non hai abbastanza denaro per acquistare questa proprietà.");
+
+            }
+            catch (BoxAlreadyPurchasedException e) {
+                boxInfo.setText("Questa proprietà è già stata acquistata.");
+            }
+        } else {
+            // Gestisci il caso in cui la casella non sia acquistabile (non è necessario ma aggiunge sicurezza)
+            boxInfo.setText("Questa casella non è acquistabile.");
+        }
+    }
+
+
+
+
+
+    public void movePlayer(int diceValue) {
+        Circle playerToken = playerTokens.get(game.getPlayerTurn());
+        int rowPos = GridPane.getRowIndex(playerToken) == null ? 0 : GridPane.getRowIndex(playerToken);
+        int columnPos = GridPane.getColumnIndex(playerToken) == null ? 0 : GridPane.getColumnIndex(playerToken);
+        int maxC = boardGrid.getColumnCount();
+        int maxR = boardGrid.getRowCount();
+
+        for (int i = 0; i < diceValue; i++) {
+            // Movimento orizzontale da sinistra a destra
+            if (rowPos == 0 && columnPos < maxC - 1) {
+                columnPos++;
+            }
+            // Movimento verticale giù nella colonna di destra
+            else if (columnPos == maxC - 1 && rowPos < maxR - 1) {
+                rowPos++;
+            }
+            // Movimento orizzontale da destra a sinistra
+            else if (rowPos == maxR - 1 && columnPos > 0) {
+                columnPos--;
+            }
+            // Movimento verticale su nella colonna di sinistra
+            else if (columnPos == 0 && rowPos > 0) {
+                rowPos--;
+            }
+        }
+
+        game.movePlayer(diceValue);
+
+        //If the player is on the GoToPrison box
+        if(rowPos == maxR-1 && columnPos == 0) {
+            rowPos = 0;
+            columnPos = maxC-1;
+        }
+
+        // Aggiorna la posizione della pedina
+        switch(playerN){
+            case 2, 3:
+                setPlayerTokenPositionSmall(game.getPlayerTurn(), rowPos, columnPos);
+                break;
+            case 4, 5:
+                setPlayerTokenPositionMedium(game.getPlayerTurn(), rowPos, columnPos);
+                break;
+            case 6:
+                setPlayerTokenPositionLarge(game.getPlayerTurn(), rowPos, columnPos);
+                break;
+            default:
+                break;
+        }
+
+        displayBoxInfo(game.getPlayerInTurn());
+
+        //metodo per pagare gli affitti di qualsiasi purchasablebox
+        try {
+            game.getPlayerInTurn().payRent(this);
+        } catch (NotEnoughMoneyException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void launchDices(ActionEvent actionEvent) {
 
@@ -135,20 +300,10 @@ public class BoardController implements Initializable {
             movePlayer(diceValue);
 
             //se il valore dei dadi è lo stesso lancia di nuovo
-            if (diceValue1 == diceValue2) {
-                diceBtn.setDisable(false);  //abilita il bottone
-                nextBtn.setDisable(true);//disabilita il bottone
-                buyBtn.setDisable(false);
-            } else {
-                diceBtn.setDisable(true);   // Disabilita il bottone dopo aver mosso la pedina
-                nextBtn.setDisable(false);  // Abilita il bottono
-                buyBtn.setDisable(false);
-            }
-            try {
-                playerInTurn.payRent(this);
-            } catch (NotEnoughMoneyException e) {
-                throw new RuntimeException(e);
-            }
+           dicesEquals(diceValue1, diceValue2);
+
+
+
         });
 
         // Avvia la transizione parallela (che avvierà tutte le animazioni)
@@ -156,47 +311,6 @@ public class BoardController implements Initializable {
     }
 
 
-    //metodo che imposta il numero di pedine
-    public void setPlayerN() {
-        this.playerN = game.getPlayersN();
-        createPlayerTokens();
-    }
-
-    public int getDiceValue() {
-        return diceValue;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-        setPlayerN();
-        displayPlayerInfo(game.getPlayerInTurn());
-        displayBoxInfo(game.getPlayerInTurn());
-    }
-
-    public void nextTurn() {
-        game.changeTurn();
-        displayPlayerInfo(game.getPlayerInTurn());
-        displayBoxInfo(game.getPlayerInTurn());
-        diceBtn.setDisable(false);
-        nextBtn.setDisable(true);
-        buyBtn.setDisable(true);
-    }
-
-    //Displays player data in the top textArea
-    public void displayPlayerInfo(Player player) {
-        String playerInfoStr = player.toString();
-        playerInfo.setText(playerInfoStr);
-    }
-
-    public void updateBoxInfo(String message) {
-        boxInfo.setText(message);
-    }
-
-    //Displays the current player's Box infos
-    private void displayBoxInfo(Player player) {
-        String boxInfoStr = "Ti trovi su:\n" + player.getPosition().getDescription();
-        boxInfo.setText(boxInfoStr);
-    }
 
     //metodo che posiziona le pedine nel tabellone piccolo
     public void setPlayerTokenPositionSmall(int playerIndex, int row, int column) {
@@ -372,95 +486,6 @@ public class BoardController implements Initializable {
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(-20);  // Sposta il rettangolo verso destra di 30 pixel
             propertyMarker.setTranslateY(0); // Sposta il rettangolo verso l'alto di 30 pixel
-        }
-    }
-
-
-    public void movePlayer(int diceValue) {
-        Circle playerToken = playerTokens.get(game.getPlayerTurn());
-        int rowPos = GridPane.getRowIndex(playerToken) == null ? 0 : GridPane.getRowIndex(playerToken);
-        int columnPos = GridPane.getColumnIndex(playerToken) == null ? 0 : GridPane.getColumnIndex(playerToken);
-        int maxC = boardGrid.getColumnCount();
-        int maxR = boardGrid.getRowCount();
-
-        for (int i = 0; i < diceValue; i++) {
-            // Movimento orizzontale da sinistra a destra
-            if (rowPos == 0 && columnPos < maxC - 1) {
-                columnPos++;
-            }
-            // Movimento verticale giù nella colonna di destra
-            else if (columnPos == maxC - 1 && rowPos < maxR - 1) {
-                rowPos++;
-            }
-            // Movimento orizzontale da destra a sinistra
-            else if (rowPos == maxR - 1 && columnPos > 0) {
-                columnPos--;
-            }
-            // Movimento verticale su nella colonna di sinistra
-            else if (columnPos == 0 && rowPos > 0) {
-                rowPos--;
-            }
-        }
-
-        game.movePlayer(diceValue);
-
-        //If the player is on the GoToPrison box
-        if(rowPos == maxR-1 && columnPos == 0) {
-            rowPos = 0;
-            columnPos = maxC-1;
-            game.goToPrison(game.getPlayerInTurn());
-        }
-
-        // Aggiorna la posizione della pedina
-        switch(playerN){
-            case 2, 3:
-                setPlayerTokenPositionSmall(game.getPlayerTurn(), rowPos, columnPos);
-                break;
-            case 4, 5:
-                setPlayerTokenPositionMedium(game.getPlayerTurn(), rowPos, columnPos);
-                break;
-            case 6:
-                setPlayerTokenPositionLarge(game.getPlayerTurn(), rowPos, columnPos);
-                break;
-            default:
-                break;
-        }
-
-        displayBoxInfo(game.getPlayerInTurn());
-    }
-
-    public void buyPress( ) throws NotEnoughMoneyException,BoxAlreadyPurchasedException {
-        // Ottieni il giocatore corrente
-        Player currentPlayer = game.getPlayerInTurn();
-
-        // Ottieni la casella su cui si trova il giocatore
-        Box currentBox = currentPlayer.getPosition();
-
-        // Controlla se la casella corrente è una PurchasableBox
-        if (currentBox instanceof PurchasableBox purchasableBox) {
-            try {
-                // Tenta di acquistare la casella
-                currentPlayer.buyPurchasableBox(purchasableBox);
-
-                // Aggiorna l'interfaccia con le nuove informazioni
-                displayPlayerInfo(currentPlayer);
-                displayBoxInfo(currentPlayer);
-
-                // Notifica all'utente dell'acquisto avvenuto con successo
-                boxInfo.setText("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "$!");
-                createPropertyMarker(game.getPlayerTurn());
-                buyBtn.setDisable(true);
-            } catch (NotEnoughMoneyException e) {
-                // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
-                boxInfo.setText("Non hai abbastanza denaro per acquistare questa proprietà.");
-
-            }
-            catch (BoxAlreadyPurchasedException e) {
-                boxInfo.setText("Questa proprietà è già stata acquistata.");
-            }
-        } else {
-            // Gestisci il caso in cui la casella non sia acquistabile (non è necessario ma aggiunge sicurezza)
-            boxInfo.setText("Questa casella non è acquistabile.");
         }
     }
 
