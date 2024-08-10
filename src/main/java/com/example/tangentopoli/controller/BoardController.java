@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import java.net.URL;
 import java.util.ArrayList;
@@ -123,12 +124,11 @@ public class BoardController implements Initializable {
             movePlayer(diceValue);
 
             //se il valore dei dadi è lo stesso lancia di nuovo
-            if (diceValue1 == diceValue2){
+            if (diceValue1 == diceValue2) {
                 diceBtn.setDisable(false);  //abilita il bottone
                 nextBtn.setDisable(true);//disabilita il bottone
                 buyBtn.setDisable(false);
-            }
-            else {
+            } else {
                 diceBtn.setDisable(true);   // Disabilita il bottone dopo aver mosso la pedina
                 nextBtn.setDisable(false);  // Abilita il bottono
                 buyBtn.setDisable(false);
@@ -303,6 +303,63 @@ public class BoardController implements Initializable {
     }
 
 
+    public void createPropertyMarker(int playerIndex) {
+        // Ottieni il colore del giocatore
+        Color playerColor = (Color) playerTokens.get(playerIndex).getFill();
+        Circle playerToken = playerTokens.get(playerIndex);
+
+
+        // Ottieni la posizione attuale del giocatore
+        Player currentPlayer = game.getPlayerInTurn();
+        Box currentBox = currentPlayer.getPosition();
+
+        // Ottieni la posizione della casella nella griglia
+        int rowPos = GridPane.getRowIndex(playerToken);   // Assicurati che la tua classe Box abbia il metodo getRow()
+        int columnPos = GridPane.getColumnIndex(playerToken); // Assicurati che la tua classe Box abbia il metodo getColumn()
+        int maxC = boardGrid.getColumnCount();
+        int maxR = boardGrid.getRowCount();
+
+        if (rowPos == 0 && columnPos < maxC - 1) {
+            // Crea un rettangolo che rappresenta la proprietà acquistata
+            Rectangle propertyMarker = new Rectangle(128, 20); // Rettangolo 10x10
+            propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
+
+            boardGrid.add(propertyMarker, columnPos, rowPos);
+            propertyMarker.setTranslateX(0);  // Sposta il rettangolo verso destra di 30 pixel
+            propertyMarker.setTranslateY(-85); // Sposta il rettangolo verso l'alto di 30 pixel
+        }
+        // Movimento verticale giù nella colonna di destra
+        else if (columnPos == maxC - 1 && rowPos < maxR - 1) {
+            // Crea un rettangolo che rappresenta la proprietà acquistata
+            Rectangle propertyMarker = new Rectangle(20, 125); // Rettangolo 10x10
+            propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
+
+            boardGrid.add(propertyMarker, columnPos, rowPos);
+            propertyMarker.setTranslateX(150);  // Sposta il rettangolo verso destra di 30 pixel
+            propertyMarker.setTranslateY(0); // Sposta il rettangolo verso l'alto di 30 pixel
+        }
+        // Movimento orizzontale da destra a sinistra
+        else if (rowPos == maxR - 1 && columnPos > 0) {
+            // Crea un rettangolo che rappresenta la proprietà acquistata
+            Rectangle propertyMarker = new Rectangle(125, 20); // Rettangolo 10x10
+            propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
+
+            boardGrid.add(propertyMarker, columnPos, rowPos);
+            propertyMarker.setTranslateX(0);  // Sposta il rettangolo verso destra di 30 pixel
+            propertyMarker.setTranslateY(85); // Sposta il rettangolo verso l'alto di 30 pixel
+        }
+        // Movimento verticale su nella colonna di sinistra
+        else if (columnPos == 0 && rowPos > 0) {
+            // Crea un rettangolo che rappresenta la proprietà acquistata
+            Rectangle propertyMarker = new Rectangle(20, 125); // Rettangolo 10x10
+            propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
+
+            boardGrid.add(propertyMarker, columnPos, rowPos);
+            propertyMarker.setTranslateX(-20);  // Sposta il rettangolo verso destra di 30 pixel
+            propertyMarker.setTranslateY(0); // Sposta il rettangolo verso l'alto di 30 pixel
+        }
+    }
+
 
     public void movePlayer(int diceValue) {
         Circle playerToken = playerTokens.get(game.getPlayerTurn());
@@ -367,6 +424,7 @@ public class BoardController implements Initializable {
 
                 // Notifica all'utente dell'acquisto avvenuto con successo
                 boxInfo.setText("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "$!");
+                createPropertyMarker(game.getPlayerTurn());
                 buyBtn.setDisable(true);
             } catch (NotEnoughMoneyException e) {
                 // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
