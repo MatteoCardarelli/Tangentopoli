@@ -82,6 +82,7 @@ public class BoardController implements Initializable {
         createPlayerTokens();
     }
 
+    //metodo per il passaggio dei turni
     public void nextTurn() {
         game.changeTurn();
         displayPlayerInfo(game.getPlayerInTurn());
@@ -129,6 +130,7 @@ public class BoardController implements Initializable {
         boxInfo.setText(boxInfoStr);
     }
 
+    //metodo per aggiornare il boxInfo
     public void updateBoxInfo(String message) {
         boxInfo.setText(message);
     }
@@ -170,10 +172,7 @@ public class BoardController implements Initializable {
         }
     }
 
-
-
-
-
+    //metodo per muovere il player
     public void movePlayer(int diceValue) {
         Circle playerToken = playerTokens.get(game.getPlayerTurn());
         int rowPos = GridPane.getRowIndex(playerToken) == null ? 0 : GridPane.getRowIndex(playerToken);
@@ -233,6 +232,7 @@ public class BoardController implements Initializable {
         }
     }
 
+    //metodo che lancia e gestisce la grafica dei dadi
     public void launchDices(ActionEvent actionEvent) {
 
         Player playerInTurn = game.getPlayerInTurn();
@@ -310,7 +310,38 @@ public class BoardController implements Initializable {
         parallelTransition.play();
     }
 
+    //metodo che crea le pedine
+    public void createPlayerTokens() {
+        playerTokens = new ArrayList<>();
+        // Definisci una lista di colori
+        List<Color> playerColors = List.of(
+                Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW,
+                Color.ORANGE, Color.PURPLE // Aggiungi altri colori se necessario
+        );
 
+        for (int i = 0; i < playerN; i++) {
+            // Usa il colore corrispondente per ogni giocatore
+            Color playerColor = playerColors.get(i % playerColors.size());
+
+            Circle playerToken = new Circle(20, playerColor); // Cerchio con raggio 20 e colore specifico
+            playerTokens.add(playerToken);
+            boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
+
+            switch (playerN) {
+                case 2, 3:
+                    setPlayerTokenPositionSmall(i, 0, 0); // Sposta il giocatore alla cella iniziale
+                    break;
+                case 4, 5:
+                    setPlayerTokenPositionMedium(i, 0, 0);
+                    break;
+                case 6:
+                    setPlayerTokenPositionLarge(i, 0, 0);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
     //metodo che posiziona le pedine nel tabellone piccolo
     public void setPlayerTokenPositionSmall(int playerIndex, int row, int column) {
@@ -365,6 +396,7 @@ public class BoardController implements Initializable {
         }
     }
 
+    //metodo che posiziona le pedine nel tabellone largo
     public void setPlayerTokenPositionLarge(int playerIndex, int row, int column) {
         Circle playerToken = playerTokens.get(playerIndex);
         playerToken.setRadius(12.8);
@@ -397,41 +429,7 @@ public class BoardController implements Initializable {
         }
     }
 
-
-    //metodo che crea le pedine
-    public void createPlayerTokens() {
-        playerTokens = new ArrayList<>();
-        // Definisci una lista di colori
-        List<Color> playerColors = List.of(
-                Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW,
-                Color.ORANGE, Color.PURPLE // Aggiungi altri colori se necessario
-        );
-
-        for (int i = 0; i < playerN; i++) {
-            // Usa il colore corrispondente per ogni giocatore
-            Color playerColor = playerColors.get(i % playerColors.size());
-
-            Circle playerToken = new Circle(20, playerColor); // Cerchio con raggio 20 e colore specifico
-            playerTokens.add(playerToken);
-            boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
-
-            switch (playerN) {
-                case 2, 3:
-                    setPlayerTokenPositionSmall(i, 0, 0); // Sposta il giocatore alla cella iniziale
-                    break;
-                case 4, 5:
-                    setPlayerTokenPositionMedium(i, 0, 0);
-                    break;
-                case 6:
-                    setPlayerTokenPositionLarge(i, 0, 0);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-
+    //metodo che crea e posiziona i marker di acquisto
     public void createPropertyMarker(int playerIndex) {
         // Ottieni il colore del giocatore
         Color playerColor = (Color) playerTokens.get(playerIndex).getFill();
