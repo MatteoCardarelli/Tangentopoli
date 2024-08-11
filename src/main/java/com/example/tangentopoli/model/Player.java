@@ -12,46 +12,74 @@ public abstract class Player {
     private int money;
     private int launchValue;
     private boolean inPrison = false;
+    private int turnInPrison = 0;
     private ArrayList<PurchasableBox> purchasedBoxes = new ArrayList<>();
 
-
+    //costruttore
     public Player(int playerID, int money) {
         this.playerID = playerID;
         this.money = money;
     }
 
-    public void setMoney(int money) {
-        this.money = money;
-    }
-
-    public int getMoney() {
-        return this.money;
-    }
-
+    //metodo per restituire il playerID
     public int getPlayerID() {
         return this.playerID;
     }
 
-    public void setPosition(Box position) {
-        this.position = position;
+    //metodo per settare i soldi
+    public void setMoney(int money) {
+        this.money = money;
     }
 
-    public Box getPosition() {
-        return this.position;
+    //metodo per restituire i soldi
+    public int getMoney() {
+        return this.money;
     }
 
-    public int getLaunchValue() {
-        return this.launchValue;
-    }
-
+    //metodo per settare un giocatore in prigione
     public void setInPrison(boolean inPrison) {
         this.inPrison = inPrison;
+        this.turnInPrison = 0;
     }
 
+    //metodo per controllare se un giocatore è in prigione
     public boolean isInPrison() {
         return this.inPrison;
     }
 
+    //metodo per settare da quant turni un giocatore è in prigione
+    public void setTurnInPrison() {
+        this.turnInPrison = ++turnInPrison % 4;
+        System.out.println("turno in prigione di player " + getPlayerID() + " " +  turnInPrison);
+    }
+
+    //metodo per restituire da quanti turni il giocatore è in prigione
+    public int getTurnInPrison(){
+        return turnInPrison;
+    }
+
+    //metodo per uscire di prigione pagando
+    public void exitFromPrisonByPayment(){
+        this.setMoney(this.getMoney()-50);
+        this.setInPrison(false);
+    }
+
+    //metodo per settare la posizione
+    public void setPosition(Box position) {
+        this.position = position;
+    }
+
+    //metodo per restituire la posizione
+    public Box getPosition() {
+        return this.position;
+    }
+
+    //da eliminare a gioco completo
+    public int getLaunchValue() {
+        return this.launchValue;
+    }
+
+    //metodo per acquistare caselle
     public void buyPurchasableBox(PurchasableBox purchasableBox) throws NotEnoughMoneyException, BoxAlreadyPurchasedException {
         if (!purchasableBox.isPurchased() && purchasableBox.getPrice() <= this.getMoney()) {
             this.setMoney(this.getMoney()-purchasableBox.getPrice());
@@ -68,6 +96,7 @@ public abstract class Player {
 
     }
 
+    //metodo per pagare l'affitto
     public void payRent(BoardController boardController) throws NotEnoughMoneyException {
         // Ottieni la casella su cui si trova il giocatore
         Box currentBox = this.getPosition();
@@ -98,6 +127,7 @@ public abstract class Player {
         }
     }
 
+    //metodo per contare le stazioni di un giocatore
     public int countOwnedStations() {
         int count = 0;
         for(PurchasableBox b : purchasedBoxes) {
@@ -107,6 +137,7 @@ public abstract class Player {
         return count;
     }
 
+    //metodo per contare le società di un giocatore
     public int countOwnedSocieties() {
         int count = 0;
         for(PurchasableBox b : purchasedBoxes) {
@@ -117,6 +148,7 @@ public abstract class Player {
         return count;
     }
 
+    //metodo che restituisce la descrizione
     public String toString() {
         String str = "Giocatore " + this.playerID + " | Patrimonio: " + this.money + "€\n";
         for(PurchasableBox box : this.purchasedBoxes) {
@@ -126,5 +158,3 @@ public abstract class Player {
         return str;
     }
 }
-
-

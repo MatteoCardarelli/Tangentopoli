@@ -36,6 +36,10 @@ public class Game {
         turn++;
     }
 
+    public int getTurn(){
+        return turn;
+    }
+
     public Player getPlayerInTurn() {
         return players.get(playerInTurn);
     }

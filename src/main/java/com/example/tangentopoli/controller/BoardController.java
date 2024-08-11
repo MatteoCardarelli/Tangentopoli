@@ -58,6 +58,9 @@ public class BoardController implements Initializable {
     @FXML
     private List<Circle> playerTokens;
 
+    @FXML
+    private Button payPrisonBtn;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png"))); //inizializzazione dadi
@@ -65,6 +68,7 @@ public class BoardController implements Initializable {
 
         nextBtn.setDisable(true);
         buyBtn.setDisable(true);
+        payPrisonBtn.setDisable(true);
     }
 
     //Logica
@@ -90,6 +94,19 @@ public class BoardController implements Initializable {
         diceBtn.setDisable(false);
         nextBtn.setDisable(true);
         buyBtn.setDisable(true);
+
+        //se il giocatore è in prigione attiva il pulsante per uscire pagando
+        if (game.getPlayerInTurn().isInPrison())
+            payPrisonBtn.setDisable(false);
+        else
+            payPrisonBtn.setDisable(true);
+
+        //se il giocatore è da 3 turni in prigione obbligalo a pagare per uscire
+        if (game.getPlayerInTurn().getTurnInPrison() == 3){
+            nextBtn.setDisable(true);
+            diceBtn.setDisable(true);
+            boxInfo.setText("Sei da tre turni in prigione sei obbligato a pagare");
+        }
     }
 
 
@@ -107,7 +124,8 @@ public class BoardController implements Initializable {
             diceBtn.setDisable(false);  //abilita il bottone
             nextBtn.setDisable(true);   //disabilita il bottone
             buyBtn.setDisable(false);
-        } else {
+        }
+        else {
             diceBtn.setDisable(true);   // Disabilita il bottone dopo aver mosso la pedina
             nextBtn.setDisable(false);  // Abilita il bottono
             buyBtn.setDisable(false);
@@ -134,6 +152,7 @@ public class BoardController implements Initializable {
     public void updateBoxInfo(String message) {
         boxInfo.setText(message);
     }
+
 
 
     //metodo per acquistare qualsiasi purchasablebox
@@ -172,67 +191,20 @@ public class BoardController implements Initializable {
         }
     }
 
-    //metodo per muovere il player
-    public void movePlayer(int diceValue) {
+    //metodo per pagare e uscire di prigione
+    public void payToExit() {
+        //paga €50 per uscire e esci dalla prigione
+        game.getPlayerInTurn().exitFromPrisonByPayment();
 
-        if (game.getPlayerInTurn().isInPrison()) return;
+        //disabilita il pulsante per pagare una volta uscito di prigione
+        payPrisonBtn.setDisable(true);
 
-        Circle playerToken = playerTokens.get(game.getPlayerTurn());
-        int rowPos = GridPane.getRowIndex(playerToken) == null ? 0 : GridPane.getRowIndex(playerToken);
-        int columnPos = GridPane.getColumnIndex(playerToken) == null ? 0 : GridPane.getColumnIndex(playerToken);
-        int maxC = boardGrid.getColumnCount();
-        int maxR = boardGrid.getRowCount();
+        //attiva i dadi
+        diceBtn.setDisable(false);
 
-        for (int i = 0; i < diceValue; i++) {
-            // Movimento orizzontale da sinistra a destra
-            if (rowPos == 0 && columnPos < maxC - 1) {
-                columnPos++;
-            }
-            // Movimento verticale giù nella colonna di destra
-            else if (columnPos == maxC - 1 && rowPos < maxR - 1) {
-                rowPos++;
-            }
-            // Movimento orizzontale da destra a sinistra
-            else if (rowPos == maxR - 1 && columnPos > 0) {
-                columnPos--;
-            }
-            // Movimento verticale su nella colonna di sinistra
-            else if (columnPos == 0 && rowPos > 0) {
-                rowPos--;
-            }
-        }
-
-        game.movePlayer(diceValue);
-
-        //If the player is on the GoToPrison box
-        if(rowPos == maxR-1 && columnPos == 0) {
-            rowPos = 0;
-            columnPos = maxC-1;
-        }
-
-        // Aggiorna la posizione della pedina
-        switch(playerN){
-            case 2, 3:
-                setPlayerTokenPositionSmall(game.getPlayerTurn(), rowPos, columnPos);
-                break;
-            case 4, 5:
-                setPlayerTokenPositionMedium(game.getPlayerTurn(), rowPos, columnPos);
-                break;
-            case 6:
-                setPlayerTokenPositionLarge(game.getPlayerTurn(), rowPos, columnPos);
-                break;
-            default:
-                break;
-        }
-
-        displayBoxInfo(game.getPlayerInTurn());
-
-        //metodo per pagare gli affitti di qualsiasi purchasablebox
-        try {
-            game.getPlayerInTurn().payRent(this);
-        } catch (NotEnoughMoneyException e) {
-            throw new RuntimeException(e);
-        }
+        //aggiorna i display
+        boxInfo.setText("hai pagato €50 ora puoi muoverti dalla prigione");
+        displayPlayerInfo(game.getPlayerInTurn());
     }
 
     //metodo che lancia e gestisce la grafica dei dadi
@@ -244,6 +216,9 @@ public class BoardController implements Initializable {
             // Mostra un messaggio o un avviso che il giocatore è in prigione
             boxInfo.setText("Non puoi muoverti mentre sei in prigione. Devi tirare i dadi.");
             nextBtn.setDisable(false);
+            payPrisonBtn.setDisable(true);
+            playerInTurn.setTurnInPrison();
+
         }
 
         Random movement = new Random();
@@ -314,6 +289,70 @@ public class BoardController implements Initializable {
 
         // Avvia la transizione parallela (che avvierà tutte le animazioni)
         parallelTransition.play();
+    }
+
+    //metodo per muovere il player
+    public void movePlayer(int diceValue) {
+
+        if (game.getPlayerInTurn().isInPrison()) return;
+
+        Circle playerToken = playerTokens.get(game.getPlayerTurn());
+        int rowPos = GridPane.getRowIndex(playerToken) == null ? 0 : GridPane.getRowIndex(playerToken);
+        int columnPos = GridPane.getColumnIndex(playerToken) == null ? 0 : GridPane.getColumnIndex(playerToken);
+        int maxC = boardGrid.getColumnCount();
+        int maxR = boardGrid.getRowCount();
+
+        for (int i = 0; i < diceValue; i++) {
+            // Movimento orizzontale da sinistra a destra
+            if (rowPos == 0 && columnPos < maxC - 1) {
+                columnPos++;
+            }
+            // Movimento verticale giù nella colonna di destra
+            else if (columnPos == maxC - 1 && rowPos < maxR - 1) {
+                rowPos++;
+            }
+            // Movimento orizzontale da destra a sinistra
+            else if (rowPos == maxR - 1 && columnPos > 0) {
+                columnPos--;
+            }
+            // Movimento verticale su nella colonna di sinistra
+            else if (columnPos == 0 && rowPos > 0) {
+                rowPos--;
+            }
+        }
+
+        game.movePlayer(diceValue);
+
+        //If the player is on the GoToPrison box
+        if(rowPos == maxR-1 && columnPos == 0) {
+            rowPos = 0;
+            columnPos = maxC-1;
+            payPrisonBtn.setDisable(false);
+        }
+
+        // Aggiorna la posizione della pedina
+        switch(playerN){
+            case 2, 3:
+                setPlayerTokenPositionSmall(game.getPlayerTurn(), rowPos, columnPos);
+                break;
+            case 4, 5:
+                setPlayerTokenPositionMedium(game.getPlayerTurn(), rowPos, columnPos);
+                break;
+            case 6:
+                setPlayerTokenPositionLarge(game.getPlayerTurn(), rowPos, columnPos);
+                break;
+            default:
+                break;
+        }
+
+        displayBoxInfo(game.getPlayerInTurn());
+
+        //metodo per pagare gli affitti di qualsiasi purchasablebox
+        try {
+            game.getPlayerInTurn().payRent(this);
+        } catch (NotEnoughMoneyException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //metodo che crea le pedine
