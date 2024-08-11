@@ -44,6 +44,9 @@ public class BoardController implements Initializable {
     private Button diceBtn;
 
     @FXML
+    private Button payPrisonBtn;
+
+    @FXML
     private TextArea playerInfo;
 
     @FXML
@@ -58,8 +61,7 @@ public class BoardController implements Initializable {
     @FXML
     private List<Circle> playerTokens;
 
-    @FXML
-    private Button payPrisonBtn;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

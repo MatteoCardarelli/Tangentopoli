@@ -10,7 +10,10 @@ public abstract class Player {
     private int playerID;
     private Box position;
     private int money;
+
+    //da eliminare a fine gioco
     private int launchValue;
+
     private boolean inPrison = false;
     private int turnInPrison = 0;
     private ArrayList<PurchasableBox> purchasedBoxes = new ArrayList<>();
@@ -100,8 +103,11 @@ public abstract class Player {
     public void payRent(BoardController boardController) throws NotEnoughMoneyException {
         // Ottieni la casella su cui si trova il giocatore
         Box currentBox = this.getPosition();
+
+        //da eliminare a fine gioco
         launchValue = boardController.getDiceValue();
         System.out.println(getPlayerID()+" "+launchValue);
+
 
         // Controlla se la casella corrente è una proprietà acquistabile e se è stata acquistata da un altro giocatore
         if (currentBox instanceof PurchasableBox purchasableBox && purchasableBox.isPurchased()) {
