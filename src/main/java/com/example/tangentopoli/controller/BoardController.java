@@ -174,6 +174,9 @@ public class BoardController implements Initializable {
 
     //metodo per muovere il player
     public void movePlayer(int diceValue) {
+
+        if (game.getPlayerInTurn().isInPrison()) return;
+
         Circle playerToken = playerTokens.get(game.getPlayerTurn());
         int rowPos = GridPane.getRowIndex(playerToken) == null ? 0 : GridPane.getRowIndex(playerToken);
         int columnPos = GridPane.getColumnIndex(playerToken) == null ? 0 : GridPane.getColumnIndex(playerToken);
@@ -241,7 +244,6 @@ public class BoardController implements Initializable {
             // Mostra un messaggio o un avviso che il giocatore è in prigione
             boxInfo.setText("Non puoi muoverti mentre sei in prigione. Devi tirare i dadi.");
             nextBtn.setDisable(false);
-            return;
         }
 
         Random movement = new Random();
@@ -253,6 +255,8 @@ public class BoardController implements Initializable {
         int diceValue1 = Dice.launch();
         int diceValue2 = Dice.launch();
         diceValue = diceValue1 + diceValue2;
+
+        if (diceValue1==diceValue2 && playerInTurn.isInPrison()) playerInTurn.setInPrison(false);
 
         // Crea l'animazione di rotazione per il primo dado
         RotateTransition rotateTransition1 = new RotateTransition(Duration.seconds(1), dice1ImageView);
@@ -305,6 +309,8 @@ public class BoardController implements Initializable {
 
 
         });
+
+
 
         // Avvia la transizione parallela (che avvierà tutte le animazioni)
         parallelTransition.play();
