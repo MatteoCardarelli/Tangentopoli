@@ -181,11 +181,11 @@ public class BoardController implements Initializable {
                 buyBtn.setDisable(true);
             } catch (NotEnoughMoneyException e) {
                 // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
-                boxInfo.setText("Non hai abbastanza denaro per acquistare questa proprietà.");
+                boxInfo.setText(e.getMessage());
 
             }
             catch (BoxAlreadyPurchasedException e) {
-                boxInfo.setText("Questa proprietà è già stata acquistata.");
+                boxInfo.setText(e.getMessage());
             }
         } else {
             // Gestisci il caso in cui la casella non sia acquistabile (non è necessario ma aggiunge sicurezza)
@@ -194,19 +194,23 @@ public class BoardController implements Initializable {
     }
 
     //metodo per pagare e uscire di prigione
-    public void payToExit() {
-        //paga €50 per uscire e esci dalla prigione
-        game.getPlayerInTurn().exitFromPrisonByPayment();
+    public void payToExit() throws NotEnoughMoneyException {
+        try {
+            //paga €50 per uscire e esci dalla prigione
+            game.getPlayerInTurn().exitFromPrisonByPayment();
 
-        //disabilita il pulsante per pagare una volta uscito di prigione
-        payPrisonBtn.setDisable(true);
+            //disabilita il pulsante per pagare una volta uscito di prigione
+            payPrisonBtn.setDisable(true);
 
-        //attiva i dadi
-        diceBtn.setDisable(false);
+            //attiva i dadi
+            diceBtn.setDisable(false);
 
-        //aggiorna i display
-        boxInfo.setText("hai pagato €50 ora puoi muoverti dalla prigione");
-        displayPlayerInfo(game.getPlayerInTurn());
+            //aggiorna i display
+            boxInfo.setText("hai pagato €50 ora puoi muoverti dalla prigione");
+            displayPlayerInfo(game.getPlayerInTurn());
+        } catch (NotEnoughMoneyException e) {
+            boxInfo.setText(e.getMessage());
+        }
     }
 
     //metodo che lancia e gestisce la grafica dei dadi
@@ -281,7 +285,7 @@ public class BoardController implements Initializable {
             movePlayer(diceValue);
 
             //se il valore dei dadi è lo stesso lancia di nuovo
-           dicesEquals(diceValue1, diceValue2);
+            dicesEquals(diceValue1, diceValue2);
 
 
 
@@ -351,9 +355,12 @@ public class BoardController implements Initializable {
 
         //metodo per pagare gli affitti di qualsiasi purchasablebox
         try {
-            game.getPlayerInTurn().payRent(this);
+            if (game.getPlayerInTurn().getPosition() instanceof PurchasableBox)
+                game.getPlayerInTurn().payRent(this);
+            else if (game.getPlayerInTurn().getPosition() instanceof Tax)
+                game.getPlayerInTurn().payTax(this);
         } catch (NotEnoughMoneyException e) {
-            throw new RuntimeException(e);
+            boxInfo.setText(e.getMessage());
         }
     }
 

@@ -13,9 +13,9 @@ public class Board {
                 boxes.add(boxFactory.createStart());
 
                 boxes.add(boxFactory.createProperty("Piazza Duomo", 180, 40, 90, "Orange"));
-                boxes.add(boxFactory.createTax("Tangente", 90));
+                boxes.add(boxFactory.createTax("Tangente", 200));
                 boxes.add(boxFactory.createProperty("Via della Spiga", 200, 50, 100, "Orange"));
-                boxes.add(boxFactory.createTax("Imprevisto", 90));//imprevisto
+                boxes.add(boxFactory.createTax("Imprevisto", 0));//imprevisto
 
                 boxes.add(boxFactory.createPrison());
 
@@ -29,7 +29,7 @@ public class Board {
                 boxes.add(boxFactory.createProperty("Viale Mazzini", 300, 80, 150, "Blue"));
                 boxes.add(boxFactory.createProperty("Viale Monza", 320, 90, 160, "Blue"));
                 boxes.add(boxFactory.createStation( "Milano Centrale", 100, 50, 40));
-                boxes.add(boxFactory.createTax("Probabilità", 90));//imprevisto
+                boxes.add(boxFactory.createTax("Probabilità", 0));//probabilità
 
                 boxes.add(boxFactory.createGoToPrison());
 

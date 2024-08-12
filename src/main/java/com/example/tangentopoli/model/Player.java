@@ -62,9 +62,11 @@ public abstract class Player {
     }
 
     //metodo per uscire di prigione pagando
-    public void exitFromPrisonByPayment(){
+    public void exitFromPrisonByPayment() throws NotEnoughMoneyException {
+        if (this.getMoney()>=50) {
         this.setMoney(this.getMoney()-50);
         this.setInPrison(false);
+        } else throw new NotEnoughMoneyException ("Non hai abbastanza soldi");
     }
 
     //metodo per settare la posizione
@@ -94,7 +96,7 @@ public abstract class Player {
             throw new NotEnoughMoneyException("Non hai abbastanza denaro per acquistare questa proprietà");
         }
         else if(purchasableBox.isPurchased()) {
-            throw new BoxAlreadyPurchasedException();
+            throw new BoxAlreadyPurchasedException("Questa proprietà è già stata acquistata");
         }
 
     }
@@ -118,17 +120,39 @@ public abstract class Player {
                 int rentToPay = purchasableBox.calculatePrice();
 
                 // Il giocatore corrente paga il proprietario
-                try {
+                if (this.getMoney() >= rentToPay) {
                     this.setMoney(this.getMoney() - rentToPay);
                     owner.setMoney(owner.getMoney() + rentToPay);
 
                     // Aggiorna le informazioni del giocatore e della casella
                     boardController.displayPlayerInfo(this);
                     boardController.updateBoxInfo("Hai pagato " + rentToPay + "€ di affitto a Player" + owner.getPlayerID() + " per la proprietà " + purchasableBox.getName());
-                } catch (Exception e) {
-                    // Gestisci eventuali eccezioni come NotEnoughMoneyException se desiderato
-                    boardController.updateBoxInfo("Non hai abbastanza denaro per pagare l'affitto.");
                 }
+                // Gestisci eventuali eccezioni come NotEnoughMoneyException se desiderato
+                else throw new NotEnoughMoneyException("Non hai abbastanza denaro per pagare l'affitto.");
+            }
+        }
+    }
+
+    public void payTax(BoardController boardController) throws NotEnoughMoneyException {
+        // Ottieni la casella su cui si trova il giocatore
+        Box currentBox = this.getPosition();
+
+        // Controlla se la casella corrente è una casella tasse
+        if (currentBox instanceof Tax taxBox) {
+            int taxAmount = taxBox.getPrice();
+
+            // Controlla se il giocatore ha abbastanza denaro per pagare le tasse
+            if (this.getMoney() >= taxAmount) {
+                // Sottrai l'importo delle tasse dal denaro del giocatore
+                this.setMoney(this.getMoney() - taxAmount);
+
+                // Aggiorna le informazioni del giocatore e della casella
+                boardController.displayPlayerInfo(this);
+                boardController.updateBoxInfo("Hai pagato " + taxAmount + "€ di tasse per la casella " + taxBox.getName());
+            } else {
+                // Se il giocatore non ha abbastanza denaro, lancia un'eccezione
+                throw new NotEnoughMoneyException("Non hai abbastanza denaro per pagare: " + taxBox.getName());
             }
         }
     }

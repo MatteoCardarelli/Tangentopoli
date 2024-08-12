@@ -1,12 +1,12 @@
 package com.example.tangentopoli.exception;
 
-public class NotEnoughMoneyException extends Exception {
+import com.example.tangentopoli.controller.BoardController;
 
-    public NotEnoughMoneyException() {
-        super();
-    }
+public class NotEnoughMoneyException extends Exception {
 
     public NotEnoughMoneyException(String message) {
         super(message);
     }
+
+
 }
