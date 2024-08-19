@@ -215,7 +215,7 @@ public class BoardController implements Initializable {
 
     //metodo che lancia e gestisce la grafica dei dadi
     public void launchDices(ActionEvent actionEvent) {
-
+        diceBtn.setDisable(true);
         Player playerInTurn = game.getPlayerInTurn();
 
         if (playerInTurn.isInPrison()) {
