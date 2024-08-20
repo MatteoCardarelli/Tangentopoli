@@ -8,10 +8,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -35,7 +37,16 @@ public class BoardController implements Initializable {
     private TextArea boxInfo;
 
     @FXML
+    private Button actionsBtn;
+
+    @FXML
     private Button buildBtn;
+
+    @FXML
+    private Button mortgageBtn;
+
+    @FXML
+    private DialogPane actionsDialog;
 
     @FXML
     private Button buyBtn;
@@ -71,9 +82,10 @@ public class BoardController implements Initializable {
         nextBtn.setDisable(true);
         buyBtn.setDisable(true);
         payPrisonBtn.setDisable(true);
+        payPrisonBtn.setVisible(false);
     }
 
-    //Logica
+    //GAME LOGIC & SETUP
 
     public void setGame(Game game) {
         this.game = game;
@@ -82,13 +94,13 @@ public class BoardController implements Initializable {
         displayBoxInfo(game.getPlayerInTurn());
     }
 
-    //metodo che imposta il numero di pedine
+    //Sets the number of players (and tokens)
     public void setPlayerN() {
         this.playerN = game.getPlayersN();
         createPlayerTokens();
     }
 
-    //metodo per il passaggio dei turni
+    //Passes to the next turn
     public void nextTurn() {
         game.changeTurn();
         displayPlayerInfo(game.getPlayerInTurn());
@@ -98,10 +110,13 @@ public class BoardController implements Initializable {
         buyBtn.setDisable(true);
 
         //se il giocatore è in prigione attiva il pulsante per uscire pagando
-        if (game.getPlayerInTurn().isInPrison())
+        if (game.getPlayerInTurn().isInPrison()) {
             payPrisonBtn.setDisable(false);
-        else
+            payPrisonBtn.setVisible(true);
+        } else {
             payPrisonBtn.setDisable(true);
+            payPrisonBtn.setVisible(false);
+        }
 
         //se il giocatore è da 3 turni in prigione obbligalo a pagare per uscire
         if (game.getPlayerInTurn().getTurnInPrison() == 3){
@@ -111,16 +126,14 @@ public class BoardController implements Initializable {
         }
     }
 
+    //DICES
 
-
-    //Dadi
-
-    //metodo che restitusci il valore dei dadi
+    //Returns the dice value (int)
     public int getDiceValue() {
         return diceValue;
     }
 
-    //metodo che gestisce i dadi se sono uguali o non
+    //Manage both cases of equals or different dices values
     public void dicesEquals(int diceValue1, int diceValue2) {
         if (diceValue1 == diceValue2) {
             diceBtn.setDisable(false);  //abilita il bottone
@@ -134,86 +147,7 @@ public class BoardController implements Initializable {
         }
     }
 
-
-
-    //Display
-
-    //Displays player data in the top textArea
-    public void displayPlayerInfo(Player player) {
-        String playerInfoStr = player.toString();
-        playerInfo.setText(playerInfoStr);
-    }
-
-    //Displays the current player's Box infos
-    private void displayBoxInfo(Player player) {
-        String boxInfoStr = "Ti trovi su:\n" + player.getPosition().getDescription();
-        boxInfo.setText(boxInfoStr);
-    }
-
-    //metodo per aggiornare il boxInfo
-    public void updateBoxInfo(String message) {
-        boxInfo.setText(message);
-    }
-
-
-
-    //metodo per acquistare qualsiasi purchasablebox
-    public void buyPress( ) throws NotEnoughMoneyException,BoxAlreadyPurchasedException {
-        // Ottieni il giocatore corrente
-        Player currentPlayer = game.getPlayerInTurn();
-
-        // Ottieni la casella su cui si trova il giocatore
-        Box currentBox = currentPlayer.getPosition();
-
-        // Controlla se la casella corrente è una PurchasableBox
-        if (currentBox instanceof PurchasableBox purchasableBox) {
-            try {
-                // Tenta di acquistare la casella
-                currentPlayer.buyPurchasableBox(purchasableBox);
-
-                // Aggiorna l'interfaccia con le nuove informazioni
-                displayPlayerInfo(currentPlayer);
-                displayBoxInfo(currentPlayer);
-
-                // Notifica all'utente dell'acquisto avvenuto con successo
-                boxInfo.setText("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "$!");
-                createPropertyMarker(game.getPlayerTurn());
-                buyBtn.setDisable(true);
-            } catch (NotEnoughMoneyException e) {
-                // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
-                boxInfo.setText(e.getMessage());
-
-            }
-            catch (BoxAlreadyPurchasedException e) {
-                boxInfo.setText(e.getMessage());
-            }
-        } else {
-            // Gestisci il caso in cui la casella non sia acquistabile (non è necessario ma aggiunge sicurezza)
-            boxInfo.setText("Questa casella non è acquistabile.");
-        }
-    }
-
-    //metodo per pagare e uscire di prigione
-    public void payToExit() throws NotEnoughMoneyException {
-        try {
-            //paga €50 per uscire e esci dalla prigione
-            game.getPlayerInTurn().exitFromPrisonByPayment();
-
-            //disabilita il pulsante per pagare una volta uscito di prigione
-            payPrisonBtn.setDisable(true);
-
-            //attiva i dadi
-            diceBtn.setDisable(false);
-
-            //aggiorna i display
-            boxInfo.setText("hai pagato €50 ora puoi muoverti dalla prigione");
-            displayPlayerInfo(game.getPlayerInTurn());
-        } catch (NotEnoughMoneyException e) {
-            boxInfo.setText(e.getMessage());
-        }
-    }
-
-    //metodo che lancia e gestisce la grafica dei dadi
+    //Launches the dices and manages the graphics of the animation
     public void launchDices(ActionEvent actionEvent) {
         diceBtn.setDisable(true);
         Player playerInTurn = game.getPlayerInTurn();
@@ -297,7 +231,9 @@ public class BoardController implements Initializable {
         parallelTransition.play();
     }
 
-    //metodo per muovere il player
+    //PLAYER MOVEMENT & TOKENS GENERATION
+
+    //Moves the player
     public void movePlayer(int diceValue) {
 
         if (game.getPlayerInTurn().isInPrison()) return;
@@ -364,7 +300,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    //metodo che crea le pedine
+    //Creates the tokens
     public void createPlayerTokens() {
         playerTokens = new ArrayList<>();
         // Definisci una lista di colori
@@ -397,7 +333,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    //metodo che posiziona le pedine nel tabellone piccolo
+    //Sets the tokens' position on the small board
     public void setPlayerTokenPositionSmall(int playerIndex, int row, int column) {
         Circle playerToken = playerTokens.get(playerIndex);
         GridPane.setRowIndex(playerToken, row);
@@ -420,7 +356,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    //metodo che posiziona le pedine nel tabellone medio
+    //Sets the tokens' position on the medium board
     public void setPlayerTokenPositionMedium(int playerIndex, int row, int column) {
         Circle playerToken = playerTokens.get(playerIndex);
         playerToken.setRadius(16);
@@ -450,7 +386,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    //metodo che posiziona le pedine nel tabellone largo
+    //Sets the tokens' position on the large board
     public void setPlayerTokenPositionLarge(int playerIndex, int row, int column) {
         Circle playerToken = playerTokens.get(playerIndex);
         playerToken.setRadius(12.8);
@@ -480,6 +416,83 @@ public class BoardController implements Initializable {
                 break;
             default:
                 break;
+        }
+    }
+
+    //DISPLAY
+
+    //Displays player data in the top textArea
+    public void displayPlayerInfo(Player player) {
+        String playerInfoStr = player.toString();
+        playerInfo.setText(playerInfoStr);
+    }
+
+    //Displays the current player's Box infos
+    private void displayBoxInfo(Player player) {
+        String boxInfoStr = "Ti trovi su:\n" + player.getPosition().getDescription();
+        boxInfo.setText(boxInfoStr);
+    }
+
+    //metodo per aggiornare il boxInfo
+    public void updateBoxInfo(String message) {
+        boxInfo.setText(message);
+    }
+
+
+    //metodo per acquistare qualsiasi purchasablebox
+    public void buyPress( ) throws NotEnoughMoneyException,BoxAlreadyPurchasedException {
+        // Ottieni il giocatore corrente
+        Player currentPlayer = game.getPlayerInTurn();
+
+        // Ottieni la casella su cui si trova il giocatore
+        Box currentBox = currentPlayer.getPosition();
+
+        // Controlla se la casella corrente è una PurchasableBox
+        if (currentBox instanceof PurchasableBox purchasableBox) {
+            try {
+                // Tenta di acquistare la casella
+                currentPlayer.buyPurchasableBox(purchasableBox);
+
+                // Aggiorna l'interfaccia con le nuove informazioni
+                displayPlayerInfo(currentPlayer);
+                displayBoxInfo(currentPlayer);
+
+                // Notifica all'utente dell'acquisto avvenuto con successo
+                boxInfo.setText("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "$!");
+                createPropertyMarker(game.getPlayerTurn());
+                buyBtn.setDisable(true);
+            } catch (NotEnoughMoneyException e) {
+                // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
+                boxInfo.setText(e.getMessage());
+
+            }
+            catch (BoxAlreadyPurchasedException e) {
+                boxInfo.setText(e.getMessage());
+            }
+        } else {
+            // Gestisci il caso in cui la casella non sia acquistabile (non è necessario ma aggiunge sicurezza)
+            boxInfo.setText("Questa casella non è acquistabile.");
+        }
+    }
+
+    //metodo per pagare e uscire di prigione
+    public void payToExit() throws NotEnoughMoneyException {
+        try {
+            //paga €50 per uscire e esci dalla prigione
+            game.getPlayerInTurn().exitFromPrisonByPayment();
+
+            //disabilita il pulsante per pagare una volta uscito di prigione
+            payPrisonBtn.setDisable(true);
+            payPrisonBtn.setVisible(false);
+
+            //attiva i dadi
+            diceBtn.setDisable(false);
+
+            //aggiorna i display
+            boxInfo.setText("hai pagato €50 ora puoi muoverti dalla prigione");
+            displayPlayerInfo(game.getPlayerInTurn());
+        } catch (NotEnoughMoneyException e) {
+            boxInfo.setText(e.getMessage());
         }
     }
 
@@ -538,6 +551,72 @@ public class BoardController implements Initializable {
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(-20);  // Sposta il rettangolo verso destra di 30 pixel
             propertyMarker.setTranslateY(0); // Sposta il rettangolo verso l'alto di 30 pixel
+        }
+    }
+
+    //Set the Actions DialogPane as visible
+    public void showActionsDialog(ActionEvent actionEvent) {
+        actionsDialog.setVisible(true);
+    }
+
+    public void build(int row, int col) {
+
+    }
+
+    public void buildableProperty(int row, int col) {
+        StackPane propertyPane = new StackPane();
+
+        // Crea il rettangolo semi-trasparente
+        Rectangle overlay = new Rectangle(126, 150);
+        overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
+
+        // Aggiungi il rettangolo alla StackPane
+        propertyPane.getChildren().add(overlay);
+
+        // Aggiungi la StackPane al GridPane
+        boardGrid.add(propertyPane, col, row);
+
+        // Applica l'animazione di lampeggio
+        applyBlinkingEffect(overlay);
+
+        overlay.setOnMouseClicked(event -> {
+            build(row, col);
+        });
+    }
+
+    private void applyBlinkingEffect(Rectangle overlay) {
+        // Creazione dell'animazione di fade in/out per il lampeggio
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), overlay);
+        fadeTransition.setFromValue(1.0);
+        fadeTransition.setToValue(0.2);
+        fadeTransition.setCycleCount(FadeTransition.INDEFINITE);
+        fadeTransition.setAutoReverse(true);
+        fadeTransition.play();
+    }
+
+    public int[] convertPositionToGridCoords(int index, int maxC, int maxR) {
+        int row = -1;
+        int col = -1;
+
+        // Per semplicità, considera un layout rettangolare
+        int totalBoxes = maxC * maxR;
+
+        if (index >= 0 && index < totalBoxes) {
+            // Calcola la riga e la colonna usando la dimensione della griglia
+            row = index / maxC;
+            col = index % maxC;
+        }
+
+        return new int[] { row, col };
+    }
+
+    public void buildBtnClick(ActionEvent actionEvent) {
+        actionsDialog.setVisible(false);
+        ArrayList<Integer> buildablePropertiesIndex = game.getBuildableProperties();
+        int[] coords = {0, 0};
+        for (int i = 0; i < buildablePropertiesIndex.size(); i++) {
+            coords = convertPositionToGridCoords(buildablePropertiesIndex.get(i), boardGrid.getColumnCount(), boardGrid.getRowCount());
+            buildableProperty(coords[0], coords[1]);
         }
     }
 

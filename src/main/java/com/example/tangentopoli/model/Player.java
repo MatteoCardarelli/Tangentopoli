@@ -39,6 +39,10 @@ public abstract class Player {
         return this.money;
     }
 
+    public ArrayList<PurchasableBox> getPurchasedBoxes() {
+        return this.purchasedBoxes;
+    }
+
     //metodo per settare un giocatore in prigione
     public void setInPrison(boolean inPrison) {
         this.inPrison = inPrison;

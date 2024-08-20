@@ -13,6 +13,10 @@ public class Property extends PurchasableBox {
         this.color = color;
     }
 
+    public String getColor() {
+        return color;
+    }
+
     @Override
     public int calculatePrice() {
         return rentPrice;

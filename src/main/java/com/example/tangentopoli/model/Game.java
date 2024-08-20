@@ -1,6 +1,7 @@
 package com.example.tangentopoli.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Game {
     private Board board;
@@ -71,6 +72,46 @@ public class Game {
             goToPrison(player);
         else
             player.setPosition(nextPos);
+    }
+
+    public ArrayList<Integer> getBuildableProperties() {
+        ArrayList<Integer> buildablePropertiesIndex = new ArrayList<>();
+        Player playerInTurn = getPlayerInTurn();
+
+        // Contiamo quante proprietà ci sono per ogni colore sulla board
+        HashMap<String, Integer> colorCountMap = new HashMap<>();
+        for (Box box : board.getBoxes()) {
+            if (box instanceof Property property) {
+                String color = property.getColor();
+                colorCountMap.put(color, colorCountMap.getOrDefault(color, 0) + 1);
+            }
+        }
+
+        // Contiamo quante proprietà di ciascun colore possiede il player
+        HashMap<String, Integer> playerColorCountMap = new HashMap<>();
+        for (PurchasableBox purchasedBox : playerInTurn.getPurchasedBoxes()) {
+            if (purchasedBox instanceof Property property) {
+                String color = property.getColor();
+                playerColorCountMap.put(color, playerColorCountMap.getOrDefault(color, 0) + 1);
+            }
+        }
+
+        // Verifichiamo se il giocatore possiede tutte le proprietà di un determinato colore
+        for (Box box : board.getBoxes()) {
+            if (box instanceof Property property) {
+                String color = property.getColor();
+                int totalColorProperties = colorCountMap.getOrDefault(color, 0);
+                int playerColorProperties = playerColorCountMap.getOrDefault(color, 0);
+
+                // Se il player possiede tutte le proprietà di quel colore, aggiungiamo la posizione della proprietà all'array
+                if (playerColorProperties == totalColorProperties) {
+                    int boxIndex = board.getBoxIndex(box);
+                    buildablePropertiesIndex.add(boxIndex);
+                }
+            }
+        }
+
+        return buildablePropertiesIndex;
     }
 }
 
