@@ -564,11 +564,17 @@ public class BoardController implements Initializable {
     }
 
     public void buildableProperty(int row, int col) {
+        System.out.println("Posizionamento su riga: " + row + " colonna: " + col);
         StackPane propertyPane = new StackPane();
 
         // Crea il rettangolo semi-trasparente
         Rectangle overlay = new Rectangle(126, 150);
         overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
+
+        // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
+        if (col == 0 || col == boardGrid.getColumnCount() - 1) {
+            overlay.setRotate(90);
+        }
 
         // Aggiungi il rettangolo alla StackPane
         propertyPane.getChildren().add(overlay);
@@ -595,18 +601,27 @@ public class BoardController implements Initializable {
     }
 
     public int[] convertPositionToGridCoords(int index, int maxC, int maxR) {
-        int row = -1;
-        int col = -1;
+        int totalPerimeter = 2 * (maxC + maxR - 2);
+        int row = 0;
+        int col = 0;
 
-        // Per semplicità, considera un layout rettangolare
-        int totalBoxes = maxC * maxR;
-
-        if (index >= 0 && index < totalBoxes) {
-            // Calcola la riga e la colonna usando la dimensione della griglia
-            row = index / maxC;
-            col = index % maxC;
+        if (index < maxC) {
+            // Parte superiore (da sinistra a destra)
+            row = 0;
+            col = index;
+        } else if (index < maxC + maxR - 1) {
+            // Lato destro (dall'alto verso il basso)
+            row = index - maxC + 1;
+            col = maxC - 1;
+        } else if (index < 2 * maxC + maxR - 2) {
+            // Parte inferiore (da destra a sinistra)
+            row = maxR - 1;
+            col = (maxC - 1) - (index - (maxC + maxR - 2));
+        } else if (index < totalPerimeter) {
+            // Lato sinistro (dal basso verso l'alto)
+            row = (maxR - 1) - (index - (2 * maxC + maxR - 3));
+            col = 0;
         }
-
         return new int[] { row, col };
     }
 
