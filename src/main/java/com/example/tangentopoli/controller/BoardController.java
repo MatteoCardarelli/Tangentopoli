@@ -564,6 +564,7 @@ public class BoardController implements Initializable {
     }
 
     public void buildableProperty(int row, int col) {
+        System.out.println("Posizionamento su riga: " + row + " colonna: " + col);
         StackPane propertyPane = new StackPane();
 
         // Crea il rettangolo semi-trasparente
