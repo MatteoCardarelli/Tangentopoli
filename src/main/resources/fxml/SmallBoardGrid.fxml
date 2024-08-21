@@ -193,16 +193,26 @@
          </font>
       </TextArea>
       <Button fx:id="payPrisonBtn" layoutX="873.0" layoutY="52.0" mnemonicParsing="false" onAction="#payToExit" prefHeight="38.0" prefWidth="171.0" text="paga per uscire" />
-      <DialogPane fx:id="actionsDialog" layoutX="676.0" layoutY="355.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="210.0" prefWidth="395.0" visible="false">
+      <DialogPane fx:id="actionsDialog" layoutX="676.0" layoutY="355.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="171.0" prefWidth="395.0" visible="false">
           <header>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="173.0" prefWidth="395.0">
                <children>
-                  <Button fx:id="buildBtn" layoutX="20.0" layoutY="80.0" mnemonicParsing="false" onAction="#buildBtnClick" prefHeight="16.0" prefWidth="163.0" text="COSTRUISCI">
+                  <Button fx:id="buildBtn" layoutX="21.0" layoutY="28.0" mnemonicParsing="false" onAction="#buildBtnClick" prefHeight="16.0" prefWidth="163.0" text="COSTRUISCI">
                      <font>
                         <Font size="21.0" />
                      </font>
                   </Button>
-                  <Button fx:id="mortgageBtn" layoutX="212.0" layoutY="80.0" mnemonicParsing="false" onAction="#mortgageBtnClick" prefHeight="16.0" prefWidth="163.0" text="IPOTECA">
+                  <Button fx:id="mortgageBtn" layoutX="211.0" layoutY="28.0" mnemonicParsing="false" onAction="#mortgageBtnClick" prefHeight="16.0" prefWidth="163.0" text="IPOTECA">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="demolishBtn" layoutX="21.0" layoutY="100.0" mnemonicParsing="false" onAction="#demolishBtnClick" prefHeight="16.0" prefWidth="163.0" text="DEMOLISCI">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="extinguishBtn" layoutX="211.0" layoutY="100.0" mnemonicParsing="false" onAction="#extinguishBtnClick" prefHeight="16.0" prefWidth="163.0" text="ESTINGUI">
                      <font>
                         <Font size="21.0" />
                      </font>
@@ -210,12 +220,6 @@
                </children>
             </AnchorPane>
           </header>
-          <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
-          </content>
-          <expandableContent>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
-          </expandableContent>
       </DialogPane>
    </children>
 </Pane>

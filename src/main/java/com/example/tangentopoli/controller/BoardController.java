@@ -559,7 +559,7 @@ public class BoardController implements Initializable {
 
     //Set the Actions DialogPane as visible
     public void showActionsDialog(ActionEvent actionEvent) {
-        actionsDialog.setVisible(true);
+        actionsDialog.setVisible(!actionsDialog.isVisible());
     }
 
     //Builds on the property that has been directly clicked on the board
@@ -748,6 +748,58 @@ public class BoardController implements Initializable {
             if (child instanceof Rectangle && child.getStyleClass().contains("property-overlay")) {
                 iterator.remove(); // Rimuovi il rettangolo dalla griglia
             }
+        }
+    }
+
+    public void demolishBtnClick(ActionEvent actionEvent) {
+    }
+
+    public void createExtinguishableMortgageOverlay(int row, int col) {
+        // Crea il rettangolo semi-trasparente
+        Rectangle overlay = new Rectangle(126, 150);
+        overlay.setStyle("-fx-fill: rgba(255,0,0,0.5);");
+        overlay.getStyleClass().add("property-overlay");
+
+        // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
+        if (col == 0 || col == boardGrid.getColumnCount() - 1) {
+            overlay.setRotate(90);
+        }
+
+        // Aggiungi la StackPane al GridPane
+        boardGrid.add(overlay, col, row);
+
+        // Applica l'animazione di lampeggio
+        applyBlinkingEffect(overlay);
+
+        overlay.setOnMouseClicked(event -> {
+            extinguishMortgageBox(row, col);
+        });
+    }
+
+    private void extinguishMortgageBox(int row, int col) {
+        System.out.println("Estingui ipoteca riga: " + row + " colonna: " + col);
+        int pos = convertGridCoordsToPosition(row, col);
+        //try {
+        game.extinguishMortgageBox(pos);
+        displayPlayerInfo(game.getPlayerInTurn());
+        updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
+        /*} catch (NotYourPropertyException e) {
+            boxInfo.setText("Non possiedi questa proprietà");
+        } catch (MaximumConstructionOnProperty e) {
+            boxInfo.setText("Hai raggiunto il limite di costruzioni su questa casella");
+        }*/
+        removeAllOverlayRectangles();
+    }
+
+    public void extinguishBtnClick(ActionEvent actionEvent) {
+        removeAllOverlayRectangles();
+        actionsDialog.setVisible(false);
+        updateBoxInfo("Clicca sulle caselle sulle quali vuoi estinguere l'ipoteca");
+        ArrayList<Integer> extinguishableProperties = game.getExtinguishableBoxes();
+        int[] coords = {0, 0};
+        for (int i = 0; i < extinguishableProperties.size(); i++) {
+            coords = convertPositionToGridCoords(extinguishableProperties.get(i));
+            createExtinguishableMortgageOverlay(coords[0], coords[1]);
         }
     }
 }

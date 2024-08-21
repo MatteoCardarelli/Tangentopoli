@@ -212,6 +212,22 @@ public abstract class Player {
         mortgagedBoxes.add(box);
     }
 
+    // Verifica se il giocatore può rimuovere l'ipoteca su una proprietà
+    public boolean canExtinguishMortgage(PurchasableBox purchasableBox) {
+        if (purchasableBox.isMortgaged()) {
+            int mortgageRemovalCost = purchasableBox.getMortgageValue() + (int)(purchasableBox.getMortgageValue() * 0.1);
+            return this.getMoney() >= mortgageRemovalCost;
+        }
+        return false;
+    }
+
+    public void extinguishMortgageBox(PurchasableBox purchasableBox) {
+        purchasableBox.setMortgaged(false);
+        this.money -= (purchasableBox.getMortgageValue() + (int)(purchasableBox.getMortgageValue() * 0.1));
+        purchasedBoxes.add(purchasableBox);
+        mortgagedBoxes.remove(purchasableBox);
+    }
+
     //metodo che restituisce la descrizione
     public String toString() {
         String str = "Giocatore " + this.playerID + " | Patrimonio: " + this.money + "€\n";
@@ -225,4 +241,6 @@ public abstract class Player {
 
         return str;
     }
+
+
 }

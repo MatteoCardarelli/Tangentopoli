@@ -154,6 +154,36 @@ public class Game {
     public void mortgageBox(int pos) {
         getPlayerInTurn().mortgageBox((PurchasableBox) board.getBoxFromIndex(pos));
     }
+
+    public ArrayList<Integer> getExtinguishableBoxes() {
+        ArrayList<Integer> extinguishablePropertiesIndex = new ArrayList<>();
+        Player playerInTurn = getPlayerInTurn();
+
+        // Itera su tutte le caselle della board
+        for (int i = 0; i < board.getSize(); i++) {
+            Box box = board.getBoxFromIndex(i);
+
+            // Verifica se la casella è un'istanza di PurchasableBox
+            if (box instanceof PurchasableBox) {
+                PurchasableBox purchasableBox = (PurchasableBox) box;
+
+                // Verifica se il giocatore di turno è il proprietario
+                if (purchasableBox.getOwner() == playerInTurn) {
+
+                    // Verifica se la proprietà è ipotecata e può essere riscattata
+                    if (playerInTurn.canExtinguishMortgage(purchasableBox)) {
+                        extinguishablePropertiesIndex.add(i);
+                    }
+                }
+            }
+        }
+
+        return extinguishablePropertiesIndex;
+    }
+
+    public void extinguishMortgageBox(int pos) {
+        getPlayerInTurn().extinguishMortgageBox((PurchasableBox) board.getBoxFromIndex(pos));
+    }
 }
 
 
