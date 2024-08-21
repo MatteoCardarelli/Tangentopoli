@@ -1,5 +1,8 @@
 package com.example.tangentopoli.model;
 
+import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
+import com.example.tangentopoli.exception.NotYourPropertyException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -30,6 +33,10 @@ public class Game {
 
     public int getPlayersN() {
         return players.size();
+    }
+
+    public Board getBoard() {
+        return board;
     }
 
     public void changeTurn() {
@@ -112,6 +119,10 @@ public class Game {
         }
 
         return buildablePropertiesIndex;
+    }
+
+    public void buildOnProperty(int pos) throws NotYourPropertyException, MaximumConstructionOnProperty {
+        getPlayerInTurn().buildOnProperty((Property) board.getBoxFromIndex(pos));
     }
 }
 

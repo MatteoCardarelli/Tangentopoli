@@ -2,7 +2,9 @@ package com.example.tangentopoli.model;
 
 import com.example.tangentopoli.controller.BoardController;
 import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
+import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
+import com.example.tangentopoli.exception.NotYourPropertyException;
 
 import java.util.ArrayList;
 
@@ -180,6 +182,15 @@ public abstract class Player {
         }
         System.out.println("N" + count);
         return count;
+    }
+
+    public void buildOnProperty(Property property) throws NotYourPropertyException, MaximumConstructionOnProperty {
+        if(!(purchasedBoxes.contains(property)))
+            throw new NotYourPropertyException();
+        else {
+            int price = property.addConstruction();
+            this.money -= price;
+        }
     }
 
     //metodo che restituisce la descrizione

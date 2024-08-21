@@ -1,28 +1,28 @@
 package com.example.tangentopoli.controller;
 
 import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
+import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
+import com.example.tangentopoli.exception.NotYourPropertyException;
 import com.example.tangentopoli.model.*;
 import javafx.animation.*;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class BoardController implements Initializable {
     private int playerN;
@@ -102,6 +102,7 @@ public class BoardController implements Initializable {
 
     //Passes to the next turn
     public void nextTurn() {
+        removeAllOverlayRectangles();
         game.changeTurn();
         displayPlayerInfo(game.getPlayerInTurn());
         displayBoxInfo(game.getPlayerInTurn());
@@ -151,6 +152,7 @@ public class BoardController implements Initializable {
     public void launchDices(ActionEvent actionEvent) {
         diceBtn.setDisable(true);
         Player playerInTurn = game.getPlayerInTurn();
+        removeAllOverlayRectangles();
 
         if (playerInTurn.isInPrison()) {
             // Mostra un messaggio o un avviso che il giocatore è in prigione
@@ -244,7 +246,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < diceValue; i++) {
+        for (int i = 0; i < 1; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -263,7 +265,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(diceValue);
+        game.movePlayer(1);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -439,7 +441,7 @@ public class BoardController implements Initializable {
     }
 
 
-    //metodo per acquistare qualsiasi purchasablebox
+    //Makes the player buy any purchasable box (properties, stations, societies)
     public void buyPress( ) throws NotEnoughMoneyException,BoxAlreadyPurchasedException {
         // Ottieni il giocatore corrente
         Player currentPlayer = game.getPlayerInTurn();
@@ -458,7 +460,7 @@ public class BoardController implements Initializable {
                 displayBoxInfo(currentPlayer);
 
                 // Notifica all'utente dell'acquisto avvenuto con successo
-                boxInfo.setText("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "$!");
+                boxInfo.setText("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "€!");
                 createPropertyMarker(game.getPlayerTurn());
                 buyBtn.setDisable(true);
             } catch (NotEnoughMoneyException e) {
@@ -475,7 +477,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    //metodo per pagare e uscire di prigione
+    //Makes the player exit from prison after a payment
     public void payToExit() throws NotEnoughMoneyException {
         try {
             //paga €50 per uscire e esci dalla prigione
@@ -559,34 +561,39 @@ public class BoardController implements Initializable {
         actionsDialog.setVisible(true);
     }
 
-    public void build(int row, int col) {
-
+    public void buildOnProperty(int row, int col) {
+        System.out.println("Costruisci su riga: " + row + " colonna: " + col);
+        int pos = convertGridCoordsToPosition(row, col);
+        try {
+            game.buildOnProperty(pos);
+            displayPlayerInfo(game.getPlayerInTurn());
+            updateBoxInfo("Hai costruito su " + game.getBoard().getBoxFromIndex(pos).getName());
+        } catch (NotYourPropertyException e) {
+            boxInfo.setText("Non possiedi questa proprietà");
+        } catch (MaximumConstructionOnProperty e) {
+            boxInfo.setText("Hai raggiunto il limite di costruzioni su questa casella");
+        }
     }
 
-    public void buildableProperty(int row, int col) {
-        System.out.println("Posizionamento su riga: " + row + " colonna: " + col);
-        StackPane propertyPane = new StackPane();
-
+    public void createPropertyOverlay(int row, int col) {
         // Crea il rettangolo semi-trasparente
         Rectangle overlay = new Rectangle(126, 150);
         overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
+        overlay.getStyleClass().add("property-overlay");
 
         // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
         if (col == 0 || col == boardGrid.getColumnCount() - 1) {
             overlay.setRotate(90);
         }
 
-        // Aggiungi il rettangolo alla StackPane
-        propertyPane.getChildren().add(overlay);
-
         // Aggiungi la StackPane al GridPane
-        boardGrid.add(propertyPane, col, row);
+        boardGrid.add(overlay, col, row);
 
         // Applica l'animazione di lampeggio
         applyBlinkingEffect(overlay);
 
         overlay.setOnMouseClicked(event -> {
-            build(row, col);
+            buildOnProperty(row, col);
         });
     }
 
@@ -600,7 +607,9 @@ public class BoardController implements Initializable {
         fadeTransition.play();
     }
 
-    public int[] convertPositionToGridCoords(int index, int maxC, int maxR) {
+    public int[] convertPositionToGridCoords(int index) {
+        int maxC =  boardGrid.getColumnCount();
+        int maxR = boardGrid.getRowCount();
         int totalPerimeter = 2 * (maxC + maxR - 2);
         int row = 0;
         int col = 0;
@@ -625,14 +634,60 @@ public class BoardController implements Initializable {
         return new int[] { row, col };
     }
 
+    public int convertGridCoordsToPosition(int row, int col) {
+        int maxC =  boardGrid.getColumnCount();
+        int maxR = boardGrid.getRowCount();
+        int totalPerimeter = 2 * (maxC + maxR - 2);
+
+        // Verifica che le coordinate siano valide
+        if (row < 0 || row >= maxR || col < 0 || col >= maxC) {
+            throw new IllegalArgumentException("Coordinate fuori dai limiti della griglia");
+        }
+
+        int index = 0;
+
+        if (row == 0) {
+            // Parte superiore (da sinistra a destra)
+            index = col;
+        } else if (col == maxC - 1) {
+            // Lato destro (dall'alto verso il basso)
+            index = maxC + row - 1;
+        } else if (row == maxR - 1) {
+            // Parte inferiore (da destra a sinistra)
+            index = 2 * maxC + maxR - 2 - (maxC - 1 - col);
+        } else if (col == 0) {
+            // Lato sinistro (dal basso verso l'alto)
+            index = 2 * maxC + maxR - 3 - (maxR - 1 - row);
+        }
+
+        return index;
+    }
+
+
     public void buildBtnClick(ActionEvent actionEvent) {
         actionsDialog.setVisible(false);
         ArrayList<Integer> buildablePropertiesIndex = game.getBuildableProperties();
         int[] coords = {0, 0};
         for (int i = 0; i < buildablePropertiesIndex.size(); i++) {
-            coords = convertPositionToGridCoords(buildablePropertiesIndex.get(i), boardGrid.getColumnCount(), boardGrid.getRowCount());
-            buildableProperty(coords[0], coords[1]);
+            coords = convertPositionToGridCoords(buildablePropertiesIndex.get(i));
+            createPropertyOverlay(coords[0], coords[1]);
         }
     }
 
+    public void removeAllOverlayRectangles() {
+        // Ottieni la lista di tutti i figli del GridPane
+        ObservableList<Node> children = boardGrid.getChildren();
+
+        // Usa un iteratore per evitare ConcurrentModificationException
+        Iterator<Node> iterator = children.iterator();
+
+        while (iterator.hasNext()) {
+            Node child = iterator.next();
+
+            // Controlla se il figlio è un'istanza di Rectangle
+            if (child instanceof Rectangle && child.getStyleClass().contains("property-overlay")) {
+                iterator.remove(); // Rimuovi il rettangolo dalla griglia
+            }
+        }
+    }
 }
