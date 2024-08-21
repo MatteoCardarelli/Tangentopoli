@@ -246,7 +246,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < diceValue; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -265,7 +265,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(1);
+        game.movePlayer(diceValue);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -566,9 +566,11 @@ public class BoardController implements Initializable {
     public void buildOnProperty(int row, int col) {
         System.out.println("Costruisci su riga: " + row + " colonna: " + col);
         int pos = convertGridCoordsToPosition(row, col);
+
         try {
             game.buildOnProperty(pos);
             displayPlayerInfo(game.getPlayerInTurn());
+            buildOnSmallBoard(row,col);
             updateBoxInfo("Hai costruito su " + game.getBoard().getBoxFromIndex(pos).getName());
         } catch (NotYourPropertyException e) {
             boxInfo.setText("Non possiedi questa proprietà");
@@ -578,6 +580,203 @@ public class BoardController implements Initializable {
 
         removeAllOverlayRectangles();
     }
+
+    public void buildOnSmallBoard(int row, int col){
+        int pos = convertGridCoordsToPosition(row, col);
+        Property property = (Property) game.getBoard().getBoxFromIndex(pos);
+        // Ottieni il numero di case sulla proprietà
+        int numberOfHouses = property.getHouseN();
+        int numberOfHotels = property.getHotel();
+        int maxC = boardGrid.getColumnCount();
+        int maxR = boardGrid.getRowCount();
+
+        int posMoveX1 = 90;
+        int posMoveX2 = 0;
+        int posMoveY1 = 43;
+        int posMoveY2 = -43;
+        if (row == 0 && col < maxC - 1) {
+
+
+            // Rimozione delle vecchie casette prima di costruirne di nuove o un albergo
+            ObservableList<Node> children = boardGrid.getChildren();
+            children.removeIf(node -> {
+                Integer colIndex = GridPane.getColumnIndex(node);
+                Integer rowIndex = GridPane.getRowIndex(node);
+
+                // Verifica se il nodo è un'istanza di ImageView e appartiene alla classe "streetwear"
+                if (node instanceof ImageView) {
+                    ImageView imageView = (ImageView) node;
+
+                    // Controlla se l'ImageView appartiene alla classe "streetwear"
+                    return colIndex != null && colIndex == col &&
+                            rowIndex != null && rowIndex == row &&
+                            "streetwear".equals(imageView.getId());
+                }
+                return false;
+            });
+
+            // Aggiunta di nuove casette o costruzione di un albergo
+            if (numberOfHouses < 5 && numberOfHotels == 0) {
+                for (int i = 0; i < numberOfHouses; i++) {
+                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/privateBox.png")));
+                    buildingImageView.setFitHeight(40); // Altezza dell'immagine
+                    buildingImageView.setFitWidth(40);  // Larghezza dell'immagine
+                    buildingImageView.setRotate(180);
+                    buildingImageView.setTranslateX(posMoveX1 - i * 30); // Posiziona in base al numero di casette
+                    buildingImageView.setTranslateY(60);
+                    buildingImageView.setId("streetwear"); // Imposta l'ID per l'identificazione futura
+                    boardGrid.add(buildingImageView, col, row);
+                }
+            } else if (numberOfHouses == 0 && numberOfHotels == 1) {
+                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/cantiereAbusivo.png")));
+                cantiereImageView.setFitHeight(50);
+                cantiereImageView.setFitWidth(50);
+                cantiereImageView.setRotate(180);
+                cantiereImageView.setTranslateX(40);
+                cantiereImageView.setTranslateY(60);
+                cantiereImageView.setId("streetwear"); // Imposta l'ID per l'albergo
+                boardGrid.add(cantiereImageView, col, row);
+            }
+
+
+        }
+        // Movimento verticale giù nella colonna di destra
+        else if (col == maxC - 1 && row < maxR - 1) {
+
+            // Rimozione delle vecchie casette prima di costruirne di nuove o un albergo
+            ObservableList<Node> children = boardGrid.getChildren();
+            children.removeIf(node -> {
+                Integer colIndex = GridPane.getColumnIndex(node);
+                Integer rowIndex = GridPane.getRowIndex(node);
+
+                // Verifica se il nodo è un'istanza di ImageView e appartiene alla classe "streetwear"
+                if (node instanceof ImageView) {
+                    ImageView imageView = (ImageView) node;
+
+                    // Controlla se l'ImageView appartiene alla classe "streetwear"
+                    return colIndex != null && colIndex == col &&
+                            rowIndex != null && rowIndex == row &&
+                            "streetwear".equals(imageView.getId());
+                }
+                return false;
+            });
+
+            // Aggiunta di nuove casette o costruzione di un albergo
+            if (numberOfHouses < 5 && numberOfHotels == 0) {
+                for (int i = 0; i < numberOfHouses; i++) {
+                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/privateBox.png")));
+                    buildingImageView.setFitHeight(40); // Altezza dell'immagine
+                    buildingImageView.setFitWidth(40);  // Larghezza dell'immagine
+                    buildingImageView.setRotate(270);
+                    buildingImageView.setTranslateX(-3); // Posiziona in base al numero di casette
+                    buildingImageView.setTranslateY(posMoveY1 - i * 30);
+                    buildingImageView.setId("streetwear"); // Imposta l'ID per l'identificazione futura
+                    boardGrid.add(buildingImageView, col, row);
+                }
+            } else if (numberOfHouses == 0 && numberOfHotels == 1) {
+                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/cantiereAbusivo.png")));
+                cantiereImageView.setFitHeight(50);
+                cantiereImageView.setFitWidth(50);
+                cantiereImageView.setRotate(270);
+                cantiereImageView.setTranslateX(0);
+                cantiereImageView.setTranslateY(0);
+                cantiereImageView.setId("streetwear"); // Imposta l'ID per l'albergo
+                boardGrid.add(cantiereImageView, col, row);
+            }
+
+        }
+        // Movimento orizzontale da destra a sinistra
+        else if (row == maxR - 1 && col > 0) {
+
+            // Rimozione delle vecchie casette prima di costruirne di nuove o un albergo
+            ObservableList<Node> children = boardGrid.getChildren();
+            children.removeIf(node -> {
+                Integer colIndex = GridPane.getColumnIndex(node);
+                Integer rowIndex = GridPane.getRowIndex(node);
+
+                // Verifica se il nodo è un'istanza di ImageView e appartiene alla classe "streetwear"
+                if (node instanceof ImageView) {
+                    ImageView imageView = (ImageView) node;
+
+                    // Controlla se l'ImageView appartiene alla classe "streetwear"
+                    return colIndex != null && colIndex == col &&
+                            rowIndex != null && rowIndex == row &&
+                            "streetwear".equals(imageView.getId());
+                }
+                return false;
+            });
+
+            // Aggiunta di nuove casette o costruzione di un albergo
+            if (numberOfHouses < 5 && numberOfHotels == 0) {
+                for (int i = 0; i < numberOfHouses; i++) {
+                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/privateBox.png")));
+                    buildingImageView.setFitHeight(40); // Altezza dell'immagine
+                    buildingImageView.setFitWidth(40);  // Larghezza dell'immagine
+                    buildingImageView.setRotate(0);
+                    buildingImageView.setTranslateX(posMoveX2 + i * 30); // Posiziona in base al numero di casette
+                    buildingImageView.setTranslateY(-60);
+                    buildingImageView.setId("streetwear"); // Imposta l'ID per l'identificazione futura
+                    boardGrid.add(buildingImageView, col, row);
+                }
+            } else if (numberOfHouses == 0 && numberOfHotels == 1) {
+                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/cantiereAbusivo.png")));
+                cantiereImageView.setFitHeight(50);
+                cantiereImageView.setFitWidth(50);
+                cantiereImageView.setRotate(180);
+                cantiereImageView.setTranslateX(40);
+                cantiereImageView.setTranslateY(-60);
+                cantiereImageView.setId("streetwear"); // Imposta l'ID per l'albergo
+                boardGrid.add(cantiereImageView, col, row);
+            }
+
+        }
+        // Movimento verticale su nella colonna di sinistra
+        else if (col == 0 && row > 0) {
+            // Rimozione delle vecchie casette prima di costruirne di nuove o un albergo
+            ObservableList<Node> children = boardGrid.getChildren();
+            children.removeIf(node -> {
+                Integer colIndex = GridPane.getColumnIndex(node);
+                Integer rowIndex = GridPane.getRowIndex(node);
+
+                // Verifica se il nodo è un'istanza di ImageView e appartiene alla classe "streetwear"
+                if (node instanceof ImageView) {
+                    ImageView imageView = (ImageView) node;
+
+                    // Controlla se l'ImageView appartiene alla classe "streetwear"
+                    return colIndex != null && colIndex == col &&
+                            rowIndex != null && rowIndex == row &&
+                            "streetwear".equals(imageView.getId());
+                }
+                return false;
+            });
+
+            // Aggiunta di nuove casette o costruzione di un albergo
+            if (numberOfHouses < 5 && numberOfHotels == 0) {
+                for (int i = 0; i < numberOfHouses; i++) {
+                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/privateBox.png")));
+                    buildingImageView.setFitHeight(40); // Altezza dell'immagine
+                    buildingImageView.setFitWidth(40);  // Larghezza dell'immagine
+                    buildingImageView.setRotate(90);
+                    buildingImageView.setTranslateX(110); // Posiziona in base al numero di casette
+                    buildingImageView.setTranslateY(posMoveY2 + i * 30);
+                    buildingImageView.setId("streetwear"); // Imposta l'ID per l'identificazione futura
+                    boardGrid.add(buildingImageView, col, row);
+                }
+            } else if (numberOfHouses == 0 && numberOfHotels == 1) {
+                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/cantiereAbusivo.png")));
+                cantiereImageView.setFitHeight(50);
+                cantiereImageView.setFitWidth(50);
+                cantiereImageView.setRotate(90);
+                cantiereImageView.setTranslateX(110);
+                cantiereImageView.setTranslateY(0);
+                cantiereImageView.setId("streetwear"); // Imposta l'ID per l'albergo
+                boardGrid.add(cantiereImageView, col, row);
+            }
+
+        }
+
+    }
+
 
     //Creates the green overlays on the buildable properties
     public void createConstructionOverlay(int row, int col) {
@@ -641,14 +840,13 @@ public class BoardController implements Initializable {
         return new int[] { row, col };
     }
 
-    //Converts the position of a specific Box (giving its coordinates), into the index on the board
     public int convertGridCoordsToPosition(int row, int col) {
-        int maxC =  boardGrid.getColumnCount();
+        int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
         int totalPerimeter = 2 * (maxC + maxR - 2);
 
         // Verifica che le coordinate siano valide
-        if (row < 0 || row >= maxR || col < 0 || col >= maxC) {
+        if (row < 0  || row >= maxR || col < 0 || col >= maxC) {
             throw new IllegalArgumentException("Coordinate fuori dai limiti della griglia");
         }
 
@@ -659,13 +857,13 @@ public class BoardController implements Initializable {
             index = col;
         } else if (col == maxC - 1) {
             // Lato destro (dall'alto verso il basso)
-            index = maxC + row - 1;
+            index = maxC - 1 + row;
         } else if (row == maxR - 1) {
             // Parte inferiore (da destra a sinistra)
-            index = 2 * maxC + maxR - 2 - (maxC - 1 - col);
+            index = (maxC - 1) + (maxR - 1) + (maxC - 1 - col);
         } else if (col == 0) {
             // Lato sinistro (dal basso verso l'alto)
-            index = 2 * maxC + maxR - 3 - (maxR - 1 - row);
+            index = totalPerimeter - row;
         }
 
         return index;

@@ -29,10 +29,10 @@ public class Property extends PurchasableBox {
     }
 
     public int addConstruction() throws MaximumConstructionOnProperty {
-        if(houseN < 3 && hotelN == 0) {
+        if(houseN < 4 && hotelN == 0) {
             houseN++;
             return housePrice;
-        } else if(houseN == 3 && hotelN == 0) {
+        } else if(houseN == 4 && hotelN == 0) {
             hotelN = 1;
             houseN = 0;
             return hotelPrice;
