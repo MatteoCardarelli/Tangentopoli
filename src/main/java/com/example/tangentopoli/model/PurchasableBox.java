@@ -6,17 +6,20 @@ public abstract class PurchasableBox implements Box {
     private boolean purchased = false;
     private Player owner;
     private int mortgageValue;
+    private boolean isMortgaged = false;
 
     public PurchasableBox(String name, int price, int mortgageValue) {
         this.name = name;
         this.price = price;
         this.mortgageValue = mortgageValue;
-
-
     }
 
     public int getPrice() {
         return price;
+    }
+
+    public int getMortgageValue() {
+        return mortgageValue;
     }
 
     @Override
@@ -56,4 +59,13 @@ public abstract class PurchasableBox implements Box {
 
     public abstract int calculatePrice();
 
+    // Restituisce se la proprietà è ipotecata
+    public boolean isMortgaged() {
+        return isMortgaged;
+    }
+
+    // Imposta lo stato di ipoteca della proprietà
+    public void setMortgaged(boolean mortgaged) {
+        isMortgaged = mortgaged;
+    }
 }

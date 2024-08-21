@@ -561,6 +561,7 @@ public class BoardController implements Initializable {
         actionsDialog.setVisible(true);
     }
 
+    //Builds on the property that has been directly clicked on the board
     public void buildOnProperty(int row, int col) {
         System.out.println("Costruisci su riga: " + row + " colonna: " + col);
         int pos = convertGridCoordsToPosition(row, col);
@@ -573,9 +574,12 @@ public class BoardController implements Initializable {
         } catch (MaximumConstructionOnProperty e) {
             boxInfo.setText("Hai raggiunto il limite di costruzioni su questa casella");
         }
+
+        removeAllOverlayRectangles();
     }
 
-    public void createPropertyOverlay(int row, int col) {
+    //Creates the green overlays on the buildable properties
+    public void createConstructionOverlay(int row, int col) {
         // Crea il rettangolo semi-trasparente
         Rectangle overlay = new Rectangle(126, 150);
         overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
@@ -597,6 +601,7 @@ public class BoardController implements Initializable {
         });
     }
 
+    //Creates the blinking effect on the overlay
     private void applyBlinkingEffect(Rectangle overlay) {
         // Creazione dell'animazione di fade in/out per il lampeggio
         FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), overlay);
@@ -607,6 +612,7 @@ public class BoardController implements Initializable {
         fadeTransition.play();
     }
 
+    //Converts the position of a specific Box (giving its index in the board), into coordinates
     public int[] convertPositionToGridCoords(int index) {
         int maxC =  boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
@@ -634,6 +640,7 @@ public class BoardController implements Initializable {
         return new int[] { row, col };
     }
 
+    //Converts the position of a specific Box (giving its coordinates), into the index on the board
     public int convertGridCoordsToPosition(int row, int col) {
         int maxC =  boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
@@ -663,17 +670,67 @@ public class BoardController implements Initializable {
         return index;
     }
 
-
+    //Once the Construct button has been clicked, the method puts the overlays on all the buildable properties
     public void buildBtnClick(ActionEvent actionEvent) {
         actionsDialog.setVisible(false);
+        updateBoxInfo("Clicca sulle proprietà su cui vuoi costruire");
         ArrayList<Integer> buildablePropertiesIndex = game.getBuildableProperties();
         int[] coords = {0, 0};
         for (int i = 0; i < buildablePropertiesIndex.size(); i++) {
             coords = convertPositionToGridCoords(buildablePropertiesIndex.get(i));
-            createPropertyOverlay(coords[0], coords[1]);
+            createConstructionOverlay(coords[0], coords[1]);
         }
     }
 
+    private void mortgageBox(int row, int col) {
+        System.out.println("Ipoteca riga: " + row + " colonna: " + col);
+        int pos = convertGridCoordsToPosition(row, col);
+        //try {
+            game.mortgageBox(pos);
+            displayPlayerInfo(game.getPlayerInTurn());
+            updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
+        /*} catch (NotYourPropertyException e) {
+            boxInfo.setText("Non possiedi questa proprietà");
+        } catch (MaximumConstructionOnProperty e) {
+            boxInfo.setText("Hai raggiunto il limite di costruzioni su questa casella");
+        }*/
+        removeAllOverlayRectangles();
+    }
+
+    public void createMortgageOverlay(int row, int col) {
+        // Crea il rettangolo semi-trasparente
+        Rectangle overlay = new Rectangle(126, 150);
+        overlay.setStyle("-fx-fill: rgba(255,0,0,0.5);");
+        overlay.getStyleClass().add("property-overlay");
+
+        // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
+        if (col == 0 || col == boardGrid.getColumnCount() - 1) {
+            overlay.setRotate(90);
+        }
+
+        // Aggiungi la StackPane al GridPane
+        boardGrid.add(overlay, col, row);
+
+        // Applica l'animazione di lampeggio
+        applyBlinkingEffect(overlay);
+
+        overlay.setOnMouseClicked(event -> {
+            mortgageBox(row, col);
+        });
+    }
+
+    public void mortgageBtnClick(ActionEvent actionEvent) {
+        actionsDialog.setVisible(false);
+        updateBoxInfo("Clicca sulle caselle che vuoi ipotecare");
+        ArrayList<Integer> mortgageableProperties = game.getMortgageableBoxes();
+        int[] coords = {0, 0};
+        for (int i = 0; i < mortgageableProperties.size(); i++) {
+            coords = convertPositionToGridCoords(mortgageableProperties.get(i));
+            createMortgageOverlay(coords[0], coords[1]);
+        }
+    }
+
+    //Removes all the overlays on the properties
     public void removeAllOverlayRectangles() {
         // Ottieni la lista di tutti i figli del GridPane
         ObservableList<Node> children = boardGrid.getChildren();

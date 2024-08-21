@@ -40,4 +40,12 @@ public class Property extends PurchasableBox {
             throw new MaximumConstructionOnProperty();
         }
     }
+
+    public int getHouseN() {
+        return houseN;
+    }
+
+    public int getHotel() {
+        return hotelN;
+    }
 }

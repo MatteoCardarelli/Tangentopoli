@@ -111,7 +111,7 @@ public class Game {
                 int playerColorProperties = playerColorCountMap.getOrDefault(color, 0);
 
                 // Se il player possiede tutte le proprietà di quel colore, aggiungiamo la posizione della proprietà all'array
-                if (playerColorProperties == totalColorProperties) {
+                if (playerColorProperties == totalColorProperties && !property.isMortgaged()) {
                     int boxIndex = board.getBoxIndex(box);
                     buildablePropertiesIndex.add(boxIndex);
                 }
@@ -121,8 +121,38 @@ public class Game {
         return buildablePropertiesIndex;
     }
 
+    public ArrayList<Integer> getMortgageableBoxes() {
+        ArrayList<Integer> mortgageablePropertiesIndex = new ArrayList<>();
+        Player playerInTurn = getPlayerInTurn();
+
+        // Itera su tutte le caselle della board
+        for (int i = 0; i < board.getSize(); i++) {
+            Box box = board.getBoxFromIndex(i);
+
+            // Verifica se la casella è un'istanza di PurchasableBox
+            if (box instanceof PurchasableBox) {
+                PurchasableBox purchasableBox = (PurchasableBox) box;
+
+                // Verifica se il giocatore di turno è il proprietario
+                if (purchasableBox.getOwner() == playerInTurn) {
+
+                    // Verifica se la proprietà è ipotecabile
+                    if (playerInTurn.canMortgage(purchasableBox)) {
+                        mortgageablePropertiesIndex.add(i);
+                    }
+                }
+            }
+        }
+
+        return mortgageablePropertiesIndex;
+    }
+
     public void buildOnProperty(int pos) throws NotYourPropertyException, MaximumConstructionOnProperty {
         getPlayerInTurn().buildOnProperty((Property) board.getBoxFromIndex(pos));
+    }
+
+    public void mortgageBox(int pos) {
+        getPlayerInTurn().mortgageBox((PurchasableBox) board.getBoxFromIndex(pos));
     }
 }
 

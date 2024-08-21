@@ -19,6 +19,8 @@ public abstract class Player {
     private boolean inPrison = false;
     private int turnInPrison = 0;
     private ArrayList<PurchasableBox> purchasedBoxes = new ArrayList<>();
+    private ArrayList<PurchasableBox> mortgagedBoxes = new ArrayList<>();
+
 
     //costruttore
     public Player(int playerID, int money) {
@@ -193,11 +195,32 @@ public abstract class Player {
         }
     }
 
+    public boolean canMortgage(PurchasableBox box) {
+        // Controlla se la casella è una proprietà
+        if (box instanceof Property property) {
+            // Verifica che la proprietà non abbia case o hotel costruiti sopra
+            return property.getHouseN() == 0 && property.getHotel() == 0 && !property.isMortgaged();
+        }
+        // Le stazioni e le società possono essere ipotecate se non sono già ipotecate
+        return !box.isMortgaged();
+    }
+
+    public void mortgageBox(PurchasableBox box) {
+        box.setMortgaged(true);
+        this.money += box.getMortgageValue();
+        purchasedBoxes.remove(box);
+        mortgagedBoxes.add(box);
+    }
+
     //metodo che restituisce la descrizione
     public String toString() {
         String str = "Giocatore " + this.playerID + " | Patrimonio: " + this.money + "€\n";
         for(PurchasableBox box : this.purchasedBoxes) {
             str += "- " + box.getName() + "\n";
+        }
+
+        for(PurchasableBox box : this.mortgagedBoxes) {
+            str += "- " + box.getName() + " (ipoteca)\n";
         }
 
         return str;
