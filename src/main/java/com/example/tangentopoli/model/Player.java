@@ -186,12 +186,16 @@ public abstract class Player {
         return count;
     }
 
-    public void buildOnProperty(Property property) throws NotYourPropertyException, MaximumConstructionOnProperty {
+    public void buildOnProperty(Property property) throws NotYourPropertyException, MaximumConstructionOnProperty, NotEnoughMoneyException {
         if(!(purchasedBoxes.contains(property)))
             throw new NotYourPropertyException();
         else {
-            int price = property.addConstruction();
-            this.money -= price;
+            int price = property.getCostructionPrice();
+            if(price < this.getMoney()) {
+                property.addConstruction();
+                this.money -= price;
+            }
+            else throw new NotEnoughMoneyException("Non hai abbastanza soldi");
         }
     }
 

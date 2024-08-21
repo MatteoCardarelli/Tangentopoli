@@ -576,7 +576,7 @@ public class BoardController implements Initializable {
             boxInfo.setText("Non possiedi questa proprietà");
         } catch (MaximumConstructionOnProperty e) {
             boxInfo.setText("Hai raggiunto il limite di costruzioni su questa casella");
-        }
+        } catch (NotEnoughMoneyException e){updateBoxInfo("Non hai abbastanza soldi per costruire");}
 
         removeAllOverlayRectangles();
     }

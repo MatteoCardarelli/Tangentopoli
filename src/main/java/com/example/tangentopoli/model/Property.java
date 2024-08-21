@@ -28,17 +28,25 @@ public class Property extends PurchasableBox {
         return rentPrice + (housePrice * houseN) + (hotelPrice * 3);
     }
 
-    public int addConstruction() throws MaximumConstructionOnProperty {
+    public void addConstruction() throws MaximumConstructionOnProperty {
         if(houseN < 4 && hotelN == 0) {
             houseN++;
-            return housePrice;
         } else if(houseN == 4 && hotelN == 0) {
             hotelN = 1;
             houseN = 0;
-            return hotelPrice;
         } else {
             throw new MaximumConstructionOnProperty();
         }
+    }
+
+    public int getCostructionPrice() throws MaximumConstructionOnProperty {
+        if(houseN < 4 && hotelN == 0) {
+            return housePrice;
+        }
+        else if(houseN == 4 && hotelN == 0) {
+            return hotelPrice;
+        }
+        else throw new MaximumConstructionOnProperty();
     }
 
     public int getHouseN() {

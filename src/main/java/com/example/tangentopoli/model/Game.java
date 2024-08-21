@@ -1,6 +1,7 @@
 package com.example.tangentopoli.model;
 
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
+import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class Game {
     private void createPlayers(int playersN) {
         players = new ArrayList<>(playersN);
         for (int i = 0; i < playersN; i++) {
-            HumanPlayer player = new HumanPlayer(i+1, 1500);
+            HumanPlayer player = new HumanPlayer(i+1, 600);
             players.add(player);
             player.setPosition(board.getBoxFromIndex(0));   //Set player to start position
         }
@@ -147,7 +148,7 @@ public class Game {
         return mortgageablePropertiesIndex;
     }
 
-    public void buildOnProperty(int pos) throws NotYourPropertyException, MaximumConstructionOnProperty {
+    public void buildOnProperty(int pos) throws NotYourPropertyException, MaximumConstructionOnProperty, NotEnoughMoneyException {
         getPlayerInTurn().buildOnProperty((Property) board.getBoxFromIndex(pos));
     }
 
@@ -185,5 +186,3 @@ public class Game {
         getPlayerInTurn().extinguishMortgageBox((PurchasableBox) board.getBoxFromIndex(pos));
     }
 }
-
-
