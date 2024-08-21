@@ -291,6 +291,7 @@ public class BoardController implements Initializable {
 
         displayBoxInfo(game.getPlayerInTurn());
 
+        //DA SPOSTARE IN GAME
         //metodo per pagare gli affitti di qualsiasi purchasablebox
         try {
             if (game.getPlayerInTurn().getPosition() instanceof PurchasableBox)
@@ -672,6 +673,7 @@ public class BoardController implements Initializable {
 
     //Once the Construct button has been clicked, the method puts the overlays on all the buildable properties
     public void buildBtnClick(ActionEvent actionEvent) {
+        removeAllOverlayRectangles();
         actionsDialog.setVisible(false);
         updateBoxInfo("Clicca sulle proprietà su cui vuoi costruire");
         ArrayList<Integer> buildablePropertiesIndex = game.getBuildableProperties();
@@ -720,6 +722,7 @@ public class BoardController implements Initializable {
     }
 
     public void mortgageBtnClick(ActionEvent actionEvent) {
+        removeAllOverlayRectangles();
         actionsDialog.setVisible(false);
         updateBoxInfo("Clicca sulle caselle che vuoi ipotecare");
         ArrayList<Integer> mortgageableProperties = game.getMortgageableBoxes();

@@ -123,8 +123,8 @@ public abstract class Player {
         if (currentBox instanceof PurchasableBox purchasableBox && purchasableBox.isPurchased()) {
             Player owner = purchasableBox.getOwner();
 
-            // Controlla se il proprietario non è il giocatore corrente (per evitare di pagare a se stessi)
-            if (!owner.equals(this)) {
+            // Controlla se il proprietario non è il giocatore corrente (per evitare di pagare a se stessi) e verifica che non sia ipotecata
+            if (!owner.equals(this) && !((PurchasableBox) currentBox).isMortgaged()) {
                 int rentToPay = purchasableBox.calculatePrice();
 
                 // Il giocatore corrente paga il proprietario
