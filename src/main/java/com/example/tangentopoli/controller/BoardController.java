@@ -30,6 +30,7 @@ public class BoardController implements Initializable {
     private int diceValue;
 
     private Game game;
+
     @FXML
     private Button nextBtn;
 
@@ -71,8 +72,6 @@ public class BoardController implements Initializable {
 
     @FXML
     private List<Circle> playerTokens;
-
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -441,7 +440,6 @@ public class BoardController implements Initializable {
         boxInfo.setText(message);
     }
 
-
     //Makes the player buy any purchasable box (properties, stations, societies)
     public void buyPress( ) throws NotEnoughMoneyException,BoxAlreadyPurchasedException {
         // Ottieni il giocatore corrente
@@ -777,7 +775,6 @@ public class BoardController implements Initializable {
 
     }
 
-
     //Creates the green overlays on the buildable properties
     public void createConstructionOverlay(int row, int col) {
         // Crea il rettangolo semi-trasparente
@@ -918,7 +915,7 @@ public class BoardController implements Initializable {
         // Crea il rettangolo semi-trasparente
         Rectangle overlay = new Rectangle(126, 150);
         overlay.setStyle("-fx-fill: rgba(48,46,46,0.5);");
-        overlay.getStyleClass().add("property-overlay");
+        overlay.getStyleClass().add("notAvailableBoxOverlay");
 
         // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
         if (col == 0 || col == boardGrid.getColumnCount() - 1) {
@@ -954,6 +951,23 @@ public class BoardController implements Initializable {
 
             // Controlla se il figlio è un'istanza di Rectangle
             if (child instanceof Rectangle && child.getStyleClass().contains("property-overlay")) {
+                iterator.remove(); // Rimuovi il rettangolo dalla griglia
+            }
+        }
+    }
+
+    public void removeNotAvailableBoxOverlay() {
+        // Ottieni la lista di tutti i figli del GridPane
+        ObservableList<Node> children = boardGrid.getChildren();
+
+        // Usa un iteratore per evitare ConcurrentModificationException
+        Iterator<Node> iterator = children.iterator();
+
+        while (iterator.hasNext()) {
+            Node child = iterator.next();
+
+            // Controlla se il figlio è un'istanza di Rectangle
+            if (child instanceof Rectangle && child.getStyleClass().contains("notAvailableBoxOverlay")) {
                 iterator.remove(); // Rimuovi il rettangolo dalla griglia
             }
         }
@@ -1030,16 +1044,11 @@ public class BoardController implements Initializable {
     private void extinguishMortgageBox(int row, int col) {
         System.out.println("Estingui ipoteca riga: " + row + " colonna: " + col);
         int pos = convertGridCoordsToPosition(row, col);
-        //try {
         game.extinguishMortgageBox(pos);
         displayPlayerInfo(game.getPlayerInTurn());
         updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
-        /*} catch (NotYourPropertyException e) {
-            boxInfo.setText("Non possiedi questa proprietà");
-        } catch (MaximumConstructionOnProperty e) {
-            boxInfo.setText("Hai raggiunto il limite di costruzioni su questa casella");
-        }*/
         removeAllOverlayRectangles();
+        removeNotAvailableBoxOverlay();
     }
 
     public void extinguishBtnClick(ActionEvent actionEvent) {

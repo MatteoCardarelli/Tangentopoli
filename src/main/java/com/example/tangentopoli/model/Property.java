@@ -59,10 +59,10 @@ public class Property extends PurchasableBox {
 
     public int getDemolitionPrice() {
         if(hotelN == 1) {
-            return hotelPrice/3;
+            return hotelPrice/2;
         }
         else {
-            return housePrice/3;
+            return housePrice/2;
         }
     }
 
