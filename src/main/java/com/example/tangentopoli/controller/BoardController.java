@@ -956,7 +956,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    public void removeNotAvailableBoxOverlay() {
+    public void removeNotAvailableBoxOverlay(int row, int col) {
         // Ottieni la lista di tutti i figli del GridPane
         ObservableList<Node> children = boardGrid.getChildren();
 
@@ -966,12 +966,23 @@ public class BoardController implements Initializable {
         while (iterator.hasNext()) {
             Node child = iterator.next();
 
-            // Controlla se il figlio è un'istanza di Rectangle
-            if (child instanceof Rectangle && child.getStyleClass().contains("notAvailableBoxOverlay")) {
+            // Verifica se il nodo si trova nella cella specificata
+            Integer nodeRow = GridPane.getRowIndex(child);
+            Integer nodeCol = GridPane.getColumnIndex(child);
+
+            // Assicura che rowIndex e colIndex non siano null (valore di default se non impostato è 0)
+            if (nodeRow == null) nodeRow = 0;
+            if (nodeCol == null) nodeCol = 0;
+
+            // Controlla se il figlio è un'istanza di Rectangle e si trova nella cella specificata
+            if (child instanceof Rectangle && child.getStyleClass().contains("notAvailableBoxOverlay")
+                    && nodeRow == row && nodeCol == col) {
                 iterator.remove(); // Rimuovi il rettangolo dalla griglia
+                break; // Esci dal loop una volta trovato e rimosso l'overlay
             }
         }
     }
+
 
     public void demolishBtnClick(ActionEvent actionEvent) {
         removeAllOverlayRectangles();
@@ -1048,7 +1059,7 @@ public class BoardController implements Initializable {
         displayPlayerInfo(game.getPlayerInTurn());
         updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
         removeAllOverlayRectangles();
-        removeNotAvailableBoxOverlay();
+        removeNotAvailableBoxOverlay(row, col);
     }
 
     public void extinguishBtnClick(ActionEvent actionEvent) {
