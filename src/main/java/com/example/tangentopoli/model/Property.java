@@ -25,7 +25,7 @@ public class Property extends PurchasableBox {
 
     @Override
     public int calculatePrice() {
-        return rentPrice + (housePrice * houseN) + (hotelPrice * 3);
+        return rentPrice + (housePrice * houseN) + (hotelPrice * hotelN * 3);
     }
 
     public void addConstruction() throws MaximumConstructionOnProperty {
@@ -55,5 +55,30 @@ public class Property extends PurchasableBox {
 
     public int getHotel() {
         return hotelN;
+    }
+
+    public int getDemolitionPrice() {
+        if(hotelN == 1) {
+            return hotelPrice/3;
+        }
+        else {
+            return housePrice/3;
+        }
+    }
+
+    public void demolishConstruction() {
+        if(hotelN == 1) {
+            hotelN = 0;
+            houseN = 4;
+        } else {
+            houseN --;
+        }
+    }
+
+    public boolean hasBuildings() {
+        if(hotelN !=0 || houseN !=0)
+            return true;
+        else
+            return false;
     }
 }

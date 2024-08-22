@@ -246,7 +246,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < diceValue; i++) {
+        for (int i = 0; i < 1; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -265,7 +265,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(diceValue);
+        game.movePlayer(1);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -570,7 +570,7 @@ public class BoardController implements Initializable {
         try {
             game.buildOnProperty(pos);
             displayPlayerInfo(game.getPlayerInTurn());
-            buildOnSmallBoard(row,col);
+            displayConstructionsOnSmallBoard(row,col);
             updateBoxInfo("Hai costruito su " + game.getBoard().getBoxFromIndex(pos).getName());
         } catch (NotYourPropertyException e) {
             boxInfo.setText("Non possiedi questa proprietà");
@@ -581,7 +581,7 @@ public class BoardController implements Initializable {
         removeAllOverlayRectangles();
     }
 
-    public void buildOnSmallBoard(int row, int col){
+    public void displayConstructionsOnSmallBoard(int row, int col){
         int pos = convertGridCoordsToPosition(row, col);
         Property property = (Property) game.getBoard().getBoxFromIndex(pos);
         // Ottieni il numero di case sulla proprietà
@@ -885,16 +885,11 @@ public class BoardController implements Initializable {
     private void mortgageBox(int row, int col) {
         System.out.println("Ipoteca riga: " + row + " colonna: " + col);
         int pos = convertGridCoordsToPosition(row, col);
-        //try {
             game.mortgageBox(pos);
             displayPlayerInfo(game.getPlayerInTurn());
             updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
-        /*} catch (NotYourPropertyException e) {
-            boxInfo.setText("Non possiedi questa proprietà");
-        } catch (MaximumConstructionOnProperty e) {
-            boxInfo.setText("Hai raggiunto il limite di costruzioni su questa casella");
-        }*/
         removeAllOverlayRectangles();
+        createNotAvailableBoxOverlay(row, col);
     }
 
     public void createMortgageOverlay(int row, int col) {
@@ -917,6 +912,21 @@ public class BoardController implements Initializable {
         overlay.setOnMouseClicked(event -> {
             mortgageBox(row, col);
         });
+    }
+
+    private void createNotAvailableBoxOverlay(int row, int col) {
+        // Crea il rettangolo semi-trasparente
+        Rectangle overlay = new Rectangle(126, 150);
+        overlay.setStyle("-fx-fill: rgba(48,46,46,0.5);");
+        overlay.getStyleClass().add("property-overlay");
+
+        // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
+        if (col == 0 || col == boardGrid.getColumnCount() - 1) {
+            overlay.setRotate(90);
+        }
+
+        // Aggiungi la StackPane al GridPane
+        boardGrid.add(overlay, col, row);
     }
 
     public void mortgageBtnClick(ActionEvent actionEvent) {
@@ -950,6 +960,49 @@ public class BoardController implements Initializable {
     }
 
     public void demolishBtnClick(ActionEvent actionEvent) {
+        removeAllOverlayRectangles();
+        actionsDialog.setVisible(false);
+        updateBoxInfo("Clicca sulle proprietà su cui vuoi demolire");
+        ArrayList<Integer> demolishablePropertiesIndex = game.getDemolishableProperties();
+        int[] coords = {0, 0};
+        for (int i = 0; i < demolishablePropertiesIndex.size(); i++) {
+            coords = convertPositionToGridCoords(demolishablePropertiesIndex.get(i));
+            createDemolitionOverlay(coords[0], coords[1]);
+        }
+    }
+
+    private void createDemolitionOverlay(int row, int col) {
+        // Crea il rettangolo semi-trasparente
+        Rectangle overlay = new Rectangle(126, 150);
+        overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
+        overlay.getStyleClass().add("property-overlay");
+
+        // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
+        if (col == 0 || col == boardGrid.getColumnCount() - 1) {
+            overlay.setRotate(90);
+        }
+
+        // Aggiungi la StackPane al GridPane
+        boardGrid.add(overlay, col, row);
+
+        // Applica l'animazione di lampeggio
+        applyBlinkingEffect(overlay);
+
+        overlay.setOnMouseClicked(event -> {
+            demolishOnProperty(row, col);
+        });
+    }
+
+    private void demolishOnProperty(int row, int col) {
+        System.out.println("dDemolisci su riga: " + row + " colonna: " + col);
+        int pos = convertGridCoordsToPosition(row, col);
+
+        game.demolishOnProperty(pos);
+        displayPlayerInfo(game.getPlayerInTurn());
+        displayConstructionsOnSmallBoard(row,col);
+        updateBoxInfo("Hai demolito su " + game.getBoard().getBoxFromIndex(pos).getName());
+
+        removeAllOverlayRectangles();
     }
 
     public void createExtinguishableMortgageOverlay(int row, int col) {

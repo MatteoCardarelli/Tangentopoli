@@ -64,6 +64,10 @@ public abstract class PurchasableBox implements Box {
         return isMortgaged;
     }
 
+    public boolean isMortgagable() {
+        return !isMortgaged;
+    }
+
     // Imposta lo stato di ipoteca della proprietà
     public void setMortgaged(boolean mortgaged) {
         isMortgaged = mortgaged;

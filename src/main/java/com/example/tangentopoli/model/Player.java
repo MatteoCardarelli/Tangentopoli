@@ -199,7 +199,7 @@ public abstract class Player {
         }
     }
 
-    public boolean canMortgage(PurchasableBox box) {
+    /*public boolean canMortgage(PurchasableBox box) {
         // Controlla se la casella è una proprietà
         if (box instanceof Property property) {
             // Verifica che la proprietà non abbia case o hotel costruiti sopra
@@ -207,7 +207,7 @@ public abstract class Player {
         }
         // Le stazioni e le società possono essere ipotecate se non sono già ipotecate
         return !box.isMortgaged();
-    }
+    }*/
 
     public void mortgageBox(PurchasableBox box) {
         box.setMortgaged(true);
@@ -232,6 +232,13 @@ public abstract class Player {
         mortgagedBoxes.remove(purchasableBox);
     }
 
+    public boolean canDemolish(Property property) {
+        if(property.getHouseN() == 0 && property.getHotel() == 0)
+            return false;
+        else
+            return true;
+    }
+
     //metodo che restituisce la descrizione
     public String toString() {
         String str = "Giocatore " + this.playerID + " | Patrimonio: " + this.money + "€\n";
@@ -246,5 +253,9 @@ public abstract class Player {
         return str;
     }
 
-
+    public void demolishOnProperty(Property property) {
+        int price = property.getDemolitionPrice();
+        property.demolishConstruction();
+        this.money += price;
+    }
 }

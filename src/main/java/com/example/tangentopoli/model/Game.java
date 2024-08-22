@@ -26,7 +26,7 @@ public class Game {
     private void createPlayers(int playersN) {
         players = new ArrayList<>(playersN);
         for (int i = 0; i < playersN; i++) {
-            HumanPlayer player = new HumanPlayer(i+1, 600);
+            HumanPlayer player = new HumanPlayer(i+1, 1500);
             players.add(player);
             player.setPosition(board.getBoxFromIndex(0));   //Set player to start position
         }
@@ -126,19 +126,57 @@ public class Game {
         ArrayList<Integer> mortgageablePropertiesIndex = new ArrayList<>();
         Player playerInTurn = getPlayerInTurn();
 
+        // Contiamo quante proprietà di ogni colore esistono sulla board
+        HashMap<String, Integer> colorCountMap = new HashMap<>();
+        for (Box box : board.getBoxes()) {
+            if (box instanceof Property property) {
+                String color = property.getColor();
+                colorCountMap.put(color, colorCountMap.getOrDefault(color, 0) + 1);
+            }
+        }
+
+        // Contiamo quante proprietà di ciascun colore possiede il giocatore
+        HashMap<String, Integer> playerColorCountMap = new HashMap<>();
+        for (PurchasableBox purchasedBox : playerInTurn.getPurchasedBoxes()) {
+            if (purchasedBox instanceof Property property) {
+                String color = property.getColor();
+                playerColorCountMap.put(color, playerColorCountMap.getOrDefault(color, 0) + 1);
+            }
+        }
+
         // Itera su tutte le caselle della board
         for (int i = 0; i < board.getSize(); i++) {
             Box box = board.getBoxFromIndex(i);
 
-            // Verifica se la casella è un'istanza di PurchasableBox
-            if (box instanceof PurchasableBox) {
-                PurchasableBox purchasableBox = (PurchasableBox) box;
+            // Verifica se la casella è una proprietà
+            if (box instanceof Property property) {
+                String color = property.getColor();
+                int totalColorProperties = colorCountMap.getOrDefault(color, 0);
+                int playerColorProperties = playerColorCountMap.getOrDefault(color, 0);
 
-                // Verifica se il giocatore di turno è il proprietario
+                // Se il giocatore possiede tutte le proprietà di quel colore
+                if (playerColorProperties == totalColorProperties) {
+                    // Verifica se nessuna delle proprietà dello stesso colore ha costruzioni
+                    boolean hasBuildings = false;
+                    for (PurchasableBox purchasedBox : playerInTurn.getPurchasedBoxes()) {
+                        if (purchasedBox instanceof Property p && p.getColor().equals(color)) {
+                            if (p.hasBuildings()) {
+                                hasBuildings = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Se non ci sono costruzioni, la proprietà è ipotecabile
+                    if (!hasBuildings && property.isMortgagable()) {
+                        mortgageablePropertiesIndex.add(i);
+                    }
+                }
+            } else if (box instanceof PurchasableBox purchasableBox) {
+                // Verifica se il giocatore è il proprietario
                 if (purchasableBox.getOwner() == playerInTurn) {
-
                     // Verifica se la proprietà è ipotecabile
-                    if (playerInTurn.canMortgage(purchasableBox)) {
+                    if (purchasableBox.isMortgagable()) {
                         mortgageablePropertiesIndex.add(i);
                     }
                 }
@@ -147,6 +185,7 @@ public class Game {
 
         return mortgageablePropertiesIndex;
     }
+
 
     public void buildOnProperty(int pos) throws NotYourPropertyException, MaximumConstructionOnProperty, NotEnoughMoneyException {
         getPlayerInTurn().buildOnProperty((Property) board.getBoxFromIndex(pos));
@@ -184,5 +223,26 @@ public class Game {
 
     public void extinguishMortgageBox(int pos) {
         getPlayerInTurn().extinguishMortgageBox((PurchasableBox) board.getBoxFromIndex(pos));
+    }
+
+    public ArrayList<Integer> getDemolishableProperties() {
+        ArrayList<Integer> demolishablePropertiesIndex = new ArrayList<>();
+        Player playerInTurn = getPlayerInTurn();
+        for (int i = 0; i < board.getSize(); i++) {
+            Box box = board.getBoxFromIndex(i);
+            if (box instanceof Property) {
+                Property property = (Property) box;
+                if (property.getOwner() == playerInTurn) {
+                    if (playerInTurn.canDemolish(property)) {
+                        demolishablePropertiesIndex.add(i);
+                    }
+                }
+            }
+        }
+        return demolishablePropertiesIndex;
+    }
+
+    public void demolishOnProperty(int pos) {
+        getPlayerInTurn().demolishOnProperty((Property) board.getBoxFromIndex(pos));
     }
 }
