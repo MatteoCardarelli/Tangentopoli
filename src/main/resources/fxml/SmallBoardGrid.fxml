@@ -224,7 +224,7 @@
           </header>
       </DialogPane>
       <Slider fx:id="sliderAudio" layoutX="1356.0" layoutY="61.0" value="50.0" />
-      <Text fill="WHITE" layoutX="1389.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="volume" wrappingWidth="67.57861328125">
+      <Text fill="WHITE" layoutX="1394.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="volume" wrappingWidth="95.57861328125">
          <font>
             <Font size="21.0" />
          </font>
