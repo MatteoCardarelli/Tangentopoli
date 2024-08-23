@@ -11,16 +11,23 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.Media;
+
+import java.io.File;
 import java.net.URL;
 import java.util.*;
 
@@ -30,6 +37,8 @@ public class BoardController implements Initializable {
     private int diceValue;
 
     private Game game;
+
+    private MediaPlayer mediaPlayer;
 
     @FXML
     private Button nextBtn;
@@ -73,8 +82,12 @@ public class BoardController implements Initializable {
     @FXML
     private List<Circle> playerTokens;
 
+    @FXML
+    private Slider sliderAudio;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        initializeBackgroundMusicAndVolumeControl();
         dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png"))); //inizializzazione dadi
         dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
 
@@ -1073,4 +1086,27 @@ public class BoardController implements Initializable {
             createExtinguishableMortgageOverlay(coords[0], coords[1]);
         }
     }
+
+    public void initializeBackgroundMusicAndVolumeControl() {
+
+        // Inizializza la musica di sottofondo
+        String musicFile = getClass().getResource("/audio/madunina.mp3").toExternalForm();
+        Media sound = new Media(musicFile);
+        mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Riproduzione in loop
+        mediaPlayer.setVolume(0.5); // Volume iniziale al 50%
+        mediaPlayer.play(); // Avvia la riproduzione
+
+
+        sliderAudio.setShowTickLabels(true);
+        sliderAudio.setShowTickMarks(true);
+
+        // Collega lo slider al volume del MediaPlayer
+        sliderAudio.valueProperty().addListener((observable, oldValue, newValue) -> {
+            mediaPlayer.setVolume(newValue.doubleValue() / 100.0); // Imposta il volume in base al valore dello slider
+        });
+
+    }
+
+
 }
