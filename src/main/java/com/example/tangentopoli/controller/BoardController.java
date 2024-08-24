@@ -40,6 +40,10 @@ public class BoardController implements Initializable {
 
     private MediaPlayer mediaPlayer;
 
+    private boolean exitPrisonFlag = false;
+
+    private int diceEqualsCombo;
+
     @FXML
     private Button nextBtn;
 
@@ -116,6 +120,8 @@ public class BoardController implements Initializable {
     public void nextTurn() {
         removeAllOverlayRectangles();
         game.changeTurn();
+        diceEqualsCombo = 0;
+        exitPrisonFlag = false;
         displayPlayerInfo(game.getPlayerInTurn());
         displayBoxInfo(game.getPlayerInTurn());
         diceBtn.setDisable(false);
@@ -148,12 +154,24 @@ public class BoardController implements Initializable {
 
     //Manage both cases of equals or different dices values
     public void dicesEquals(int diceValue1, int diceValue2) {
-        if (diceValue1 == diceValue2) {
-            diceBtn.setDisable(false);  //abilita il bottone
-            nextBtn.setDisable(true);   //disabilita il bottone
+        if (exitPrisonFlag) {
+            diceBtn.setDisable(true);
+            nextBtn.setDisable(false);
             buyBtn.setDisable(false);
         }
+        else if (diceValue1 == diceValue2 && !game.getPlayerInTurn().isInPrison()) {
+            diceEqualsCombo++;
+
+            if (diceEqualsCombo == 3) sendToPrison();
+
+            else{
+                diceBtn.setDisable(false);  //abilita il bottone
+                nextBtn.setDisable(true);   //disabilita il bottone
+                buyBtn.setDisable(false);
+            }
+        }
         else {
+            diceEqualsCombo = 0;
             diceBtn.setDisable(true);   // Disabilita il bottone dopo aver mosso la pedina
             nextBtn.setDisable(false);  // Abilita il bottono
             buyBtn.setDisable(false);
@@ -185,7 +203,16 @@ public class BoardController implements Initializable {
         int diceValue2 = Dice.launch();
         diceValue = diceValue1 + diceValue2;
 
-        if (diceValue1==diceValue2 && playerInTurn.isInPrison()) playerInTurn.setInPrison(false);
+        //se il giocatore è in prigione e fa un lancio doppio esce e non può ritirare
+        if (diceValue1==diceValue2 && playerInTurn.isInPrison()){
+            playerInTurn.setInPrison(false);
+
+            //disabilita il lancio anche se i valori sono uguali
+            diceBtn.setDisable(true);
+            nextBtn.setDisable(false);
+
+            exitPrisonFlag = true ;
+        }
 
         // Crea l'animazione di rotazione per il primo dado
         RotateTransition rotateTransition1 = new RotateTransition(Duration.seconds(1), dice1ImageView);
@@ -232,14 +259,15 @@ public class BoardController implements Initializable {
         parallelTransition.setOnFinished(event -> {
             movePlayer(diceValue);
 
-            //se il valore dei dadi è lo stesso lancia di nuovo
-            dicesEquals(diceValue1, diceValue2);
-
-
-
+            // Se il giocatore è in prigione, disabilita il lancio di nuovo anche con valori uguali
+            if (playerInTurn.isInPrison()) {
+                diceBtn.setDisable(true);
+                nextBtn.setDisable(false);
+            } else {
+                // Se il valore dei dadi è lo stesso, verifica se il giocatore può rilanciare
+                dicesEquals(diceValue1, diceValue2);
+            }
         });
-
-
 
         // Avvia la transizione parallela (che avvierà tutte le animazioni)
         parallelTransition.play();
@@ -258,7 +286,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < diceValue; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -277,7 +305,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(1);
+        game.movePlayer(diceValue);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -434,6 +462,38 @@ public class BoardController implements Initializable {
         }
     }
 
+    public void sendToPrison() {
+        Player playerInTurn = game.getPlayerInTurn();
+        playerInTurn.setInPrison(true);  // Manda il giocatore in prigione
+        diceEqualsCombo = 0;  // Resetta il conteggio dei doppi consecutivi
+        movePlayerToPrison();  // Muovi il giocatore nella casella "In Prigione"
+        boxInfo.setText("Hai ottenuto tre doppi consecutivi! Vai direttamente in prigione.");
+        nextBtn.setDisable(false);
+        game.goToPrison(playerInTurn);
+    }
+
+    public void movePlayerToPrison() {
+        Circle playerToken = playerTokens.get(game.getPlayerTurn());
+        int prisonRow = 0;   // Coordinata della riga della casella "In Prigione"
+        int prisonColumn = boardGrid.getColumnCount() - 1;  // Coordinata della colonna della casella "In Prigione"
+
+        // Aggiorna la posizione della pedina nella casella "In Prigione"
+        switch (playerN) {
+            case 2, 3:
+                setPlayerTokenPositionSmall(game.getPlayerTurn(), prisonRow, prisonColumn); // Sposta il giocatore alla cella iniziale
+                break;
+            case 4, 5:
+                setPlayerTokenPositionMedium(game.getPlayerTurn(), prisonRow, prisonColumn);
+                break;
+            case 6:
+                setPlayerTokenPositionLarge(game.getPlayerTurn(), prisonRow, prisonColumn);
+                break;
+            default:
+                break;
+        }
+
+    }
+
     //DISPLAY
 
     //Displays player data in the top textArea
@@ -492,7 +552,7 @@ public class BoardController implements Initializable {
     //Makes the player exit from prison after a payment
     public void payToExit() throws NotEnoughMoneyException {
         try {
-            //paga €50 per uscire e esci dalla prigione
+            //paga €50 per uscire ed esci dalla prigione
             game.getPlayerInTurn().exitFromPrisonByPayment();
 
             //disabilita il pulsante per pagare una volta uscito di prigione
