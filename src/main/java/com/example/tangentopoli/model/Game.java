@@ -1,17 +1,18 @@
 package com.example.tangentopoli.model;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
-
-import java.io.FileReader;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 public class Game {
     private Board board;
@@ -21,33 +22,36 @@ public class Game {
     private Dice dice;
     private int turn = 0;
     private int playerInTurn=0;
+    private ObjectMapper objectMapper;
+
 
     //FAI SINGLETON
     public Game(int playersN){
+        objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         board = new Board(playersN);
         createPlayers(playersN);
-        loadCards("serialization/cards/chances.json", "serialization/cards/communityChests.json");
+        loadCards("src/main/resources/serialization/cards/chances.json", "src/main/resources/serialization/cards/communityChests.json");
         System.out.println(communityChestCards);
     }
 
     public void loadCards(String chanceJsonPath, String communityChestJsonPath) {
-        Gson gson = new Gson();
+        try {
+            // Carica e deserializza le carte Chance
+            File chanceFile = new File(chanceJsonPath);
+             chanceCards = objectMapper.readValue(chanceFile, new TypeReference<ArrayList<Chance>>() {});
 
-        try (FileReader chanceReader = new FileReader(chanceJsonPath);
-             FileReader communityChestReader = new FileReader(communityChestJsonPath)) {
+            // Carica e deserializza le carte CommunityChest
+            File communityChestFile = new File(communityChestJsonPath);
+            communityChestCards = objectMapper.readValue(communityChestFile, new TypeReference<ArrayList<CommunityChest>>() {});
 
-            Type cardListType = new TypeToken<ArrayList<Card>>() {}.getType();
-
-            // Deserializza le carte Chance
-            chanceCards = gson.fromJson(chanceReader, cardListType);
-
-            // Deserializza le carte CommunityChest
-            communityChestCards = gson.fromJson(communityChestReader, cardListType);
-
+            // Ora hai due liste separate di carte
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     //Populates players list, assigning to each player an ID and the initial amount of money
     private void createPlayers(int playersN) {

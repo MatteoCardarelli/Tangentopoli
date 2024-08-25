@@ -1,5 +1,5 @@
-{
-  "possibilità": [
+
+[
     {
       "title": "Premio Giornalistico",
       "description": "Hai vinto un premio giornalistico per il miglior reportage su Tangentopoli. Ricevi 200€.",
@@ -61,4 +61,4 @@
       "moneyAmount": 100
     }
   ]
-}
+

@@ -5,6 +5,11 @@ public class CommunityChest extends Card {
         super(title, description, type, moneyAmount);
     }
 
+    public CommunityChest() {
+        super();
+
+    }
+
     @Override
     public void action() {
 
