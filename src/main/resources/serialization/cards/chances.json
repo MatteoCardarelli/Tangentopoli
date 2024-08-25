@@ -1,0 +1,64 @@
+{
+  "possibilità": [
+    {
+      "title": "Premio Giornalistico",
+      "description": "Hai vinto un premio giornalistico per il miglior reportage su Tangentopoli. Ricevi 200€.",
+      "type": 2,
+      "moneyAmount": 200
+    },
+    {
+      "title": "Sostegno Elettorale",
+      "description": "Un influente politico ti sostiene. Avanza di tre caselle e passa dal via.",
+      "type": 4,
+      "moneyAmount": 200
+    },
+    {
+      "title": "Indagine Archiviata",
+      "description": "Le indagini contro di te sono state archiviate. Rimani dov'eri e ricevi 50€ di risarcimento.",
+      "type": 2,
+      "moneyAmount": 50
+    },
+    {
+      "title": "Patteggiamento Riuscito",
+      "description": "Hai patteggiato con successo. Paga 100€ ma evita la prigione.",
+      "type": 1,
+      "moneyAmount": -100
+    },
+    {
+      "title": "Donazione a Fini Benefici",
+      "description": "Hai fatto una donazione per ripulire la tua immagine. Paga 50€.",
+      "type": 1,
+      "moneyAmount": -50
+    },
+    {
+      "title": "Scudo Fiscale",
+      "description": "Grazie allo scudo fiscale, hai riportato capitali dall'estero. Ottieni 300€.",
+      "type": 2,
+      "moneyAmount": 300
+    },
+    {
+      "title": "Blitz della Polizia",
+      "description": "Un blitz della polizia ti sorprende. Torna indietro di tre caselle.",
+      "type": 5,
+      "moneyAmount": 0
+    },
+    {
+      "title": "Protezione Politica",
+      "description": "Sei sotto la protezione di un potente politico. Salta il prossimo turno senza danni.",
+      "type": 6,
+      "moneyAmount": 0
+    },
+    {
+      "title": "Intervista Televisiva",
+      "description": "La tua intervista in TV è stata un successo. Ricevi 100€ in donazioni.",
+      "type": 2,
+      "moneyAmount": 100
+    },
+    {
+      "title": "Amnistia Totale",
+      "description": "Hai ricevuto un'amnistia totale per i tuoi reati. Rimani dove sei e ricevi 100€.",
+      "type": 2,
+      "moneyAmount": 100
+    }
+  ]
+}

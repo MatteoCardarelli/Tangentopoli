@@ -4,6 +4,7 @@ module com.example.tangentopoli {
     requires java.sql;
     requires java.desktop;
     requires javafx.media;
+    requires com.google.gson;
 
     opens com.example.tangentopoli to javafx.fxml;
     exports com.example.tangentopoli;

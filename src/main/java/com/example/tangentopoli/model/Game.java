@@ -1,17 +1,23 @@
 package com.example.tangentopoli.model;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Game {
     private Board board;
     private ArrayList<Player> players;
-    private Deck communityChests;
-    private Deck chanches;
+    private ArrayList<CommunityChest> communityChestCards = new ArrayList<>();
+    private ArrayList<Chance> chanceCards = new ArrayList<>();
     private Dice dice;
     private int turn = 0;
     private int playerInTurn=0;
@@ -20,6 +26,27 @@ public class Game {
     public Game(int playersN){
         board = new Board(playersN);
         createPlayers(playersN);
+        loadCards("serialization/cards/chances.json", "serialization/cards/communityChests.json");
+        System.out.println(communityChestCards);
+    }
+
+    public void loadCards(String chanceJsonPath, String communityChestJsonPath) {
+        Gson gson = new Gson();
+
+        try (FileReader chanceReader = new FileReader(chanceJsonPath);
+             FileReader communityChestReader = new FileReader(communityChestJsonPath)) {
+
+            Type cardListType = new TypeToken<ArrayList<Card>>() {}.getType();
+
+            // Deserializza le carte Chance
+            chanceCards = gson.fromJson(chanceReader, cardListType);
+
+            // Deserializza le carte CommunityChest
+            communityChestCards = gson.fromJson(communityChestReader, cardListType);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //Populates players list, assigning to each player an ID and the initial amount of money
