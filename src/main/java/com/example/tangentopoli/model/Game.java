@@ -1,5 +1,6 @@
 package com.example.tangentopoli.model;
 
+import com.example.tangentopoli.controller.BoardController;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -20,7 +21,7 @@ public class Game {
     private ArrayList<Player> players;
     private ArrayList<CommunityChest> communityChestCards = new ArrayList<>();
     private ArrayList<Chance> chanceCards = new ArrayList<>();
-    private Dice dice;
+    private BoardController boardController;
     private int turn = 0;
     private int playerInTurn=0;
     private ObjectMapper objectMapper;
@@ -35,6 +36,14 @@ public class Game {
         createPlayers(playersN);
         loadCards("src/main/resources/serialization/cards/chances.json", "src/main/resources/serialization/cards/communityChests.json");
         System.out.println(communityChestCards);
+    }
+
+    public void setController(BoardController boardController) {
+        this.boardController = boardController;
+    }
+
+    public BoardController getController() {
+        return boardController;
     }
 
     public void loadCards(String chanceJsonPath, String communityChestJsonPath) {
@@ -54,7 +63,6 @@ public class Game {
             e.printStackTrace();
         }
     }
-
 
     //Populates players list, assigning to each player an ID and the initial amount of money
     private void createPlayers(int playersN) {
@@ -89,6 +97,7 @@ public class Game {
 
     public int getPlayerTurn() { return playerInTurn; }
 
+    //sostituire il valore con player in turn
     public void goToPrison(Player player) {
         player.setInPrison(true);
         player.setPosition(board.getBoxes().get((board.getSize() / 4)));
@@ -98,7 +107,7 @@ public class Game {
         Player player = getPlayerInTurn();
 
         //il giocatore non può muoversi
-        if (player.isInPrison()) return;
+        if (player.isInPrison() || player.isSkipTurn()) return;
 
         Box currentPosition = player.getPosition();
         int currentPosIndex = board.getBoxIndex(currentPosition);
@@ -113,26 +122,26 @@ public class Game {
         if(nextPos.getName().equals("GoToPrison"))
             goToPrison(player);
         if(nextPos.getName().equals("Imprevisto"))
-            getCommunityChest(player);
+            getCommunityChest();
         if(nextPos.getName().equals("Probabilità"))
-            getChance(player);
+            getChance();
         else
             player.setPosition(nextPos);
     }
 
-    private void getChance(Player player) {
+    private void getChance() {
         Chance chanceCard = chanceCards.get(0);
         //Positions the first element at the end of the list and shifts all the previous elements
         chanceCards.add(chanceCards.size()-1, chanceCards.remove(0));
-        chanceCard.action(player);
+        chanceCard.action(this);
         System.out.println(chanceCards);
     }
 
-    private void getCommunityChest(Player player) {
+    private void getCommunityChest() {
         CommunityChest communityChest = communityChestCards.get(0);
         //Positions the first element at the end of the list and shifts all the previous elements
         communityChestCards.add(communityChestCards.size()-1, communityChestCards.remove(0));
-        communityChest.action(player);
+        communityChest.action(this);
         System.out.println(communityChestCards);
     }
 

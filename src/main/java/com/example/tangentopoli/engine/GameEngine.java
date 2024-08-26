@@ -10,6 +10,7 @@ public class GameEngine {
      public GameEngine(int playersN, BoardController boardController) {
           Game game = new Game(playersN);
           boardController.setGame(game);
+          game.setController(boardController);
      }
 
      // Metodo pubblico statico per ottenere l'istanza Singleton

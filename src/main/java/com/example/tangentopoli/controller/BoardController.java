@@ -170,6 +170,7 @@ public class BoardController implements Initializable {
                 buyBtn.setDisable(false);
             }
         }
+
         else {
             diceEqualsCombo = 0;
             diceBtn.setDisable(true);   // Disabilita il bottone dopo aver mosso la pedina
@@ -199,8 +200,8 @@ public class BoardController implements Initializable {
         int y1 = movement.nextInt(200) - 100;
         int y2 = movement.nextInt(200) - 100;
 
-        int diceValue1 = Dice.launch();
-        int diceValue2 = Dice.launch();
+        int diceValue1 = 1;
+        int diceValue2 = 1;
         diceValue = diceValue1 + diceValue2;
 
         //se il giocatore è in prigione e fa un lancio doppio esce e non può ritirare
@@ -278,7 +279,7 @@ public class BoardController implements Initializable {
     //Moves the player
     public void movePlayer(int diceValue) {
 
-        if (game.getPlayerInTurn().isInPrison()) return;
+        if (game.getPlayerInTurn().isInPrison() || game.getPlayerInTurn().isSkipTurn()) return;
 
         Circle playerToken = playerTokens.get(game.getPlayerTurn());
         int rowPos = GridPane.getRowIndex(playerToken) == null ? 0 : GridPane.getRowIndex(playerToken);
@@ -286,7 +287,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < diceValue; i++) {
+        for (int i = 0; i < 1; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -305,12 +306,12 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(diceValue);
+        game.movePlayer(1);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
             rowPos = 0;
-            columnPos = maxC-1;
+            columnPos = maxC - 1;
             payPrisonBtn.setDisable(false);
         }
 
@@ -465,15 +466,19 @@ public class BoardController implements Initializable {
     public void sendToPrison() {
         Player playerInTurn = game.getPlayerInTurn();
         playerInTurn.setInPrison(true);  // Manda il giocatore in prigione
-        diceEqualsCombo = 0;  // Resetta il conteggio dei doppi consecutivi
+        if (diceEqualsCombo==3){
+            updateBoxInfo("Hai ottenuto tre doppi consecutivi! Vai direttamente in prigione.");
+            diceEqualsCombo = 0;  // Resetta il conteggio dei doppi consecutivi
+        } else
+            updateBoxInfo("Sei sato mandato in prigione");
+
         movePlayerToPrison();  // Muovi il giocatore nella casella "In Prigione"
-        boxInfo.setText("Hai ottenuto tre doppi consecutivi! Vai direttamente in prigione.");
+
         nextBtn.setDisable(false);
         game.goToPrison(playerInTurn);
     }
 
     public void movePlayerToPrison() {
-        Circle playerToken = playerTokens.get(game.getPlayerTurn());
         int prisonRow = 0;   // Coordinata della riga della casella "In Prigione"
         int prisonColumn = boardGrid.getColumnCount() - 1;  // Coordinata della colonna della casella "In Prigione"
 

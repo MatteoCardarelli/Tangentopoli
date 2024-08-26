@@ -17,7 +17,7 @@ public abstract class Card {
 
     }
 
-    public abstract void action(Player player);
+    public abstract void action(Game game);
 
     public String getTitle() {
         return title;

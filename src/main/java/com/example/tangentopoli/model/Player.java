@@ -12,6 +12,8 @@ public abstract class Player {
     private int playerID;
     private Box position;
     private int money;
+    private boolean skipTurn = false;
+    private boolean exitFromPrisonCard = false;
 
     //da eliminare a fine gioco
     private int launchValue;
@@ -90,6 +92,22 @@ public abstract class Player {
     //da eliminare a gioco completo
     public int getLaunchValue() {
         return this.launchValue;
+    }
+
+    public boolean isSkipTurn() {
+        return skipTurn;
+    }
+
+    public void setSkipTurn(boolean skipTurn) {
+        this.skipTurn = skipTurn;
+    }
+
+    public boolean isExitFromPrisonCard() {
+        return exitFromPrisonCard;
+    }
+
+    public void setExitFromPrisonCard(boolean exitFromPrisonCard) {
+        this.exitFromPrisonCard = exitFromPrisonCard;
     }
 
     //metodo per acquistare caselle
