@@ -11,7 +11,7 @@ public class CommunityChest extends Card {
     }
 
     @Override
-    public void action() {
+    public void action(Player player) {
 
     }
 }

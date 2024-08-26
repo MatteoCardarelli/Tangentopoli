@@ -41,4 +41,9 @@ public class ConcreteBoxFactory implements BoxFactory {
     public GoToPrison createGoToPrison() {
         return new GoToPrison();
     }
+
+    @Override
+    public CardBox createCardBox(String name) {
+        return new CardBox(name);
+    }
 }

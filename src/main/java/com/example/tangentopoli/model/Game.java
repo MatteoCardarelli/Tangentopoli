@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 
@@ -40,11 +41,13 @@ public class Game {
         try {
             // Carica e deserializza le carte Chance
             File chanceFile = new File(chanceJsonPath);
-             chanceCards = objectMapper.readValue(chanceFile, new TypeReference<ArrayList<Chance>>() {});
+            chanceCards = objectMapper.readValue(chanceFile, new TypeReference<ArrayList<Chance>>() {});
+            Collections.shuffle(chanceCards);
 
             // Carica e deserializza le carte CommunityChest
             File communityChestFile = new File(communityChestJsonPath);
             communityChestCards = objectMapper.readValue(communityChestFile, new TypeReference<ArrayList<CommunityChest>>() {});
+            Collections.shuffle(communityChestCards);
 
             // Ora hai due liste separate di carte
         } catch (IOException e) {
@@ -109,8 +112,28 @@ public class Game {
         }
         if(nextPos.getName().equals("GoToPrison"))
             goToPrison(player);
+        if(nextPos.getName().equals("Imprevisto"))
+            getCommunityChest(player);
+        if(nextPos.getName().equals("Probabilità"))
+            getChance(player);
         else
             player.setPosition(nextPos);
+    }
+
+    private void getChance(Player player) {
+        Chance chanceCard = chanceCards.get(0);
+        //Positions the first element at the end of the list and shifts all the previous elements
+        chanceCards.add(chanceCards.size()-1, chanceCards.remove(0));
+        chanceCard.action(player);
+        System.out.println(chanceCards);
+    }
+
+    private void getCommunityChest(Player player) {
+        CommunityChest communityChest = communityChestCards.get(0);
+        //Positions the first element at the end of the list and shifts all the previous elements
+        communityChestCards.add(communityChestCards.size()-1, communityChestCards.remove(0));
+        communityChest.action(player);
+        System.out.println(communityChestCards);
     }
 
     public ArrayList<Integer> getBuildableProperties() {

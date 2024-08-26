@@ -17,7 +17,7 @@ public abstract class Card {
 
     }
 
-    public abstract void action();
+    public abstract void action(Player player);
 
     public String getTitle() {
         return title;
@@ -51,5 +51,9 @@ public abstract class Card {
         this.moneyAmount = moneyAmount;
     }
 
+    public String toString() {
+        String str = this.title + "\t" + this.description;
+        return str;
+    }
 
 }

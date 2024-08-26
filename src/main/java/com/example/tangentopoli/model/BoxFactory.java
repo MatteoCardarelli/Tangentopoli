@@ -9,4 +9,5 @@ public interface BoxFactory {
     Tax createTax(String name, int price);
     Start createStart();
     GoToPrison createGoToPrison();
+    CardBox createCardBox(String name);
 }
