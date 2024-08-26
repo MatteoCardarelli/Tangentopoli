@@ -144,7 +144,7 @@ public class BoardController implements Initializable {
         if (game.getPlayerInTurn().getTurnInPrison() == 3){
             nextBtn.setDisable(true);
             diceBtn.setDisable(true);
-            boxInfo.setText("Sei da tre turni in prigione sei obbligato a pagare");
+            updateBoxInfo("Sei da tre turni in prigione sei obbligato a pagare");
         }
     }
 
@@ -190,7 +190,7 @@ public class BoardController implements Initializable {
 
         if (playerInTurn.isInPrison()) {
             // Mostra un messaggio o un avviso che il giocatore è in prigione
-            boxInfo.setText("Non puoi muoverti mentre sei in prigione. Devi tirare i dadi.");
+            updateBoxInfo("Non puoi muoverti mentre sei in prigione. Devi tirare i dadi.");
             nextBtn.setDisable(false);
             payPrisonBtn.setDisable(true);
             playerInTurn.setTurnInPrison();
@@ -260,7 +260,11 @@ public class BoardController implements Initializable {
 
         // Aggiungi un listener per eseguire il movimento del giocatore dopo il completamento delle animazioni
         parallelTransition.setOnFinished(event -> {
-            movePlayer(diceValue);
+            try {
+                movePlayer(diceValue);
+            } catch (NotEnoughMoneyException e) {
+                throw new RuntimeException(e);
+            }
 
             // Se il giocatore è in prigione, disabilita il lancio di nuovo anche con valori uguali
             if (playerInTurn.isInPrison()) {
@@ -279,7 +283,7 @@ public class BoardController implements Initializable {
     //PLAYER MOVEMENT & TOKENS GENERATION
 
     //Moves the player
-    public void movePlayer(int diceValue) {
+    public void movePlayer(int diceValue) throws NotEnoughMoneyException {
 
         if (game.getPlayerInTurn().isInPrison() || game.getPlayerInTurn().isSkipTurn()) return;
 
@@ -289,7 +293,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < diceValue; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -308,7 +312,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(4);
+        game.movePlayer(diceValue);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -386,15 +390,11 @@ public class BoardController implements Initializable {
         GridPane.setColumnIndex(playerToken, column);
         switch (playerIndex) {
             case 0:
-                if(row == 0 && column == boardGrid.getColumnCount() - 1)
-                    System.out.println("Sposto giocatore 1 graficamente in prigione");
                 playerToken.setTranslateY(-47.0);
                 playerToken.setTranslateX(5.0);
 
                 break;
             case 1:
-                if(row == 0 && column == boardGrid.getColumnCount() - 1)
-                    System.out.println("Sposto giocatore 2 graficamente in prigione");
                 playerToken.setTranslateX(47.0);
                 break;
             case 2:
@@ -404,7 +404,6 @@ public class BoardController implements Initializable {
             default:
                 break;
         }
-        System.out.println("Sto spostando il giocatore graficamente");
     }
 
     //Sets the tokens' position on the medium board
@@ -478,7 +477,6 @@ public class BoardController implements Initializable {
             diceEqualsCombo = 0;  // Resetta il conteggio dei doppi consecutivi
         } else {
             updateBoxInfo("Sei sato mandato in prigione");
-            System.out.println("In prigione da carta");
         }
 
         game.goToPrison(playerInTurn);
@@ -507,8 +505,6 @@ public class BoardController implements Initializable {
             default:
                 break;
         }
-
-        System.out.println("Ho spostato il giocatore in prigione\n" + game.getPlayerInTurn().getPosition().getName());
 
     }
 
@@ -550,20 +546,20 @@ public class BoardController implements Initializable {
                 displayBoxInfo(currentPlayer);
 
                 // Notifica all'utente dell'acquisto avvenuto con successo
-                boxInfo.setText("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "€!");
+                updateBoxInfo("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "€!");
                 createPropertyMarker(game.getPlayerTurn());
                 buyBtn.setDisable(true);
             } catch (NotEnoughMoneyException e) {
                 // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
-                boxInfo.setText(e.getMessage());
+                updateBoxInfo(e.getMessage());
 
             }
             catch (BoxAlreadyPurchasedException e) {
-                boxInfo.setText(e.getMessage());
+                updateBoxInfo(e.getMessage());
             }
         } else {
             // Gestisci il caso in cui la casella non sia acquistabile (non è necessario ma aggiunge sicurezza)
-            boxInfo.setText("Questa casella non è acquistabile.");
+            updateBoxInfo("Questa casella non è acquistabile.");
         }
     }
 
@@ -581,7 +577,7 @@ public class BoardController implements Initializable {
             diceBtn.setDisable(false);
 
             //aggiorna i display
-            boxInfo.setText("hai pagato €50 ora puoi muoverti dalla prigione");
+            updateBoxInfo("hai pagato €50 ora puoi muoverti dalla prigione");
             displayPlayerInfo(game.getPlayerInTurn());
         } catch (NotEnoughMoneyException e) {
             boxInfo.setText(e.getMessage());
@@ -653,7 +649,6 @@ public class BoardController implements Initializable {
 
     //Builds on the property that has been directly clicked on the board
     public void buildOnProperty(int row, int col) {
-        System.out.println("Costruisci su riga: " + row + " colonna: " + col);
         int pos = convertGridCoordsToPosition(row, col);
 
         try {
@@ -662,9 +657,9 @@ public class BoardController implements Initializable {
             displayConstructionsOnSmallBoard(row,col);
             updateBoxInfo("Hai costruito su " + game.getBoard().getBoxFromIndex(pos).getName());
         } catch (NotYourPropertyException e) {
-            boxInfo.setText("Non possiedi questa proprietà");
+            updateBoxInfo("Non possiedi questa proprietà");
         } catch (MaximumConstructionOnProperty e) {
-            boxInfo.setText("Hai raggiunto il limite di costruzioni su questa casella");
+            updateBoxInfo("Hai raggiunto il limite di costruzioni su questa casella");
         } catch (NotEnoughMoneyException e){updateBoxInfo("Non hai abbastanza soldi per costruire");}
 
         removeAllOverlayRectangles();
@@ -971,7 +966,6 @@ public class BoardController implements Initializable {
     }
 
     private void mortgageBox(int row, int col) {
-        System.out.println("Ipoteca riga: " + row + " colonna: " + col);
         int pos = convertGridCoordsToPosition(row, col);
             game.mortgageBox(pos);
             displayPlayerInfo(game.getPlayerInTurn());
@@ -1110,7 +1104,6 @@ public class BoardController implements Initializable {
     }
 
     private void demolishOnProperty(int row, int col) {
-        System.out.println("dDemolisci su riga: " + row + " colonna: " + col);
         int pos = convertGridCoordsToPosition(row, col);
 
         game.demolishOnProperty(pos);
@@ -1144,7 +1137,6 @@ public class BoardController implements Initializable {
     }
 
     private void extinguishMortgageBox(int row, int col) {
-        System.out.println("Estingui ipoteca riga: " + row + " colonna: " + col);
         int pos = convertGridCoordsToPosition(row, col);
         game.extinguishMortgageBox(pos);
         displayPlayerInfo(game.getPlayerInTurn());

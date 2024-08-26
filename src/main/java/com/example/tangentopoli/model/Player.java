@@ -279,4 +279,10 @@ public abstract class Player {
         property.demolishConstruction();
         this.money += price;
     }
+
+    public void pay(int moneyAmount) throws NotEnoughMoneyException {
+        int value = this.money + moneyAmount;
+        if (value <= 0) throw new NotEnoughMoneyException("Non hai abbastanza soldi");
+        else this.money += moneyAmount;
+    }
 }

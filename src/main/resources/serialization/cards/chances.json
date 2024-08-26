@@ -3,7 +3,7 @@
     {
       "title": "Premio Giornalistico",
       "description": "Hai vinto un premio giornalistico per il miglior reportage su Tangentopoli. Ricevi 200€.",
-      "type": 2,
+      "type": 1,
       "moneyAmount": 200
     },
     {
@@ -15,7 +15,7 @@
     {
       "title": "Indagine Archiviata",
       "description": "Le indagini contro di te sono state archiviate, ricevi 50€ di risarcimento.",
-      "type": 2,
+      "type": 1,
       "moneyAmount": 50
     },
     {
@@ -33,7 +33,7 @@
     {
       "title": "Scudo Fiscale",
       "description": "Grazie allo scudo fiscale, hai riportato capitali dall'estero, Ottieni 300€.",
-      "type": 2,
+      "type": 1,
       "moneyAmount": 300
     },
     {
@@ -51,13 +51,13 @@
     {
       "title": "Intervista Televisiva",
       "description": "La tua intervista in TV è stata un successo. Ricevi 100€ in donazioni.",
-      "type": 2,
+      "type": 1,
       "moneyAmount": 100
     },
     {
       "title": "Amnistia Totale",
       "description": "Hai ricevuto un'amnistia totale per i tuoi reati, ricevi 100€.",
-      "type": 2,
+      "type": 1,
       "moneyAmount": 100
     },
     {
