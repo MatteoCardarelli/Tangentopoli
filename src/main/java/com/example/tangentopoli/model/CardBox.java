@@ -15,6 +15,6 @@ public class CardBox implements Box {
 
     @Override
     public String getDescription() {
-        return "";
+        return this.name;
     }
 }

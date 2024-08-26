@@ -85,6 +85,10 @@ public class Game {
     public void changeTurn() {
         playerInTurn = (playerInTurn + 1) % players.size();
         turn++;
+        if(getPlayerInTurn().isSkipTurn()) {
+            getPlayerInTurn().setSkipTurn(false);
+            changeTurn();
+        }
     }
 
     public int getTurn(){
@@ -101,6 +105,7 @@ public class Game {
     public void goToPrison(Player player) {
         player.setInPrison(true);
         player.setPosition(board.getBoxes().get((board.getSize() / 4)));
+        System.out.println("Stampo posizione corrente da Game\n" + player.getPosition().getName());
     }
 
     public void movePlayer(int diceValue) {
@@ -119,30 +124,37 @@ public class Game {
         if(nextPosIndexMod < currentPosIndex) {
             player.setMoney(player.getMoney() + 200);
         }
+
         if(nextPos.getName().equals("GoToPrison"))
             goToPrison(player);
-        if(nextPos.getName().equals("Imprevisto"))
-            getCommunityChest();
-        if(nextPos.getName().equals("Probabilità"))
-            getChance();
-        else
+        else if(nextPos.getName().equals("Imprevisto")) {
+            player.setPosition(nextPos);
+            Card card = getCommunityChest();
+            boardController.setCardInfo(card);
+        } else if(nextPos.getName().equals("Probabilità")) {
+            player.setPosition(nextPos);
+            Card card = getChance();
+            boardController.setCardInfo(card);
+        } else
             player.setPosition(nextPos);
     }
 
-    private void getChance() {
+    private Chance getChance() {
         Chance chanceCard = chanceCards.get(0);
         //Positions the first element at the end of the list and shifts all the previous elements
         chanceCards.add(chanceCards.size()-1, chanceCards.remove(0));
         chanceCard.action(this);
         System.out.println(chanceCards);
+        return chanceCard;
     }
 
-    private void getCommunityChest() {
+    private CommunityChest getCommunityChest() {
         CommunityChest communityChest = communityChestCards.get(0);
         //Positions the first element at the end of the list and shifts all the previous elements
         communityChestCards.add(communityChestCards.size()-1, communityChestCards.remove(0));
         communityChest.action(this);
         System.out.println(communityChestCards);
+        return communityChest;
     }
 
     public ArrayList<Integer> getBuildableProperties() {

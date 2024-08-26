@@ -72,10 +72,13 @@ public abstract class Player {
     }
 
     //metodo per uscire di prigione pagando
-    public void exitFromPrisonByPayment() throws NotEnoughMoneyException {
-        if (this.getMoney()>=50) {
-        this.setMoney(this.getMoney()-50);
-        this.setInPrison(false);
+    public void exitFromPrison() throws NotEnoughMoneyException {
+        if(this.isExitFromPrisonCard()) {
+            this.setInPrison(false);
+            this.setExitFromPrisonCard(false);
+        } else if (this.getMoney()>=50) {
+            this.setMoney(this.getMoney()-50);
+            this.setInPrison(false);
         } else throw new NotEnoughMoneyException ("Non hai abbastanza soldi");
     }
 

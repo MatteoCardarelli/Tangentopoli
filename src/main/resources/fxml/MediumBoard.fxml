@@ -108,7 +108,7 @@
             <Font size="30.0" />
          </font>
       </Button>
-      <Button fx:id="payPrisonBtn" layoutX="915.0" layoutY="57.0" mnemonicParsing="false" onAction="#payToExit" prefHeight="38.0" prefWidth="171.0" text="paga per uscire" />
+      <Button fx:id="payPrisonBtn" layoutX="915.0" layoutY="57.0" mnemonicParsing="false" onAction="#exitFromPrison" prefHeight="38.0" prefWidth="171.0" text="paga per uscire" />
       <DialogPane fx:id="actionsDialog" layoutX="686.0" layoutY="365.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="210.0" prefWidth="395.0" visible="false">
          <header>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0">

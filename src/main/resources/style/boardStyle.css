@@ -2,3 +2,28 @@
     -fx-pref-width: 126px;
     -fx-pref-height: 150px;
 }
+
+/* Centrare i label */
+.dialog-pane .label {
+    -fx-alignment: CENTER;
+    -fx-text-alignment: CENTER;
+    -fx-wrap-text: true; /* Assicura che il testo si adatti all'area disponibile */
+}
+
+/* Stile del bottone */
+.styled-button {
+    -fx-background-color: #ff6347; /* Semplice colore di sfondo */
+    -fx-background-radius: 10; /* Arrotonda leggermente gli angoli */
+    -fx-text-fill: white; /* Colore del testo bianco */
+    -fx-font-weight: bold; /* Testo in grassetto */
+    -fx-padding: 8 16 8 16; /* Spaziatura interna del bottone */
+    -fx-cursor: hand; /* Mostra il cursore a mano quando si passa sopra */
+}
+
+.styled-button:hover {
+    -fx-background-color: #ff4500; /* Cambia colore al passaggio del mouse */
+}
+
+.styled-button:pressed {
+    -fx-background-color: #ff7f50; /* Cambia colore quando il bottone è premuto */
+}

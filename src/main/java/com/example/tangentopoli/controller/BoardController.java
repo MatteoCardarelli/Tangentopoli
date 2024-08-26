@@ -6,20 +6,16 @@ import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
 import com.example.tangentopoli.model.*;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -27,11 +23,13 @@ import javafx.util.Duration;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
 
-import java.io.File;
 import java.net.URL;
 import java.util.*;
 
 public class BoardController implements Initializable {
+    public Label cardTitle;
+    public Label cardDescription;
+    public Button cardBtn;
     private int playerN;
 
     private int diceValue;
@@ -42,7 +40,7 @@ public class BoardController implements Initializable {
 
     private boolean exitPrisonFlag = false;
 
-    private int diceEqualsCombo;
+    private int diceEqualsCombo = 0;
 
     @FXML
     private Button nextBtn;
@@ -88,6 +86,11 @@ public class BoardController implements Initializable {
 
     @FXML
     private Slider sliderAudio;
+
+    @FXML
+    private DialogPane cardDialog;
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -162,8 +165,8 @@ public class BoardController implements Initializable {
         else if (diceValue1 == diceValue2 && !game.getPlayerInTurn().isInPrison()) {
             diceEqualsCombo++;
 
-            if (diceEqualsCombo == 3) sendToPrison();
-
+            if (diceEqualsCombo == 3)
+                sendToPrison();
             else{
                 diceBtn.setDisable(false);  //abilita il bottone
                 nextBtn.setDisable(true);   //disabilita il bottone
@@ -191,7 +194,6 @@ public class BoardController implements Initializable {
             nextBtn.setDisable(false);
             payPrisonBtn.setDisable(true);
             playerInTurn.setTurnInPrison();
-
         }
 
         Random movement = new Random();
@@ -200,8 +202,8 @@ public class BoardController implements Initializable {
         int y1 = movement.nextInt(200) - 100;
         int y2 = movement.nextInt(200) - 100;
 
-        int diceValue1 = 1;
-        int diceValue2 = 1;
+        int diceValue1 = Dice.launch();
+        int diceValue2 = Dice.launch();
         diceValue = diceValue1 + diceValue2;
 
         //se il giocatore è in prigione e fa un lancio doppio esce e non può ritirare
@@ -287,7 +289,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 4; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -306,7 +308,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(1);
+        game.movePlayer(4);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -384,11 +386,15 @@ public class BoardController implements Initializable {
         GridPane.setColumnIndex(playerToken, column);
         switch (playerIndex) {
             case 0:
+                if(row == 0 && column == boardGrid.getColumnCount() - 1)
+                    System.out.println("Sposto giocatore 1 graficamente in prigione");
                 playerToken.setTranslateY(-47.0);
                 playerToken.setTranslateX(5.0);
 
                 break;
             case 1:
+                if(row == 0 && column == boardGrid.getColumnCount() - 1)
+                    System.out.println("Sposto giocatore 2 graficamente in prigione");
                 playerToken.setTranslateX(47.0);
                 break;
             case 2:
@@ -398,6 +404,7 @@ public class BoardController implements Initializable {
             default:
                 break;
         }
+        System.out.println("Sto spostando il giocatore graficamente");
     }
 
     //Sets the tokens' position on the medium board
@@ -465,17 +472,18 @@ public class BoardController implements Initializable {
 
     public void sendToPrison() {
         Player playerInTurn = game.getPlayerInTurn();
-        playerInTurn.setInPrison(true);  // Manda il giocatore in prigione
+
         if (diceEqualsCombo==3){
             updateBoxInfo("Hai ottenuto tre doppi consecutivi! Vai direttamente in prigione.");
             diceEqualsCombo = 0;  // Resetta il conteggio dei doppi consecutivi
-        } else
+        } else {
             updateBoxInfo("Sei sato mandato in prigione");
+            System.out.println("In prigione da carta");
+        }
 
-        movePlayerToPrison();  // Muovi il giocatore nella casella "In Prigione"
-
-        nextBtn.setDisable(false);
         game.goToPrison(playerInTurn);
+        movePlayerToPrison();  // Muovi il giocatore nella casella "In Prigione"
+        nextBtn.setDisable(false);
     }
 
     public void movePlayerToPrison() {
@@ -485,7 +493,10 @@ public class BoardController implements Initializable {
         // Aggiorna la posizione della pedina nella casella "In Prigione"
         switch (playerN) {
             case 2, 3:
-                setPlayerTokenPositionSmall(game.getPlayerTurn(), prisonRow, prisonColumn); // Sposta il giocatore alla cella iniziale
+                //Sincronizza e risolve il conflitto di aggiornamento tra il thread della logica di gioco e il thread dell'interfaccia grafica.
+                Platform.runLater(() -> {
+                    setPlayerTokenPositionSmall(game.getPlayerTurn(), prisonRow, prisonColumn);
+                });
                 break;
             case 4, 5:
                 setPlayerTokenPositionMedium(game.getPlayerTurn(), prisonRow, prisonColumn);
@@ -496,6 +507,8 @@ public class BoardController implements Initializable {
             default:
                 break;
         }
+
+        System.out.println("Ho spostato il giocatore in prigione\n" + game.getPlayerInTurn().getPosition().getName());
 
     }
 
@@ -555,10 +568,10 @@ public class BoardController implements Initializable {
     }
 
     //Makes the player exit from prison after a payment
-    public void payToExit() throws NotEnoughMoneyException {
+    public void exitFromPrison() throws NotEnoughMoneyException {
         try {
             //paga €50 per uscire ed esci dalla prigione
-            game.getPlayerInTurn().exitFromPrisonByPayment();
+            game.getPlayerInTurn().exitFromPrison();
 
             //disabilita il pulsante per pagare una volta uscito di prigione
             payPrisonBtn.setDisable(true);
@@ -1173,5 +1186,17 @@ public class BoardController implements Initializable {
 
     }
 
+    public void openCardDialog() {
+        cardDialog.setVisible(true);
+    }
 
+    public void closeCardDialog(ActionEvent actionEvent) {
+        cardDialog.setVisible(false);
+    }
+
+    public void setCardInfo(Card card) {
+        openCardDialog();
+        cardTitle.setText(card.getTitle());
+        cardDescription.setText(card.getDescription());
+    }
 }
