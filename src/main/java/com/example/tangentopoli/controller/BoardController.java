@@ -359,11 +359,14 @@ public class BoardController implements Initializable {
                 Color.ORANGE, Color.PURPLE // Aggiungi altri colori se necessario
         );
 
+        String str = "token";
+
         for (int i = 0; i < playerN; i++) {
             // Usa il colore corrispondente per ogni giocatore
             Color playerColor = playerColors.get(i % playerColors.size());
 
             Circle playerToken = new Circle(20, playerColor); // Cerchio con raggio 20 e colore specifico
+            playerToken.setStyle(str);
             playerTokens.add(playerToken);
             boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
 
@@ -1197,6 +1200,58 @@ public class BoardController implements Initializable {
     }
 
     public void loseGame(Player player) {
+        deletePropertyMarkers(player.getPlayerID());
+        deletePlayerToken(player.getPlayerID());
+    }
 
+    private void deletePlayerToken(int playerID) {
+        // Ottieni la lista di tutti i figli del GridPane
+        ObservableList<Node> children = boardGrid.getChildren();
+
+        // Usa un iteratore per evitare ConcurrentModificationException
+        Iterator<Node> iterator = children.iterator();
+
+        while (iterator.hasNext()) {
+            Node child = iterator.next();
+
+            // Verifica se il nodo si trova nella cella specificata
+            Integer nodeRow = GridPane.getRowIndex(child);
+            Integer nodeCol = GridPane.getColumnIndex(child);
+
+            // Assicura che rowIndex e colIndex non siano null (valore di default se non impostato è 0)
+            if (nodeRow == null) nodeRow = 0;
+            if (nodeCol == null) nodeCol = 0;
+
+            // Controlla se il figlio è un'istanza di Rectangle e si trova nella cella specificata
+            if (child instanceof Circle && child.getStyleClass().contains(playerID + "token")) {
+                iterator.remove();// Rimuovi il rettangolo dalla griglia
+                break;
+            }
+        }
+    }
+
+    private void deletePropertyMarkers(int playerID) {
+        // Ottieni la lista di tutti i figli del GridPane
+        ObservableList<Node> children = boardGrid.getChildren();
+
+        // Usa un iteratore per evitare ConcurrentModificationException
+        Iterator<Node> iterator = children.iterator();
+
+        while (iterator.hasNext()) {
+            Node child = iterator.next();
+
+            // Verifica se il nodo si trova nella cella specificata
+            Integer nodeRow = GridPane.getRowIndex(child);
+            Integer nodeCol = GridPane.getColumnIndex(child);
+
+            // Assicura che rowIndex e colIndex non siano null (valore di default se non impostato è 0)
+            if (nodeRow == null) nodeRow = 0;
+            if (nodeCol == null) nodeCol = 0;
+
+            // Controlla se il figlio è un'istanza di Rectangle e si trova nella cella specificata
+            if (child instanceof Rectangle && child.getStyleClass().contains(playerID + "propertyMarker")) {
+                iterator.remove(); // Rimuovi il rettangolo dalla griglia
+            }
+        }
     }
 }
