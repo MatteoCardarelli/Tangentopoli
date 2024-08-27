@@ -348,6 +348,8 @@ public class BoardController implements Initializable {
         } catch (NotEnoughMoneyException e) {
             boxInfo.setText(e.getMessage());
         }
+        if (game.getPlayerInTurn().getPosition() instanceof PurchasableBox)
+          System.out.println(((PurchasableBox) game.getPlayerInTurn().getPosition()).getOwner());
     }
 
     //Creates the tokens
@@ -359,14 +361,14 @@ public class BoardController implements Initializable {
                 Color.ORANGE, Color.PURPLE // Aggiungi altri colori se necessario
         );
 
-        String str = "token";
 
         for (int i = 0; i < playerN; i++) {
             // Usa il colore corrispondente per ogni giocatore
             Color playerColor = playerColors.get(i % playerColors.size());
 
             Circle playerToken = new Circle(20, playerColor); // Cerchio con raggio 20 e colore specifico
-            playerToken.setStyle(str);
+
+            playerToken.getStyleClass().add(i +"playerToken");
             playerTokens.add(playerToken);
             boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
 
@@ -555,6 +557,7 @@ public class BoardController implements Initializable {
             } catch (NotEnoughMoneyException e) {
                 // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
                 updateBoxInfo(e.getMessage());
+                game.loseGame();
 
             }
             catch (BoxAlreadyPurchasedException e) {
@@ -608,7 +611,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(128, 20); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.setStyle(playerIndex + "propertyMarker");
+            propertyMarker.getStyleClass().add(playerIndex + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(0);  // Sposta il rettangolo verso destra di 30 pixel
@@ -619,7 +622,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(20, 125); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.setStyle(playerIndex + "propertyMarker");
+            propertyMarker.getStyleClass().add(playerIndex + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(150);  // Sposta il rettangolo verso destra di 30 pixel
@@ -630,7 +633,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(125, 20); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.setStyle(playerIndex + "propertyMarker");
+            propertyMarker.getStyleClass().add(playerIndex + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(0);  // Sposta il rettangolo verso destra di 30 pixel
@@ -641,7 +644,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(20, 125); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.setStyle(playerIndex + "propertyMarker");
+            propertyMarker.getStyleClass().add(playerIndex + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(-20);  // Sposta il rettangolo verso destra di 30 pixel
@@ -1223,7 +1226,7 @@ public class BoardController implements Initializable {
             if (nodeCol == null) nodeCol = 0;
 
             // Controlla se il figlio è un'istanza di Rectangle e si trova nella cella specificata
-            if (child instanceof Circle && child.getStyleClass().contains(playerID + "token")) {
+            if (child instanceof Circle && child.getStyleClass().contains(playerID + "playerToken")) {
                 iterator.remove();// Rimuovi il rettangolo dalla griglia
                 break;
             }

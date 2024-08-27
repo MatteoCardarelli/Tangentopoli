@@ -68,7 +68,7 @@ public class Game {
     private void createPlayers(int playersN) {
         players = new ArrayList<>(playersN);
         for (int i = 0; i < playersN; i++) {
-            HumanPlayer player = new HumanPlayer(i+1, 1500);
+            HumanPlayer player = new HumanPlayer(i+1, 400);
             players.add(player);
             player.setPosition(board.getBoxFromIndex(0));   //Set player to start position
         }
@@ -302,8 +302,8 @@ public class Game {
 
     public void loseGame() {
         Player player = getPlayerInTurn();
-        players.remove(player);
         player.hasLost();
         boardController.loseGame(player);
+        players.remove(player);
     }
 }
