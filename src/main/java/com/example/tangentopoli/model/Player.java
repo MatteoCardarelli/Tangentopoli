@@ -14,6 +14,7 @@ public abstract class Player {
     private int money;
     private boolean skipTurn = false;
     private boolean exitFromPrisonCard = false;
+    private boolean isInCrisis = false;
 
     //da eliminare a fine gioco
     private int launchValue;
@@ -118,7 +119,7 @@ public abstract class Player {
         if (!purchasableBox.isPurchased() && purchasableBox.getPrice() <= this.getMoney()) {
             this.setMoney(this.getMoney()-purchasableBox.getPrice());
             purchasedBoxes.add(purchasableBox);
-            purchasableBox.setAsPurchased();
+            purchasableBox.setPurchased(true);
             purchasableBox.setOwner(this);
         }
         else if (purchasableBox.getPrice() > this.getMoney()) {
@@ -283,6 +284,7 @@ public abstract class Player {
     public void hasLost() {
         for(PurchasableBox box : this.purchasedBoxes) {
             box.setOwner(null);
+            box.setPurchased(false);
             if(box.isMortgaged())
                 box.setMortgaged(false);
         }
@@ -293,5 +295,24 @@ public abstract class Player {
         int value = this.money + moneyAmount;
         if (value <= 0) throw new NotEnoughMoneyException("Non hai abbastanza soldi");
         else this.money += moneyAmount;
+    }
+
+    public boolean isLosing() {
+        boolean isLosing = true;
+        for(PurchasableBox box : this.purchasedBoxes) {
+            if(!box.isMortgaged()) {
+                isLosing = false;
+                break;
+            }
+        }
+        return isLosing;
+    }
+
+    public boolean isInCrisis() {
+        return isInCrisis;
+    }
+
+    public void setInCrisis(boolean inCrisis) {
+        isInCrisis = inCrisis;
     }
 }

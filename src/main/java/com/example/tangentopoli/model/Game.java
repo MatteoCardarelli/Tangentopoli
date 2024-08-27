@@ -300,10 +300,21 @@ public class Game {
         getPlayerInTurn().demolishOnProperty((Property) board.getBoxFromIndex(pos));
     }
 
-    public void loseGame() {
-        Player player = getPlayerInTurn();
+    public void verifyIfLosingOrNot(Player player) {
+        if(player.isLosing())
+            loseGame(player);
+        else
+            boardController.forceMortgageOrDemolition();
+    }
+
+    public void loseGame(Player player) {
         player.hasLost();
-        boardController.loseGame(player);
         players.remove(player);
+        if(players.size() == 1) {
+            boardController.loseGame(player);
+            boardController.gameEnd();
+        } else {
+            boardController.loseGame(player);
+        }
     }
 }

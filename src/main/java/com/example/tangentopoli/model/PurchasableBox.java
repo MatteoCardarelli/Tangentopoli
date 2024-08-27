@@ -49,8 +49,8 @@ public abstract class PurchasableBox implements Box {
         return purchased;
     }
 
-    public void setAsPurchased() {
-        purchased = true;
+    public void setPurchased(boolean purchased) {
+        this.purchased = purchased;
     }
 
     public Player getOwner() {return owner;}

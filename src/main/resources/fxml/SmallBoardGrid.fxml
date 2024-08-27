@@ -165,7 +165,7 @@
             </ImageView>
          </children>
       </GridPane>
-      <Button fx:id="buyBtn" layoutX="1000.0" layoutY="400.0" mnemonicParsing="false" onAction="#buyPress" prefHeight="60.0" prefWidth="220.0" text="ACQUISTA">
+      <Button fx:id="buyBtn" layoutX="1000.0" layoutY="400.0" mnemonicParsing="false" onAction="#buyCurrentBox" prefHeight="60.0" prefWidth="220.0" text="ACQUISTA">
          <font>
             <Font size="30.0" />
          </font>
@@ -211,6 +211,11 @@
                      </font>
                   </Button>
                   <Button fx:id="extinguishBtn" layoutX="211.0" layoutY="100.0" mnemonicParsing="false" onAction="#extinguishBtnClick" prefHeight="16.0" prefWidth="163.0" text="ESTINGUI">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="buildBtn" layoutX="21.0" layoutY="28.0" mnemonicParsing="false" onAction="#buildBtnClick" prefHeight="16.0" prefWidth="163.0" text="COSTRUISCI">
                      <font>
                         <Font size="21.0" />
                      </font>

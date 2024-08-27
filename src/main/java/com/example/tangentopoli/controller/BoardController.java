@@ -533,7 +533,7 @@ public class BoardController implements Initializable {
     }
 
     //Makes the player buy any purchasable box (properties, stations, societies)
-    public void buyPress( ) throws NotEnoughMoneyException,BoxAlreadyPurchasedException {
+    public void buyCurrentBox() {
         // Ottieni il giocatore corrente
         Player currentPlayer = game.getPlayerInTurn();
 
@@ -557,8 +557,8 @@ public class BoardController implements Initializable {
             } catch (NotEnoughMoneyException e) {
                 // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
                 updateBoxInfo(e.getMessage());
-                game.loseGame();
-
+                currentPlayer.setInCrisis(true);
+                game.verifyIfLosingOrNot(currentPlayer);
             }
             catch (BoxAlreadyPurchasedException e) {
                 updateBoxInfo(e.getMessage());
@@ -982,6 +982,9 @@ public class BoardController implements Initializable {
             updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
         removeAllOverlayRectangles();
         createNotAvailableBoxOverlay(row, col);
+        if(game.getPlayerInTurn().isInCrisis()) {
+            game.verifyIfLosingOrNot(game.getPlayerInTurn());
+        }
     }
 
     public void createMortgageOverlay(int row, int col) {
@@ -1122,6 +1125,8 @@ public class BoardController implements Initializable {
         updateBoxInfo("Hai demolito su " + game.getBoard().getBoxFromIndex(pos).getName());
 
         removeAllOverlayRectangles();
+        if(game.getPlayerInTurn().isInCrisis())
+            game.verifyIfLosingOrNot(game.getPlayerInTurn());
     }
 
     public void createExtinguishableMortgageOverlay(int row, int col) {
@@ -1203,8 +1208,10 @@ public class BoardController implements Initializable {
     }
 
     public void loseGame(Player player) {
-        deletePropertyMarkers(player.getPlayerID());
-        deletePlayerToken(player.getPlayerID());
+        System.out.println("Loser id: " + player.getPlayerID());
+        deletePropertyMarkers(player.getPlayerID()-1);
+        deletePlayerToken(player.getPlayerID()-1);
+        nextTurn();
     }
 
     private void deletePlayerToken(int playerID) {
@@ -1213,6 +1220,7 @@ public class BoardController implements Initializable {
 
         // Usa un iteratore per evitare ConcurrentModificationException
         Iterator<Node> iterator = children.iterator();
+        playerTokens.remove(playerID);
 
         while (iterator.hasNext()) {
             Node child = iterator.next();
@@ -1256,5 +1264,23 @@ public class BoardController implements Initializable {
                 iterator.remove(); // Rimuovi il rettangolo dalla griglia
             }
         }
+    }
+
+    public void gameEnd() {
+        updateBoxInfo("bro hai vinto");
+        disableAllBtns(true);
+    }
+
+    private void disableAllBtns(boolean setDisable) {
+        buyBtn.setDisable(setDisable);
+        actionsBtn.setDisable(setDisable);
+        diceBtn.setDisable(setDisable);
+        nextBtn.setDisable(setDisable);
+        payPrisonBtn.setDisable(setDisable);
+    }
+
+    public void forceMortgageOrDemolition() {
+        disableAllBtns(true);
+        actionsBtn.setDisable(false);
     }
 }
