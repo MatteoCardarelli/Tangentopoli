@@ -1,11 +1,11 @@
 package com.example.tangentopoli.model;
 
 import com.example.tangentopoli.controller.BoardController;
+import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
-import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,7 +68,7 @@ public class Game {
     private void createPlayers(int playersN) {
         players = new ArrayList<>(playersN);
         for (int i = 0; i < playersN; i++) {
-            HumanPlayer player = new HumanPlayer(i+1, 400);
+            HumanPlayer player = new HumanPlayer(i+1, 200);
             players.add(player);
             player.setPosition(board.getBoxFromIndex(0));   //Set player to start position
         }
@@ -108,7 +108,7 @@ public class Game {
         System.out.println("Stampo posizione corrente da Game\n" + player.getPosition().getName());
     }
 
-    public void movePlayer(int diceValue) throws NotEnoughMoneyException {
+    public void movePlayer(int diceValue)  {
         Player player = getPlayerInTurn();
 
         //il giocatore non può muoversi
@@ -122,7 +122,7 @@ public class Game {
 
         //Once the player passes on the START the game gives him 200€
         if(nextPosIndexMod < currentPosIndex) {
-            player.setMoney(player.getMoney() + 200);
+            player.setMoney(player.getMoney() + 0);
         }
 
         if(nextPos.getName().equals("GoToPrison"))
@@ -139,7 +139,7 @@ public class Game {
             player.setPosition(nextPos);
     }
 
-    private Chance getChance() throws NotEnoughMoneyException {
+    private Chance getChance() {
         Chance chanceCard = chanceCards.get(0);
         //Positions the first element at the end of the list and shifts all the previous elements
         chanceCards.add(chanceCards.size()-1, chanceCards.remove(0));
@@ -148,7 +148,7 @@ public class Game {
         return chanceCard;
     }
 
-    private CommunityChest getCommunityChest() throws NotEnoughMoneyException {
+    private CommunityChest getCommunityChest()  {
         CommunityChest communityChest = communityChestCards.get(0);
         //Positions the first element at the end of the list and shifts all the previous elements
         communityChestCards.add(communityChestCards.size()-1, communityChestCards.remove(0));
@@ -300,13 +300,6 @@ public class Game {
         getPlayerInTurn().demolishOnProperty((Property) board.getBoxFromIndex(pos));
     }
 
-    public void verifyIfLosingOrNot(Player player) {
-        if(player.isLosing())
-            loseGame(player);
-        else
-            boardController.forceMortgageOrDemolition();
-    }
-
     public void loseGame(Player player) {
         player.hasLost();
         players.remove(player);
@@ -317,4 +310,27 @@ public class Game {
             boardController.loseGame(player);
         }
     }
+
+    public void checkPlayerAfterPayment(Player player) {
+        if (player.getMoney() <= 0) {
+            handlePlayerLoss(player);
+        }
+    }
+
+    public void handlePlayerLoss(Player player) {
+        // Controlla se il giocatore ha proprietà ipotecabili
+        ArrayList<Integer> mortgageableProperties = getMortgageableBoxes();
+        if (!mortgageableProperties.isEmpty()) {
+            for (int propertyIndex : mortgageableProperties) {
+                mortgageBox(propertyIndex); // Ipoteca la proprietà
+            }
+        }
+
+        // Verifica se i fondi sono sufficienti per continuare
+        if (player.getMoney() <= 0) {
+            loseGame(player);
+        }
+    }
+
+
 }

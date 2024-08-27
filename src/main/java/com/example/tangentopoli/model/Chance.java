@@ -1,7 +1,5 @@
 package com.example.tangentopoli.model;
 
-import com.example.tangentopoli.exception.NotEnoughMoneyException;
-
 public class Chance extends Card {
     public Chance(String title, String description, int type, int moneyAmount) {
         super(title, description, type, moneyAmount);
@@ -12,7 +10,7 @@ public class Chance extends Card {
     };
 
     @Override
-    public void action(Game game) throws NotEnoughMoneyException {
+    public void action(Game game)  {
         Player player = game.getPlayerInTurn();
         game.getController().updateBoxInfo(this.toString());
         System.out.println("cacca pupu");

@@ -13,7 +13,7 @@ public class CommunityChest extends Card {
     }
 
     @Override
-    public void action(Game game) throws NotEnoughMoneyException {
+    public void action(Game game) {
         Player player = game.getPlayerInTurn();
         game.getController().updateBoxInfo(this.toString());
 

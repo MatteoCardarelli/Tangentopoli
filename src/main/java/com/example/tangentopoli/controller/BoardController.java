@@ -260,12 +260,7 @@ public class BoardController implements Initializable {
 
         // Aggiungi un listener per eseguire il movimento del giocatore dopo il completamento delle animazioni
         parallelTransition.setOnFinished(event -> {
-            try {
                 movePlayer(diceValue);
-            } catch (NotEnoughMoneyException e) {
-                throw new RuntimeException(e);
-            }
-
             // Se il giocatore è in prigione, disabilita il lancio di nuovo anche con valori uguali
             if (playerInTurn.isInPrison()) {
                 diceBtn.setDisable(true);
@@ -283,7 +278,7 @@ public class BoardController implements Initializable {
     //PLAYER MOVEMENT & TOKENS GENERATION
 
     //Moves the player
-    public void movePlayer(int diceValue) throws NotEnoughMoneyException {
+    public void movePlayer(int diceValue)  {
 
         if (game.getPlayerInTurn().isInPrison() || game.getPlayerInTurn().isSkipTurn()) return;
 
@@ -340,16 +335,14 @@ public class BoardController implements Initializable {
 
         //DA SPOSTARE IN GAME
         //metodo per pagare gli affitti di qualsiasi purchasablebox
-        try {
-            if (game.getPlayerInTurn().getPosition() instanceof PurchasableBox)
-                game.getPlayerInTurn().payRent(this);
-            else if (game.getPlayerInTurn().getPosition() instanceof Tax)
-                game.getPlayerInTurn().payTax(this);
-        } catch (NotEnoughMoneyException e) {
-            boxInfo.setText(e.getMessage());
+        if (game.getPlayerInTurn().getPosition() instanceof PurchasableBox){
+            game.getPlayerInTurn().payRent(this);
+            game.checkPlayerAfterPayment(game.getPlayerInTurn());
         }
-        if (game.getPlayerInTurn().getPosition() instanceof PurchasableBox)
-          System.out.println(((PurchasableBox) game.getPlayerInTurn().getPosition()).getOwner());
+        else if (game.getPlayerInTurn().getPosition() instanceof Tax){
+            game.getPlayerInTurn().payTax(this);
+            game.checkPlayerAfterPayment(game.getPlayerInTurn());
+        }
     }
 
     //Creates the tokens
@@ -557,8 +550,6 @@ public class BoardController implements Initializable {
             } catch (NotEnoughMoneyException e) {
                 // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
                 updateBoxInfo(e.getMessage());
-                currentPlayer.setInCrisis(true);
-                game.verifyIfLosingOrNot(currentPlayer);
             }
             catch (BoxAlreadyPurchasedException e) {
                 updateBoxInfo(e.getMessage());
@@ -570,24 +561,21 @@ public class BoardController implements Initializable {
     }
 
     //Makes the player exit from prison after a payment
-    public void exitFromPrison() throws NotEnoughMoneyException {
-        try {
-            //paga €50 per uscire ed esci dalla prigione
-            game.getPlayerInTurn().exitFromPrison();
+    public void exitFromPrison()  {
+        //paga €50 per uscire ed esci dalla prigione
+        game.getPlayerInTurn().exitFromPrison();
+        game.checkPlayerAfterPayment(game.getPlayerInTurn());
 
-            //disabilita il pulsante per pagare una volta uscito di prigione
-            payPrisonBtn.setDisable(true);
-            payPrisonBtn.setVisible(false);
+        //disabilita il pulsante per pagare una volta uscito di prigione
+        payPrisonBtn.setDisable(true);
+        payPrisonBtn.setVisible(false);
 
-            //attiva i dadi
-            diceBtn.setDisable(false);
+        //attiva i dadi
+        diceBtn.setDisable(false);
 
-            //aggiorna i display
-            updateBoxInfo("hai pagato €50 ora puoi muoverti dalla prigione");
-            displayPlayerInfo(game.getPlayerInTurn());
-        } catch (NotEnoughMoneyException e) {
-            boxInfo.setText(e.getMessage());
-        }
+        //aggiorna i display
+        updateBoxInfo("hai pagato €50 ora puoi muoverti dalla prigione");
+        displayPlayerInfo(game.getPlayerInTurn());
     }
 
     //metodo che crea e posiziona i marker di acquisto
@@ -982,9 +970,7 @@ public class BoardController implements Initializable {
             updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
         removeAllOverlayRectangles();
         createNotAvailableBoxOverlay(row, col);
-        if(game.getPlayerInTurn().isInCrisis()) {
-            game.verifyIfLosingOrNot(game.getPlayerInTurn());
-        }
+
     }
 
     public void createMortgageOverlay(int row, int col) {
@@ -1081,7 +1067,6 @@ public class BoardController implements Initializable {
         }
     }
 
-
     public void demolishBtnClick(ActionEvent actionEvent) {
         removeAllOverlayRectangles();
         actionsDialog.setVisible(false);
@@ -1125,8 +1110,6 @@ public class BoardController implements Initializable {
         updateBoxInfo("Hai demolito su " + game.getBoard().getBoxFromIndex(pos).getName());
 
         removeAllOverlayRectangles();
-        if(game.getPlayerInTurn().isInCrisis())
-            game.verifyIfLosingOrNot(game.getPlayerInTurn());
     }
 
     public void createExtinguishableMortgageOverlay(int row, int col) {
@@ -1279,8 +1262,4 @@ public class BoardController implements Initializable {
         payPrisonBtn.setDisable(setDisable);
     }
 
-    public void forceMortgageOrDemolition() {
-        disableAllBtns(true);
-        actionsBtn.setDisable(false);
-    }
 }
