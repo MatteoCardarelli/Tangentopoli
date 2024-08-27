@@ -1,15 +1,68 @@
- [
-   {
-   "title": "Confisca Temporanea",
-   "description": "Le tue proprietà sono state temporaneamente confiscate. Perdi 1 turno.",
-   "type": 3,
-   "moneyAmount": 0
-   },
-    {
-     "title": "Vai in di prigione",
-     "description": "Hanno trovato delle prove contro di te, vai in prigione.",
-     "type": 6,
-     "moneyAmount": 0
-    }
-  ]
-
+[
+  {
+    "title": "Blitz della Guardia di Finanza",
+    "description": "La Guardia di Finanza ha scoperto delle irregolarità. Paga una multa di 150€.",
+    "type": 1,
+    "moneyAmount": -150
+  },
+  {
+    "title": "Donazione Anonima",
+    "description": "Hai ricevuto una donazione anonima per la tua campagna elettorale. Ottieni 200€.",
+    "type": 1,
+    "moneyAmount": 200
+  },
+  {
+    "title": "Pagamento di Pizzo",
+    "description": "Un boss locale ti richiede il pizzo. Paga 100€.",
+    "type": 1,
+    "moneyAmount": -100
+  },
+  {
+    "title": "Confisca Temporanea",
+    "description": "Le tue proprietà sono state temporaneamente confiscate. Perdi 1 turno.",
+    "type": 3,
+    "moneyAmount": 0
+  },
+  {
+    "title": "Contributo Illecito",
+    "description": "Hai ricevuto un contributo illecito da un'azienda. Ottieni 150€.",
+    "type": 1,
+    "moneyAmount": 150
+  },
+  {
+    "title": "Amnistia Fiscale",
+    "description": "Hai beneficiato di un'amnistia fiscale. Risparmia 50€ sulle tue tasse.",
+    "type": 1,
+    "moneyAmount": 50
+  },
+  {
+    "title": "Indagine Internazionale",
+    "description": "Sei sotto indagine internazionale. Paga una multa di 200€.",
+    "type": 1,
+    "moneyAmount": -200
+  },
+  {
+    "title": "Evasione Perfetta",
+    "description": "La tua evasione fiscale è stata perfetta. Ricevi 100€.",
+    "type": 1,
+    "moneyAmount": 100
+  },
+  {
+    "title": "Frode Scoperta",
+    "description": "Una frode è stata scoperta. Paga una multa di 100€.",
+    "type": 1,
+    "moneyAmount": -100
+  },
+  {
+    "title": "Scandalo Pubblico",
+    "description": "Sei al centro di uno scandalo pubblico. Perdi 50€ in spese legali.",
+    "type": 1,
+    "moneyAmount": -50
+  },
+  {
+    "title": "Vai in di prigione",
+    "description": "Hanno trovato delle prove contro di te, vai in prigione.",
+    "type": 6,
+    "moneyAmount": 0
+  }
+]

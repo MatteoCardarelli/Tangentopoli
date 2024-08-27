@@ -1,5 +1,7 @@
 package com.example.tangentopoli.model;
 
+import com.example.tangentopoli.exception.NotEnoughMoneyException;
+
 public abstract class Card {
     private String title;
     private String description;
@@ -17,7 +19,7 @@ public abstract class Card {
 
     }
 
-    public abstract void action(Game game);
+    public abstract void action(Game game) throws NotEnoughMoneyException;
 
     public String getTitle() {
         return title;

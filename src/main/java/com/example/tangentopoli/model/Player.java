@@ -288,4 +288,10 @@ public abstract class Player {
         }
         purchasedBoxes.clear();
     }
+
+    public void pay(int moneyAmount) throws NotEnoughMoneyException {
+        int value = this.money + moneyAmount;
+        if (value <= 0) throw new NotEnoughMoneyException("Non hai abbastanza soldi");
+        else this.money += moneyAmount;
+    }
 }

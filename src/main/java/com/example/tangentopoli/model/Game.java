@@ -108,7 +108,7 @@ public class Game {
         System.out.println("Stampo posizione corrente da Game\n" + player.getPosition().getName());
     }
 
-    public void movePlayer(int diceValue) {
+    public void movePlayer(int diceValue) throws NotEnoughMoneyException {
         Player player = getPlayerInTurn();
 
         //il giocatore non può muoversi
@@ -139,7 +139,7 @@ public class Game {
             player.setPosition(nextPos);
     }
 
-    private Chance getChance() {
+    private Chance getChance() throws NotEnoughMoneyException {
         Chance chanceCard = chanceCards.get(0);
         //Positions the first element at the end of the list and shifts all the previous elements
         chanceCards.add(chanceCards.size()-1, chanceCards.remove(0));
@@ -148,7 +148,7 @@ public class Game {
         return chanceCard;
     }
 
-    private CommunityChest getCommunityChest() {
+    private CommunityChest getCommunityChest() throws NotEnoughMoneyException {
         CommunityChest communityChest = communityChestCards.get(0);
         //Positions the first element at the end of the list and shifts all the previous elements
         communityChestCards.add(communityChestCards.size()-1, communityChestCards.remove(0));
