@@ -609,6 +609,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(128, 20); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
+            propertyMarker.setStyle(playerIndex + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(0);  // Sposta il rettangolo verso destra di 30 pixel
@@ -619,6 +620,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(20, 125); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
+            propertyMarker.setStyle(playerIndex + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(150);  // Sposta il rettangolo verso destra di 30 pixel
@@ -629,6 +631,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(125, 20); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
+            propertyMarker.setStyle(playerIndex + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(0);  // Sposta il rettangolo verso destra di 30 pixel
@@ -639,6 +642,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(20, 125); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
+            propertyMarker.setStyle(playerIndex + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(-20);  // Sposta il rettangolo verso destra di 30 pixel
@@ -1198,5 +1202,9 @@ public class BoardController implements Initializable {
         openCardDialog();
         cardTitle.setText(card.getTitle());
         cardDescription.setText(card.getDescription());
+    }
+
+    public void loseGame(Player player) {
+
     }
 }

@@ -299,4 +299,11 @@ public class Game {
     public void demolishOnProperty(int pos) {
         getPlayerInTurn().demolishOnProperty((Property) board.getBoxFromIndex(pos));
     }
+
+    public void loseGame() {
+        Player player = getPlayerInTurn();
+        players.remove(player);
+        player.hasLost();
+        boardController.loseGame(player);
+    }
 }

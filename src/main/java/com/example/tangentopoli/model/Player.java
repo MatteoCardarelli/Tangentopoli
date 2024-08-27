@@ -279,4 +279,13 @@ public abstract class Player {
         property.demolishConstruction();
         this.money += price;
     }
+
+    public void hasLost() {
+        for(PurchasableBox box : this.purchasedBoxes) {
+            box.setOwner(null);
+            if(box.isMortgaged())
+                box.setMortgaged(false);
+        }
+        purchasedBoxes.clear();
+    }
 }
