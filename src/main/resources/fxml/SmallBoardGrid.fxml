@@ -18,7 +18,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" stylesheets="@../style/boardStyle.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tangentopoli.controller.BoardController">
    <children>
-      <ImageView fitHeight="1140.0" fitWidth="1600.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="1140.0" fitWidth="1600.0" layoutY="-9.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/boardBG.png" />
          </image>
@@ -252,6 +252,31 @@
                </children>
             </AnchorPane>
           </header>
+      </DialogPane>
+      <DialogPane layoutX="695.0" layoutY="355.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="247.0" prefWidth="480.0">
+          <header>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0">
+               <children>
+                  <Label layoutX="155.0" layoutY="14.0" text="HAI VINTO!">
+                     <font>
+                        <Font name="System Bold" size="31.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="102.0" layoutY="53.0" prefHeight="95.0" prefWidth="276.0" text="Label" />
+                  <Button layoutX="208.0" layoutY="148.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="65.0" text="Esci">
+                     <font>
+                        <Font name="System Bold" size="19.0" />
+                     </font>
+                  </Button>
+               </children>
+            </AnchorPane>
+          </header>
+          <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
+          </content>
+          <expandableContent>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
+          </expandableContent>
       </DialogPane>
    </children>
 </Pane>
