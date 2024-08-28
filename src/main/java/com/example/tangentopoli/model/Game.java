@@ -131,10 +131,12 @@ public class Game {
             player.setPosition(nextPos);
             Card card = getCommunityChest();
             boardController.setCardInfo(card);
+            checkPlayerAfterPayment(player);
         } else if(nextPos.getName().equals("Probabilità")) {
             player.setPosition(nextPos);
             Card card = getChance();
             boardController.setCardInfo(card);
+            checkPlayerAfterPayment(player);
         } else
             player.setPosition(nextPos);
     }
@@ -303,6 +305,7 @@ public class Game {
     public void loseGame(Player player) {
         player.hasLost();
         players.remove(player);
+        System.out.println("Loser id: " + player.getPlayerID()+"dall Array");
         if(players.size() < 2) {
             boardController.loseGame(player);
             boardController.gameEnd();
@@ -315,6 +318,7 @@ public class Game {
         if (player.getMoney() <= 0) {
             handlePlayerLoss(player);
         }
+        boardController.displayPlayerInfo(player);
     }
 
     public void handlePlayerLoss(Player player) {
@@ -332,5 +336,8 @@ public class Game {
         }
     }
 
-
+        public ArrayList<Player> getPlayers () {
+            return players;
+        }
 }
+

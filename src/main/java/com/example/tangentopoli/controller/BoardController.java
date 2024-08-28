@@ -1,5 +1,6 @@
 package com.example.tangentopoli.controller;
 
+import com.example.tangentopoli.TangentopoliApp;
 import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
@@ -10,8 +11,11 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,10 +23,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -58,6 +64,9 @@ public class BoardController implements Initializable {
     private Button mortgageBtn;
 
     @FXML
+    private Label winnerLabel;
+
+    @FXML
     private DialogPane actionsDialog;
 
     @FXML
@@ -68,6 +77,9 @@ public class BoardController implements Initializable {
 
     @FXML
     private Button payPrisonBtn;
+
+    @FXML
+    private DialogPane endDialog;
 
     @FXML
     private TextArea playerInfo;
@@ -102,6 +114,7 @@ public class BoardController implements Initializable {
         buyBtn.setDisable(true);
         payPrisonBtn.setDisable(true);
         payPrisonBtn.setVisible(false);
+        endDialog.setVisible(false);
     }
 
     //GAME LOGIC & SETUP
@@ -148,7 +161,7 @@ public class BoardController implements Initializable {
                 updateBoxInfo("Sei da tre turni in prigione sei obbligato a pagare");
             }
         } else {
-            disableAllBtns(true);
+          disableAllBtns(true);
         }
     }
 
@@ -1271,6 +1284,35 @@ public class BoardController implements Initializable {
     public void gameEnd() {
         updateBoxInfo("bro hai vinto");
         disableAllBtns(true);
+        winnerLabel.setText("Giocatore " + game.getPlayers().get(0).getPlayerID() + " hai vinto! complimenti");
+        endDialog.setVisible(true);
+
+    }
+
+    public void closeGames(ActionEvent actionEvent) {
+        Stage stage = (Stage) boardGrid.getScene().getWindow();
+        stage.close();
+        try {
+            // Carica il file FXML della seconda finestra
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MenuView.fxml"));
+            Parent root = loader.load();
+
+            // Ottieni il controller della seconda finestra, se necessario
+            //SecondWindowController controller = loader.getController();
+
+            // Crea una nuova scena con il contenuto caricato
+            Scene scene = new Scene(root);
+
+            // Crea un nuovo stage (una nuova finestra)
+            stage = new Stage();
+            stage.setScene(scene);
+
+            // Mostra la nuova finestra
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void disableAllBtns(boolean setDisable) {

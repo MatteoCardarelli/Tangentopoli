@@ -253,7 +253,7 @@
             </AnchorPane>
           </header>
       </DialogPane>
-      <DialogPane layoutX="695.0" layoutY="355.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="247.0" prefWidth="480.0">
+      <DialogPane fx:id="endDialog" layoutX="695.0" layoutY="355.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="247.0" prefWidth="480.0">
           <header>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0">
                <children>
@@ -262,8 +262,8 @@
                         <Font name="System Bold" size="31.0" />
                      </font>
                   </Label>
-                  <Label layoutX="102.0" layoutY="53.0" prefHeight="95.0" prefWidth="276.0" text="Label" />
-                  <Button layoutX="208.0" layoutY="148.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="65.0" text="Esci">
+                  <Label fx:id="winnerLabel" layoutX="102.0" layoutY="53.0" prefHeight="95.0" prefWidth="276.0" text="Label" />
+                  <Button fx:id="exitBtn" layoutX="208.0" layoutY="148.0" mnemonicParsing="false" onAction="#closeGames" prefHeight="38.0" prefWidth="65.0" text="Esci">
                      <font>
                         <Font name="System Bold" size="19.0" />
                      </font>
@@ -271,12 +271,6 @@
                </children>
             </AnchorPane>
           </header>
-          <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
-          </content>
-          <expandableContent>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
-          </expandableContent>
       </DialogPane>
    </children>
 </Pane>
