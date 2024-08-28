@@ -303,7 +303,7 @@ public class Game {
     public void loseGame(Player player) {
         player.hasLost();
         players.remove(player);
-        if(players.size() == 1) {
+        if(players.size() < 2) {
             boardController.loseGame(player);
             boardController.gameEnd();
         } else {

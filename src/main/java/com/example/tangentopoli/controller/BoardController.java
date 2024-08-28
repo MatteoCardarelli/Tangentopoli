@@ -121,30 +121,34 @@ public class BoardController implements Initializable {
 
     //Passes to the next turn
     public void nextTurn() {
-        removeAllOverlayRectangles();
-        game.changeTurn();
-        diceEqualsCombo = 0;
-        exitPrisonFlag = false;
-        displayPlayerInfo(game.getPlayerInTurn());
-        displayBoxInfo(game.getPlayerInTurn());
-        diceBtn.setDisable(false);
-        nextBtn.setDisable(true);
-        buyBtn.setDisable(true);
-
-        //se il giocatore è in prigione attiva il pulsante per uscire pagando
-        if (game.getPlayerInTurn().isInPrison()) {
-            payPrisonBtn.setDisable(false);
-            payPrisonBtn.setVisible(true);
-        } else {
-            payPrisonBtn.setDisable(true);
-            payPrisonBtn.setVisible(false);
-        }
-
-        //se il giocatore è da 3 turni in prigione obbligalo a pagare per uscire
-        if (game.getPlayerInTurn().getTurnInPrison() == 3){
+        if(game.getPlayersN() >= 2) {
+            removeAllOverlayRectangles();
+            game.changeTurn();
+            diceEqualsCombo = 0;
+            exitPrisonFlag = false;
+            displayPlayerInfo(game.getPlayerInTurn());
+            displayBoxInfo(game.getPlayerInTurn());
+            diceBtn.setDisable(false);
             nextBtn.setDisable(true);
-            diceBtn.setDisable(true);
-            updateBoxInfo("Sei da tre turni in prigione sei obbligato a pagare");
+            buyBtn.setDisable(true);
+
+            //se il giocatore è in prigione attiva il pulsante per uscire pagando
+            if (game.getPlayerInTurn().isInPrison()) {
+                payPrisonBtn.setDisable(false);
+                payPrisonBtn.setVisible(true);
+            } else {
+                payPrisonBtn.setDisable(true);
+                payPrisonBtn.setVisible(false);
+            }
+
+            //se il giocatore è da 3 turni in prigione obbligalo a pagare per uscire
+            if (game.getPlayerInTurn().getTurnInPrison() == 3){
+                nextBtn.setDisable(true);
+                diceBtn.setDisable(true);
+                updateBoxInfo("Sei da tre turni in prigione sei obbligato a pagare");
+            }
+        } else {
+            disableAllBtns(true);
         }
     }
 
@@ -282,7 +286,8 @@ public class BoardController implements Initializable {
 
         if (game.getPlayerInTurn().isInPrison() || game.getPlayerInTurn().isSkipTurn()) return;
 
-        Circle playerToken = playerTokens.get(game.getPlayerTurn());
+        //Circle playerToken = playerTokens.get(game.getPlayerTurn());
+        Circle playerToken = getPlayerTokenFromID(game.getPlayerInTurn().getPlayerID());
         int rowPos = GridPane.getRowIndex(playerToken) == null ? 0 : GridPane.getRowIndex(playerToken);
         int columnPos = GridPane.getColumnIndex(playerToken) == null ? 0 : GridPane.getColumnIndex(playerToken);
         int maxC = boardGrid.getColumnCount();
@@ -345,6 +350,16 @@ public class BoardController implements Initializable {
         }
     }
 
+    private Circle getPlayerTokenFromID(int playerID) {
+        Circle playerToken = playerTokens.get(0);
+        for(Circle token: playerTokens) {
+            if(token.getStyleClass().contains(playerID + "playerToken"))
+                playerToken = token;
+        }
+
+        return playerToken;
+    }
+
     //Creates the tokens
     public void createPlayerTokens() {
         playerTokens = new ArrayList<>();
@@ -361,7 +376,7 @@ public class BoardController implements Initializable {
 
             Circle playerToken = new Circle(20, playerColor); // Cerchio con raggio 20 e colore specifico
 
-            playerToken.getStyleClass().add(i +"playerToken");
+            playerToken.getStyleClass().add(i+1 +"playerToken");
             playerTokens.add(playerToken);
             boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
 
@@ -545,7 +560,7 @@ public class BoardController implements Initializable {
 
                 // Notifica all'utente dell'acquisto avvenuto con successo
                 updateBoxInfo("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "€!");
-                createPropertyMarker(game.getPlayerTurn());
+                createPropertyMarkerFromID(game.getPlayerInTurn().getPlayerID());
                 buyBtn.setDisable(true);
             } catch (NotEnoughMoneyException e) {
                 // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
@@ -579,10 +594,11 @@ public class BoardController implements Initializable {
     }
 
     //metodo che crea e posiziona i marker di acquisto
-    public void createPropertyMarker(int playerIndex) {
+    public void createPropertyMarkerFromID(int playerID) {
         // Ottieni il colore del giocatore
-        Color playerColor = (Color) playerTokens.get(playerIndex).getFill();
-        Circle playerToken = playerTokens.get(playerIndex);
+        Circle playerToken = getPlayerTokenFromID(playerID);
+        Color playerColor = (Color) playerToken.getFill();
+
 
 
         // Ottieni la posizione attuale del giocatore
@@ -599,7 +615,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(128, 20); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.getStyleClass().add(playerIndex + "propertyMarker");
+            propertyMarker.getStyleClass().add(playerID + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(0);  // Sposta il rettangolo verso destra di 30 pixel
@@ -610,7 +626,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(20, 125); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.getStyleClass().add(playerIndex + "propertyMarker");
+            propertyMarker.getStyleClass().add(playerID + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(150);  // Sposta il rettangolo verso destra di 30 pixel
@@ -621,7 +637,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(125, 20); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.getStyleClass().add(playerIndex + "propertyMarker");
+            propertyMarker.getStyleClass().add(playerID + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(0);  // Sposta il rettangolo verso destra di 30 pixel
@@ -632,7 +648,7 @@ public class BoardController implements Initializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(20, 125); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.getStyleClass().add(playerIndex + "propertyMarker");
+            propertyMarker.getStyleClass().add(playerID + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(-20);  // Sposta il rettangolo verso destra di 30 pixel
@@ -978,6 +994,7 @@ public class BoardController implements Initializable {
         Rectangle overlay = new Rectangle(126, 150);
         overlay.setStyle("-fx-fill: rgba(255,0,0,0.5);");
         overlay.getStyleClass().add("property-overlay");
+        overlay.getStyleClass().add(game.getPlayerInTurn().getPlayerID()-1 + "mortOverlay");
 
         // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
         if (col == 0 || col == boardGrid.getColumnCount() - 1) {
@@ -1192,18 +1209,20 @@ public class BoardController implements Initializable {
 
     public void loseGame(Player player) {
         System.out.println("Loser id: " + player.getPlayerID());
-        deletePropertyMarkers(player.getPlayerID()-1);
-        deletePlayerToken(player.getPlayerID()-1);
+        deletePropertyMarkers(player.getPlayerID());
+        deletePlayerTokenFromID(player.getPlayerID());
+        System.out.println("Cambio turno dopo perdita");
         nextTurn();
     }
 
-    private void deletePlayerToken(int playerID) {
+    private void deletePlayerTokenFromID(int playerID) {
         // Ottieni la lista di tutti i figli del GridPane
         ObservableList<Node> children = boardGrid.getChildren();
 
         // Usa un iteratore per evitare ConcurrentModificationException
         Iterator<Node> iterator = children.iterator();
-        playerTokens.remove(playerID);
+        Circle playerToken = getPlayerTokenFromID(playerID);
+        playerTokens.remove(playerToken);
 
         while (iterator.hasNext()) {
             Node child = iterator.next();
@@ -1243,7 +1262,7 @@ public class BoardController implements Initializable {
             if (nodeCol == null) nodeCol = 0;
 
             // Controlla se il figlio è un'istanza di Rectangle e si trova nella cella specificata
-            if (child instanceof Rectangle && child.getStyleClass().contains(playerID + "propertyMarker")) {
+            if (child instanceof Rectangle && (child.getStyleClass().contains(playerID + "propertyMarker") || child.getStyleClass().contains(playerID + "mortOverlay"))) {
                 iterator.remove(); // Rimuovi il rettangolo dalla griglia
             }
         }

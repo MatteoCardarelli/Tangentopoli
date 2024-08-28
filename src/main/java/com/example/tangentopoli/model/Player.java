@@ -117,13 +117,13 @@ public abstract class Player {
 
     //metodo per acquistare caselle
     public void buyPurchasableBox(PurchasableBox purchasableBox) throws NotEnoughMoneyException, BoxAlreadyPurchasedException {
-        if (!purchasableBox.isPurchased() && purchasableBox.getPrice() <= this.getMoney()) {
+        if (!purchasableBox.isPurchased() && purchasableBox.getPrice() < this.getMoney()) {
             this.setMoney(this.getMoney()-purchasableBox.getPrice());
             purchasedBoxes.add(purchasableBox);
             purchasableBox.setPurchased(true);
             purchasableBox.setOwner(this);
         }
-        else if (purchasableBox.getPrice() > this.getMoney()) {
+        else if (purchasableBox.getPrice() >= this.getMoney()) {
             throw new NotEnoughMoneyException("Non hai abbastanza denaro per acquistare questa proprietà");
         }
         else if(purchasableBox.isPurchased()) {
