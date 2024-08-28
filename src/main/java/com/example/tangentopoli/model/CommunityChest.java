@@ -25,9 +25,6 @@ public class CommunityChest extends Card {
             case 3://salti i turni
                 player.setSkipTurn(true);
                 break;
-            case 4://ti sposti avanti di tre caselle
-                game.getController().movePlayer(3);
-                break;
             case 6://vai in prigione
                 game.getController().sendToPrison();
                 break;

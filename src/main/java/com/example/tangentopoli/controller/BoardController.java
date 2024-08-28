@@ -306,7 +306,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < diceValue; i++) {
+        for (int i = 0; i < 4; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -325,7 +325,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(diceValue);
+        game.movePlayer(4);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -1286,7 +1286,6 @@ public class BoardController implements Initializable {
         disableAllBtns(true);
         winnerLabel.setText("Giocatore " + game.getPlayers().get(0).getPlayerID() + " hai vinto! complimenti");
         endDialog.setVisible(true);
-
     }
 
     public void closeGames(ActionEvent actionEvent) {

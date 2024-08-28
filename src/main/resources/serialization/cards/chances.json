@@ -7,12 +7,6 @@
       "moneyAmount": 200
     },
     {
-      "title": "Sostegno Elettorale",
-      "description": "Un influente politico ti sostiene. Avanza di tre caselle.",
-      "type": 4,
-      "moneyAmount": 0
-    },
-    {
       "title": "Indagine Archiviata",
       "description": "Le indagini contro di te sono state archiviate, ricevi 50€ di risarcimento.",
       "type": 1,
@@ -35,12 +29,6 @@
       "description": "Grazie allo scudo fiscale, hai riportato capitali dall'estero, Ottieni 300€.",
       "type": 1,
       "moneyAmount": 300
-    },
-    {
-      "title": "Blitz della Polizia",
-      "description": "Un blitz della polizia ti sorprende, vai avanti di tre caselle.",
-      "type": 4,
-      "moneyAmount": 0
     },
     {
       "title": "Protezione Politica",

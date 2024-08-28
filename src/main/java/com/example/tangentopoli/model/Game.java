@@ -336,7 +336,7 @@ public class Game {
         }
     }
 
-        public ArrayList<Player> getPlayers () {
+    public ArrayList<Player> getPlayers () {
             return players;
         }
 }

@@ -22,9 +22,6 @@ public class Chance extends Card {
             case 3://salti i turni
                 player.setSkipTurn(true);
                 break;
-            case 4://ti sposti avanti di tre caselle
-                game.getController().movePlayer(3);
-                break;
             case 5://esci di prigione
                 player.setExitFromPrisonCard(true);
                 break;
