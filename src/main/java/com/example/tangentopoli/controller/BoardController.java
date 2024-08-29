@@ -1,6 +1,5 @@
 package com.example.tangentopoli.controller;
 
-import com.example.tangentopoli.TangentopoliApp;
 import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
@@ -1007,7 +1006,7 @@ public class BoardController implements Initializable {
         Rectangle overlay = new Rectangle(126, 150);
         overlay.setStyle("-fx-fill: rgba(255,0,0,0.5);");
         overlay.getStyleClass().add("property-overlay");
-        overlay.getStyleClass().add(game.getPlayerInTurn().getPlayerID()-1 + "mortOverlay");
+        overlay.getStyleClass().add(game.getPlayerInTurn().getPlayerID() + "mortOverlay");
 
         // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
         if (col == 0 || col == boardGrid.getColumnCount() - 1) {
@@ -1222,7 +1221,7 @@ public class BoardController implements Initializable {
 
     public void loseGame(Player player) {
         System.out.println("Loser id: " + player.getPlayerID());
-        deletePropertyMarkers(player.getPlayerID());
+        deletePropertyMarkersAndMortgageOverlays(player.getPlayerID());
         deletePlayerTokenFromID(player.getPlayerID());
         System.out.println("Cambio turno dopo perdita");
         nextTurn();
@@ -1256,7 +1255,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    private void deletePropertyMarkers(int playerID) {
+    private void deletePropertyMarkersAndMortgageOverlays(int playerID) {
         // Ottieni la lista di tutti i figli del GridPane
         ObservableList<Node> children = boardGrid.getChildren();
 
