@@ -20,6 +20,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -102,6 +103,10 @@ public class BoardController implements Initializable {
     @FXML
     private DialogPane cardDialog;
 
+    private ImageView cardImg;
+
+    @FXML
+    private Pane mainPane;
 
 
     @Override
@@ -1012,6 +1017,7 @@ public class BoardController implements Initializable {
         // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
         if (col == 0 || col == boardGrid.getColumnCount() - 1) {
             overlay.setRotate(90);
+            overlay.setTranslateX(12);
         }
 
         // Aggiungi la StackPane al GridPane
@@ -1034,6 +1040,7 @@ public class BoardController implements Initializable {
         // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
         if (col == 0 || col == boardGrid.getColumnCount() - 1) {
             overlay.setRotate(90);
+            overlay.setTranslateX(12);
         }
 
         // Aggiungi la StackPane al GridPane
@@ -1115,13 +1122,16 @@ public class BoardController implements Initializable {
         overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
         overlay.getStyleClass().add("property-overlay");
 
+        // Aggiungi la StackPane al GridPane
+        boardGrid.add(overlay, col, row);
+
         // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
         if (col == 0 || col == boardGrid.getColumnCount() - 1) {
             overlay.setRotate(90);
+            overlay.setTranslateX(12);
         }
 
-        // Aggiungi la StackPane al GridPane
-        boardGrid.add(overlay, col, row);
+
 
         // Applica l'animazione di lampeggio
         applyBlinkingEffect(overlay);
@@ -1215,6 +1225,28 @@ public class BoardController implements Initializable {
     }
 
     public void setCardInfo(Card card) {
+        // Crea l'immagine della carta se non esiste già
+        if (cardImg == null) {
+            cardImg = new ImageView();
+            cardImg.setFitWidth(130); // Imposta la larghezza dell'immagine
+            cardImg.setPreserveRatio(true); // Mantiene le proporzioni dell'immagine
+            mainPane.getChildren().add(cardImg); // Aggiungi l'immagine al layout principale
+        }
+        if(card instanceof CommunityChest){
+        // Imposta l'immagine della carta
+        cardImg.setImage(new Image(getClass().getResourceAsStream("/img/chanceimgop.png")));
+        cardImg.setX(240);
+        cardImg.setY(250);
+        cardImg.setRotate(135);
+        }else{
+            cardImg.setImage(new Image(getClass().getResourceAsStream("/img/communitychestop.png")));
+            cardImg.setX(240);
+            cardImg.setY(250);
+            cardImg.setRotate(135);
+        }
+
+
+
         openCardDialog();
         cardTitle.setText(card.getTitle());
         cardDescription.setText(card.getDescription());
