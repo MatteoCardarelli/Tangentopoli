@@ -1,6 +1,5 @@
 package com.example.tangentopoli.controller;
 
-import com.example.tangentopoli.TangentopoliApp;
 import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
@@ -311,7 +310,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < diceValue; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -330,7 +329,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(4);
+        game.movePlayer(diceValue);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -997,7 +996,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    private void mortgageBox(int row, int col) {
+    public void mortgageBox(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
             game.mortgageBox(pos);
             displayPlayerInfo(game.getPlayerInTurn());
@@ -1012,7 +1011,7 @@ public class BoardController implements Initializable {
         Rectangle overlay = new Rectangle(126, 150);
         overlay.setStyle("-fx-fill: rgba(255,0,0,0.5);");
         overlay.getStyleClass().add("property-overlay");
-        overlay.getStyleClass().add(game.getPlayerInTurn().getPlayerID()-1 + "mortOverlay");
+        overlay.getStyleClass().add(game.getPlayerInTurn().getPlayerID() + "mortOverlay");
 
         // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
         if (col == 0 || col == boardGrid.getColumnCount() - 1) {
@@ -1116,7 +1115,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    private void createDemolitionOverlay(int row, int col) {
+    public void createDemolitionOverlay(int row, int col) {
         // Crea il rettangolo semi-trasparente
         Rectangle overlay = new Rectangle(126, 150);
         overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
@@ -1141,7 +1140,7 @@ public class BoardController implements Initializable {
         });
     }
 
-    private void demolishOnProperty(int row, int col) {
+    public void demolishOnProperty(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
 
         game.demolishOnProperty(pos);
@@ -1174,7 +1173,7 @@ public class BoardController implements Initializable {
         });
     }
 
-    private void extinguishMortgageBox(int row, int col) {
+    public void extinguishMortgageBox(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
         game.extinguishMortgageBox(pos);
         displayPlayerInfo(game.getPlayerInTurn());
@@ -1254,7 +1253,7 @@ public class BoardController implements Initializable {
 
     public void loseGame(Player player) {
         System.out.println("Loser id: " + player.getPlayerID());
-        deletePropertyMarkers(player.getPlayerID());
+        deletePropertyMarkersAndMortgageOverlays(player.getPlayerID());
         deletePlayerTokenFromID(player.getPlayerID());
         System.out.println("Cambio turno dopo perdita");
         nextTurn();
@@ -1288,7 +1287,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    private void deletePropertyMarkers(int playerID) {
+    private void deletePropertyMarkersAndMortgageOverlays(int playerID) {
         // Ottieni la lista di tutti i figli del GridPane
         ObservableList<Node> children = boardGrid.getChildren();
 
