@@ -306,7 +306,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < diceValue; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -325,7 +325,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(4);
+        game.movePlayer(diceValue);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -992,7 +992,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    private void mortgageBox(int row, int col) {
+    public void mortgageBox(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
             game.mortgageBox(pos);
             displayPlayerInfo(game.getPlayerInTurn());
@@ -1109,7 +1109,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    private void createDemolitionOverlay(int row, int col) {
+    public void createDemolitionOverlay(int row, int col) {
         // Crea il rettangolo semi-trasparente
         Rectangle overlay = new Rectangle(126, 150);
         overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
@@ -1131,7 +1131,7 @@ public class BoardController implements Initializable {
         });
     }
 
-    private void demolishOnProperty(int row, int col) {
+    public void demolishOnProperty(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
 
         game.demolishOnProperty(pos);
@@ -1164,7 +1164,7 @@ public class BoardController implements Initializable {
         });
     }
 
-    private void extinguishMortgageBox(int row, int col) {
+    public void extinguishMortgageBox(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
         game.extinguishMortgageBox(pos);
         displayPlayerInfo(game.getPlayerInTurn());

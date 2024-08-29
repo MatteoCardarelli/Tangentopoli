@@ -68,7 +68,7 @@ public class Game {
     private void createPlayers(int playersN) {
         players = new ArrayList<>(playersN);
         for (int i = 0; i < playersN; i++) {
-            HumanPlayer player = new HumanPlayer(i+1, 200);
+            HumanPlayer player = new HumanPlayer(i+1, 500);
             players.add(player);
             player.setPosition(board.getBoxFromIndex(0));   //Set player to start position
         }
@@ -199,6 +199,22 @@ public class Game {
         return buildablePropertiesIndex;
     }
 
+    public ArrayList<Integer> getPropertiesWithBuildings() {
+        ArrayList<Integer> propertiesWithBuildings = new ArrayList<>();
+        Player playerInTurn = getPlayerInTurn();
+
+        for(PurchasableBox box : playerInTurn.getPurchasedBoxes()) {
+            if (box instanceof Property property) {
+                if(property.hasBuildings()) {
+                    int boxIndex = board.getBoxIndex(box);
+                    propertiesWithBuildings.add(boxIndex);
+                }
+            }
+        }
+
+        return propertiesWithBuildings;
+    }
+
     public ArrayList<Integer> getMortgageableBoxes() {
         ArrayList<Integer> mortgageablePropertiesIndex = new ArrayList<>();
         Player playerInTurn = getPlayerInTurn();
@@ -322,11 +338,29 @@ public class Game {
     }
 
     public void handlePlayerLoss(Player player) {
+        //Controlla che il giocatore abbia costruzioni da demolire e le
+        //demolisce finchè non ha abbastanza soldi o sono finite
+        ArrayList<Integer> propertiesWithBuildings;
+        do {
+            propertiesWithBuildings = getPropertiesWithBuildings();
+            if (!propertiesWithBuildings.isEmpty()) {
+                for (int propertyIndex : propertiesWithBuildings) {
+                    int[] coords = boardController.convertPositionToGridCoords(propertyIndex);
+                    boardController.demolishOnProperty(coords[0], coords[1]);
+                    System.out.println("AAA");
+                }
+            }
+        } while(player.getMoney() <= 0 && !propertiesWithBuildings.isEmpty());
+
+
         // Controlla se il giocatore ha proprietà ipotecabili
         ArrayList<Integer> mortgageableProperties = getMortgageableBoxes();
-        if (!mortgageableProperties.isEmpty()) {
+        if (!mortgageableProperties.isEmpty() && player.getMoney() <= 0) {
             for (int propertyIndex : mortgageableProperties) {
-                mortgageBox(propertyIndex); // Ipoteca la proprietà
+                if(player.getMoney() > 0)
+                    break;
+                int[] coords = boardController.convertPositionToGridCoords(propertyIndex);
+                boardController.mortgageBox(coords[0], coords[1]);
             }
         }
 
