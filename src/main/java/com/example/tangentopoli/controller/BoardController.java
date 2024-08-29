@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -104,8 +105,12 @@ public class BoardController implements Initializable {
 
     private ImageView cardImg;
 
+
     @FXML
     private Pane mainPane;
+
+    @FXML
+    private ImageView imageRandomized;
 
 
     @Override
@@ -310,7 +315,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < diceValue; i++) {
+        for (int i = 0; i < 4; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -329,7 +334,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(diceValue);
+        game.movePlayer(4);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -1224,6 +1229,13 @@ public class BoardController implements Initializable {
     }
 
     public void setCardInfo(Card card) {
+
+        cardDialog.setScaleY(0);
+        Random imageRandom = new Random();
+        int randomized = imageRandom.nextInt(2) + 1;
+
+        imageRandomized.setImage(new Image(getClass().getResourceAsStream("/img/cardImage"+randomized+".png")));
+
         // Crea l'immagine della carta se non esiste già
         if (cardImg == null) {
             cardImg = new ImageView();
@@ -1231,25 +1243,103 @@ public class BoardController implements Initializable {
             cardImg.setPreserveRatio(true); // Mantiene le proporzioni dell'immagine
             mainPane.getChildren().add(cardImg); // Aggiungi l'immagine al layout principale
         }
-        if(card instanceof CommunityChest){
-        // Imposta l'immagine della carta
-        cardImg.setImage(new Image(getClass().getResourceAsStream("/img/chanceimgop.png")));
-        cardImg.setX(240);
-        cardImg.setY(250);
-        cardImg.setRotate(135);
-        }else{
-            cardImg.setImage(new Image(getClass().getResourceAsStream("/img/communitychestop.png")));
+        if (card instanceof CommunityChest) {
+            // Imposta l'immagine della carta
+            cardImg.setImage(new Image(getClass().getResourceAsStream("/img/chanceimgop.png")));
             cardImg.setX(240);
             cardImg.setY(250);
             cardImg.setRotate(135);
+
+            TranslateTransition translateTransition1 = new TranslateTransition(Duration.seconds(0.5), cardImg);
+            translateTransition1.setToX(-1500); // Imposta la distanza X di traslazione
+            translateTransition1.setToY(274); // Imposta la distanza Y di traslazione
+            translateTransition1.setDelay(Duration.millis(200));
+
+            // Seconda animazione: ingrandimento dell'immagine
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.01), cardImg);
+            scaleTransition.setToX(4.3); // Ingrandisci l'immagine (2x)
+            scaleTransition.setToY(4.3);
+
+            RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.01), cardImg);
+            rotateTransition.setToAngle(0);
+
+            TranslateTransition translateTransition2 = new TranslateTransition(Duration.seconds(0.3), cardImg);
+                translateTransition2.setDelay(Duration.millis(500));
+                translateTransition2.setToX(505); // Imposta la distanza X di traslazione
+                translateTransition2.setToY(162); // Imposta la distanza Y di traslazione
+
+            ScaleTransition scaleTransitionImg = new ScaleTransition(Duration.seconds(1), cardImg);
+            scaleTransitionImg.setDelay(Duration.millis(300));
+            scaleTransitionImg.setToY(0);
+
+            ScaleTransition scaleTransitionDialog = new ScaleTransition(Duration.seconds(1), cardDialog);
+            scaleTransitionDialog.setToY(1);
+
+            SequentialTransition sequentialTransition = new SequentialTransition(
+                    translateTransition1,
+                    scaleTransition,
+                    rotateTransition,
+                    translateTransition2,
+                    scaleTransitionImg,
+                    scaleTransitionDialog
+            );
+
+                sequentialTransition.play();
+
+            } else {
+            // Imposta l'immagine della carta
+            cardImg.setImage(new Image(getClass().getResourceAsStream("/img/communitychestop.png")));
+            cardImg.setX(550);
+            cardImg.setY(570);
+            cardImg.setRotate(135);
+
+            TranslateTransition translateTransition1 = new TranslateTransition(Duration.seconds(0.5), cardImg);
+            translateTransition1.setToX(-1500); // Imposta la distanza X di traslazione
+            translateTransition1.setToY(274); // Imposta la distanza Y di traslazione
+            translateTransition1.setDelay(Duration.millis(200));
+
+            // Seconda animazione: ingrandimento dell'immagine
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.01), cardImg);
+            scaleTransition.setToX(4.3); // Ingrandisci l'immagine (2x)
+            scaleTransition.setToY(4.3);
+
+            RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.01), cardImg);
+            rotateTransition.setToAngle(0);
+
+            TranslateTransition translateTransition2 = new TranslateTransition(Duration.seconds(0.3), cardImg);
+            translateTransition2.setDelay(Duration.millis(500));
+            translateTransition2.setToX(196); // Imposta la distanza X di traslazione
+            translateTransition2.setToY(-154); // Imposta la distanza Y di traslazione
+
+            ScaleTransition scaleTransitionImg = new ScaleTransition(Duration.seconds(1), cardImg);
+            scaleTransitionImg.setDelay(Duration.millis(300));
+            scaleTransitionImg.setToY(0);
+
+            ScaleTransition scaleTransitionDialog = new ScaleTransition(Duration.seconds(1), cardDialog);
+            scaleTransitionDialog.setToY(1);
+
+            SequentialTransition sequentialTransition = new SequentialTransition(
+                    translateTransition1,
+                    scaleTransition,
+                    rotateTransition,
+                    translateTransition2,
+                    scaleTransitionImg,
+                    scaleTransitionDialog
+            );
+
+
+            sequentialTransition.play();
+
         }
 
+        cardImg = null;
 
 
         openCardDialog();
         cardTitle.setText(card.getTitle());
         cardDescription.setText(card.getDescription());
-    }
+        }
+
 
     public void loseGame(Player player) {
         System.out.println("Loser id: " + player.getPlayerID());

@@ -242,24 +242,25 @@
       </Text>
       <DialogPane fx:id="cardDialog" layoutX="530.0" layoutY="274.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="357.0" prefWidth="550.0" stylesheets="@../style/boardStyle.css" visible="false">
          <header>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="597.0">
+            <AnchorPane fx:id="cardAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="597.0">
                <children>
                   <ImageView fitHeight="356.0" fitWidth="671.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/davanti.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="cardDescription" alignment="CENTER" layoutX="159.0" layoutY="80.0" prefHeight="154.0" prefWidth="352.0" text="Description" textAlignment="CENTER">
+                  <ImageView fx:id="imageRandomized" fitHeight="180.0" fitWidth="278.0" layoutX="15.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true" />
+                  <Label fx:id="cardDescription" alignment="CENTER" layoutX="266.0" layoutY="94.0" prefHeight="222.0" prefWidth="272.0" text="Description" textAlignment="CENTER">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <Label fx:id="cardTitle" alignment="CENTER" layoutX="62.0" layoutY="44.0" prefHeight="23.0" prefWidth="480.0" text="Vai in prigione" textAlignment="CENTER">
+                  <Label fx:id="cardTitle" alignment="CENTER" layoutX="-4.0" layoutY="23.0" prefHeight="78.0" prefWidth="572.0" text="Vai in prigione" textAlignment="CENTER">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Button fx:id="cardBtn" layoutX="225.0" layoutY="390.0" mnemonicParsing="false" onAction="#closeCardDialog" prefHeight="25.0" prefWidth="107.0" styleClass="styled-button" text="OK">
+                  <Button fx:id="cardBtn" layoutX="217.0" layoutY="363.0" mnemonicParsing="false" onAction="#closeCardDialog" prefHeight="25.0" prefWidth="107.0" styleClass="styled-button" text="OK">
                      <font>
                         <Font size="21.0" />
                      </font>
