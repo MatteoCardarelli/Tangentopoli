@@ -83,7 +83,13 @@ public class BoardController implements Initializable {
     private DialogPane endDialog;
 
     @FXML
-    private TextArea playerInfo;
+    private Label moneyLabel;
+
+    @FXML
+    private Rectangle colorBox;
+
+    @FXML
+    private Label nameLabel;
 
     @FXML
     private ImageView dice1ImageView;
@@ -105,6 +111,8 @@ public class BoardController implements Initializable {
 
     private ImageView cardImg;
 
+    @FXML
+    private ImageView imageForScreen;
 
     @FXML
     private Pane mainPane;
@@ -145,6 +153,7 @@ public class BoardController implements Initializable {
     public void nextTurn() {
         if(game.getPlayersN() >= 2) {
             removeAllOverlayRectangles();
+
             game.changeTurn();
             diceEqualsCombo = 0;
             exitPrisonFlag = false;
@@ -315,7 +324,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < diceValue; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -334,7 +343,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(4);
+        game.movePlayer(diceValue);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -547,8 +556,23 @@ public class BoardController implements Initializable {
 
     //Displays player data in the top textArea
     public void displayPlayerInfo(Player player) {
-        String playerInfoStr = player.toString();
-        playerInfo.setText(playerInfoStr);
+        // Ottieni il colore del giocatore
+        Circle playerToken = getPlayerTokenFromID(player.getPlayerID());
+        Color playerColor = (Color) playerToken.getFill();
+        String playerInfoStr[] = player.toStringArray();
+
+        switch(player.getPlayerID()) {
+            case 1:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 1 + ".png")));break;
+            case 2:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 2 + ".png")));break;
+            case 3:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 3 + ".png")));break;
+            case 4:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 4 + ".png")));break;
+            case 5:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 5 + ".png")));break;
+            case 6:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 6 + ".png")));break;
+        }
+
+        nameLabel.setText(playerInfoStr[0]);
+        moneyLabel.setText(playerInfoStr[1]);
+        colorBox.setFill(playerColor);
     }
 
     //Displays the current player's Box infos
@@ -1339,7 +1363,6 @@ public class BoardController implements Initializable {
         cardTitle.setText(card.getTitle());
         cardDescription.setText(card.getDescription());
         }
-
 
     public void loseGame(Player player) {
         System.out.println("Loser id: " + player.getPlayerID());

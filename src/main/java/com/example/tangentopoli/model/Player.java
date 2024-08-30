@@ -252,20 +252,12 @@ public abstract class Player {
             return true;
     }
 
-    //metodo che restituisce la descrizione
-    public String toString() {
-        String str = "Giocatore " + this.playerID + " | Patrimonio: " + this.money + "€\n";
-        for(PurchasableBox box : this.purchasedBoxes) {
-            str += "- " + box.getName() + "\n";
-        }
-
-        for(PurchasableBox box : this.mortgagedBoxes) {
-            str += "- " + box.getName() + " (ipoteca)\n";
-        }
-
-        return str;
+    public String[] toStringArray() {
+        String[] strInfo = new String[2];
+        strInfo[0] = "Giocatore " + this.playerID;
+        strInfo[1] =  this.money + "€" ;
+        return strInfo;
     }
-
     public void demolishOnProperty(Property property) {
         int price = property.getDemolitionPrice();
         property.demolishConstruction();
