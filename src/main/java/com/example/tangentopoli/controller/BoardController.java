@@ -1268,11 +1268,11 @@ public class BoardController implements Initializable {
                 translateTransition2.setToX(505); // Imposta la distanza X di traslazione
                 translateTransition2.setToY(162); // Imposta la distanza Y di traslazione
 
-            ScaleTransition scaleTransitionImg = new ScaleTransition(Duration.seconds(1), cardImg);
+            ScaleTransition scaleTransitionImg = new ScaleTransition(Duration.seconds(0.3), cardImg);
             scaleTransitionImg.setDelay(Duration.millis(300));
             scaleTransitionImg.setToY(0);
 
-            ScaleTransition scaleTransitionDialog = new ScaleTransition(Duration.seconds(1), cardDialog);
+            ScaleTransition scaleTransitionDialog = new ScaleTransition(Duration.seconds(0.3), cardDialog);
             scaleTransitionDialog.setToY(1);
 
             SequentialTransition sequentialTransition = new SequentialTransition(
@@ -1311,11 +1311,11 @@ public class BoardController implements Initializable {
             translateTransition2.setToX(196); // Imposta la distanza X di traslazione
             translateTransition2.setToY(-154); // Imposta la distanza Y di traslazione
 
-            ScaleTransition scaleTransitionImg = new ScaleTransition(Duration.seconds(1), cardImg);
+            ScaleTransition scaleTransitionImg = new ScaleTransition(Duration.seconds(0.3), cardImg);
             scaleTransitionImg.setDelay(Duration.millis(300));
             scaleTransitionImg.setToY(0);
 
-            ScaleTransition scaleTransitionDialog = new ScaleTransition(Duration.seconds(1), cardDialog);
+            ScaleTransition scaleTransitionDialog = new ScaleTransition(Duration.seconds(0.3), cardDialog);
             scaleTransitionDialog.setToY(1);
 
             SequentialTransition sequentialTransition = new SequentialTransition(
