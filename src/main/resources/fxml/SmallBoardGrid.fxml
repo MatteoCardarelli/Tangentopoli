@@ -175,25 +175,53 @@
             </ImageView>
          </children>
       </GridPane>
-      <Button fx:id="buyBtn" layoutX="1000.0" layoutY="400.0" mnemonicParsing="false" onAction="#buyCurrentBox" prefHeight="60.0" prefWidth="220.0" text="ACQUISTA">
+      <Button fx:id="buyBtn" layoutX="1343.0" layoutY="272.0" mnemonicParsing="false" onAction="#buyCurrentBox" prefHeight="60.0" prefWidth="220.0">
          <font>
-            <Font size="30.0" />
+            <Font size="1.0" />
          </font>
+         <graphic>
+            <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/BuyButtonImg.png" />
+               </image>
+            </ImageView>
+         </graphic>
       </Button>
-      <Button fx:id="diceBtn" layoutX="1260.0" layoutY="400.0" mnemonicParsing="false" onAction="#launchDices" prefHeight="60.0" prefWidth="220.0" text="TIRA I DADI">
+      <Button fx:id="diceBtn" layoutX="1343.0" layoutY="202.0" mnemonicParsing="false" onAction="#launchDices" prefHeight="60.0" prefWidth="220.0">
          <font>
-            <Font size="30.0" />
+            <Font size="1.0" />
          </font>
+         <graphic>
+            <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/launchDicesImg.png" />
+               </image>
+            </ImageView>
+         </graphic>
       </Button>
-      <Button fx:id="nextBtn" layoutX="1000.0" layoutY="500.0" mnemonicParsing="false" onAction="#nextTurn" prefHeight="60.0" prefWidth="220.0" text="PROSSIMO">
+      <Button fx:id="nextBtn" layoutX="1343.0" layoutY="412.0" mnemonicParsing="false" onAction="#nextTurn" prefHeight="60.0" prefWidth="220.0">
          <font>
-            <Font size="30.0" />
+            <Font size="1.0" />
          </font>
+         <graphic>
+            <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/skipTurnImg.png" />
+               </image>
+            </ImageView>
+         </graphic>
       </Button>
-      <Button fx:id="actionsBtn" layoutX="1260.0" layoutY="500.0" mnemonicParsing="false" onAction="#showActionsDialog" prefHeight="60.0" prefWidth="220.0" text="AZIONI">
+      <Button fx:id="actionsBtn" layoutX="1343.0" layoutY="342.0" mnemonicParsing="false" onAction="#showActionsDialog" prefHeight="60.0" prefWidth="220.0">
          <font>
-            <Font size="30.0" />
+            <Font size="1.0" />
          </font>
+         <graphic>
+            <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/actionImg.png" />
+               </image>
+            </ImageView>
+         </graphic>
       </Button>
       <TextArea fx:id="boxInfo" layoutX="990.0" layoutY="600.0" prefHeight="210.0" prefWidth="500.0" text="Ti trovi su: Via Garbatella&#10;Costo: 250$&#10;">
          <font>

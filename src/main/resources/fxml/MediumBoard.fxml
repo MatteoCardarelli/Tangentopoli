@@ -15,6 +15,7 @@
 
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Label?>
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tangentopoli.controller.BoardController">
    <children>
       <ImageView fitHeight="1140.0" fitWidth="1600.0" pickOnBounds="true" preserveRatio="true">
@@ -76,11 +77,6 @@
             <ImageView fx:id="dice2ImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="4" />
          </children>
       </GridPane>
-      <TextArea fx:id="playerInfo" layoutX="990.0" layoutY="130.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="210.0" prefWidth="500.0" text="Giocatore 1  |  1344$&#10;-Piazza D'arimi&#10;-Via Rossi&#10;-Stazione Est&#10;">
-         <font>
-            <Font size="28.0" />
-         </font>
-      </TextArea>
       <TextArea fx:id="boxInfo" layoutX="990.0" layoutY="600.0" prefHeight="210.0" prefWidth="500.0" text="Ti trovi su via Garbatella &#10;Costo: 250$">
          <font>
             <Font size="28.0" />
@@ -134,10 +130,73 @@
          </expandableContent>
       </DialogPane>
    </children>
-   <Slider fx:id="sliderAudio" layoutX="1356.0" layoutY="61.0" value="50.0" />
-   <Text fill="WHITE" layoutX="1394.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="volume" wrappingWidth="95.57861328125">
+   <Slider fx:id="sliderAudio" layoutX="1436.0" layoutY="862.0" value="50.0" />
+   <Text fill="WHITE" layoutX="1474.0" layoutY="847.0" strokeType="OUTSIDE" strokeWidth="0.0" text="volume" wrappingWidth="95.57861328125">
       <font>
          <Font size="21.0" />
       </font>
    </Text>
+
+   <DialogPane fx:id="cardDialog" layoutX="530.0" layoutY="274.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="357.0" prefWidth="550.0" stylesheets="@../style/boardStyle.css" visible="false">
+      <header>
+         <AnchorPane fx:id="cardAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="597.0">
+            <children>
+               <ImageView fitHeight="356.0" fitWidth="671.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../img/davanti.png" />
+                  </image>
+               </ImageView>
+               <ImageView fx:id="imageRandomized" fitHeight="180.0" fitWidth="278.0" layoutX="15.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true" />
+               <Label fx:id="cardDescription" alignment="CENTER" layoutX="266.0" layoutY="94.0" prefHeight="222.0" prefWidth="272.0" text="Description" textAlignment="CENTER">
+                  <font>
+                     <Font size="16.0" />
+                  </font>
+               </Label>
+               <Label fx:id="cardTitle" alignment="CENTER" layoutX="-4.0" layoutY="23.0" prefHeight="78.0" prefWidth="572.0" text="Vai in prigione" textAlignment="CENTER">
+                  <font>
+                     <Font name="System Bold" size="18.0" />
+                  </font>
+               </Label>
+               <Button fx:id="cardBtn" layoutX="217.0" layoutY="363.0" mnemonicParsing="false" onAction="#closeCardDialog" prefHeight="25.0" prefWidth="107.0" styleClass="styled-button" text="OK">
+                  <font>
+                     <Font size="21.0" />
+                  </font>
+               </Button>
+            </children>
+         </AnchorPane>
+      </header>
+   </DialogPane>
+   <DialogPane fx:id="endDialog" layoutX="695.0" layoutY="355.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="247.0" prefWidth="480.0" visible="false">
+      <header>
+         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0">
+            <children>
+               <Label layoutX="155.0" layoutY="14.0" text="HAI VINTO!">
+                  <font>
+                     <Font name="System Bold" size="31.0" />
+                  </font>
+               </Label>
+               <Label fx:id="winnerLabel" layoutX="102.0" layoutY="53.0" prefHeight="95.0" prefWidth="276.0" text="Label" />
+               <Button fx:id="exitBtn" layoutX="208.0" layoutY="148.0" mnemonicParsing="false" onAction="#closeGames" prefHeight="38.0" prefWidth="65.0" text="Esci">
+                  <font>
+                     <Font name="System Bold" size="19.0" />
+                  </font>
+               </Button>
+            </children>
+         </AnchorPane>
+      </header>
+   </DialogPane>
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="76.0" layoutX="1197.0" layoutY="71.0" stroke="BLACK" strokeType="INSIDE" width="356.0" />
+   <Label fx:id="nameLabel" layoutX="1252.0" layoutY="71.0" prefHeight="35.0" prefWidth="156.0" text="giocatore 1">
+      <font>
+         <Font size="24.0" />
+      </font>
+   </Label>
+   <Label fx:id="moneyLabel" layoutX="1253.0" layoutY="104.0" prefHeight="35.0" prefWidth="156.0" text="1500€">
+      <font>
+         <Font size="24.0" />
+      </font>
+   </Label>
+   <Rectangle fx:id="colorBox" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="76.0" layoutX="1195.0" layoutY="71.0" stroke="BLACK" strokeType="INSIDE" width="51.0" />
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f5f5f5" height="123.0" layoutX="1444.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="123.0" />
+   <ImageView fx:id="imageForScreen" fitHeight="123.0" fitWidth="123.0" layoutX="1444.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" />
 </Pane>

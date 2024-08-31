@@ -1189,6 +1189,7 @@ public class BoardController implements Initializable {
         // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
         if (col == 0 || col == boardGrid.getColumnCount() - 1) {
             overlay.setRotate(90);
+            overlay.setTranslateX(12);
         }
 
         // Aggiungi la StackPane al GridPane
