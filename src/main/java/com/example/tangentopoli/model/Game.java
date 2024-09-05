@@ -318,15 +318,50 @@ public class Game {
         if (player.getMoney() <= 0) {
             handlePlayerLoss(player);
         }
+
         boardController.displayPlayerInfo(player);
     }
 
+    public ArrayList<Integer> getPropertiesWithBuildings() {
+        ArrayList<Integer> propertiesWithBuildings = new ArrayList<>();
+        Player playerInTurn = getPlayerInTurn();
+
+        for(PurchasableBox box : playerInTurn.getPurchasedBoxes()) {
+            if (box instanceof Property property) {
+                if(property.hasBuildings()) {
+                    int boxIndex = board.getBoxIndex(box);
+                    propertiesWithBuildings.add(boxIndex);
+                }
+            }
+        }
+
+        return propertiesWithBuildings;
+    }
+
     public void handlePlayerLoss(Player player) {
+        //Controlla che il giocatore abbia costruzioni da demolire e le
+        //demolisce finchè non ha abbastanza soldi o sono finite
+        ArrayList<Integer> propertiesWithBuildings;
+        do {
+            propertiesWithBuildings = getPropertiesWithBuildings();
+            if (!propertiesWithBuildings.isEmpty()) {
+                for (int propertyIndex : propertiesWithBuildings) {
+                    int[] coords = boardController.convertPositionToGridCoords(propertyIndex);
+                    boardController.demolishOnProperty(coords[0], coords[1]);
+                    System.out.println("AAA");
+                }
+            }
+        } while(player.getMoney() <= 0 && !propertiesWithBuildings.isEmpty());
+
+
         // Controlla se il giocatore ha proprietà ipotecabili
         ArrayList<Integer> mortgageableProperties = getMortgageableBoxes();
-        if (!mortgageableProperties.isEmpty()) {
+        if (!mortgageableProperties.isEmpty() && player.getMoney() <= 0) {
             for (int propertyIndex : mortgageableProperties) {
-                mortgageBox(propertyIndex); // Ipoteca la proprietà
+                if(player.getMoney() > 0)
+                    break;
+                int[] coords = boardController.convertPositionToGridCoords(propertyIndex);
+                boardController.mortgageBox(coords[0], coords[1]);
             }
         }
 

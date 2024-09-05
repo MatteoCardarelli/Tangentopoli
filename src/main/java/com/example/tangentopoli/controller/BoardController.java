@@ -1402,15 +1402,11 @@ public class BoardController implements Initializable {
     }
 
     private void deletePropertyMarkersAndMortgageOverlays(int playerID) {
-        // Ottieni la lista di tutti i figli del GridPane
-        ObservableList<Node> children = boardGrid.getChildren();
+        // Ottieni una copia dei figli della GridPane per evitare modifiche dirette durante l'iterazione
+        List<Node> childrenCopy = new ArrayList<>(boardGrid.getChildren());
 
-        // Usa un iteratore per evitare ConcurrentModificationException
-        Iterator<Node> iterator = children.iterator();
-
-        while (iterator.hasNext()) {
-            Node child = iterator.next();
-
+        // Itera attraverso la lista di nodi copiati
+        for (Node child : childrenCopy) {
             // Verifica se il nodo si trova nella cella specificata
             Integer nodeRow = GridPane.getRowIndex(child);
             Integer nodeCol = GridPane.getColumnIndex(child);
@@ -1419,9 +1415,12 @@ public class BoardController implements Initializable {
             if (nodeRow == null) nodeRow = 0;
             if (nodeCol == null) nodeCol = 0;
 
-            // Controlla se il figlio è un'istanza di Rectangle e si trova nella cella specificata
-            if (child instanceof Rectangle && (child.getStyleClass().contains(playerID + "propertyMarker") || child.getStyleClass().contains(playerID + "mortOverlay"))) {
-                iterator.remove(); // Rimuovi il rettangolo dalla griglia
+            // Controlla se il figlio è un'istanza di Rectangle e ha la classe appropriata
+            if (child instanceof Rectangle &&
+                    (child.getStyleClass().contains(playerID + "propertyMarker") ||
+                            child.getStyleClass().contains(playerID + "mortOverlay"))) {
+                // Rimuovi il nodo direttamente dal GridPane
+                boardGrid.getChildren().remove(child);
             }
         }
     }

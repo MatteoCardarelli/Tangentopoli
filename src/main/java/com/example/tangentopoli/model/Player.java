@@ -268,11 +268,19 @@ public abstract class Player {
         for(PurchasableBox box : this.purchasedBoxes) {
             box.setOwner(null);
             box.setPurchased(false);
-            if(box.isMortgaged())
-                box.setMortgaged(false);
+            System.out.println("Proprietà resettata: " + box.getName());
+        }
+
+        for(PurchasableBox box : this.mortgagedBoxes) {
+            box.setOwner(null);
+            box.setPurchased(false);
+            box.setMortgaged(false);
+            System.out.println("Proprietà resettata: " + box.getName());
         }
         purchasedBoxes.clear();
+        mortgagedBoxes.clear();
     }
+
 
     public void pay(int moneyAmount) {
         this.money += moneyAmount;
