@@ -29,7 +29,7 @@ public abstract class PurchasableBox implements Box {
 
     @Override
     public String getDescription() {
-        String str = this.name + " \nCosto: " + this.price + " \nVal ipotecario: " + this.mortgageValue;
+        String str = this.name + "    Costo: " + this.price + "    Val ipotecario: " + this.mortgageValue;
         return str;
     }
 
@@ -72,4 +72,7 @@ public abstract class PurchasableBox implements Box {
     public void setMortgaged(boolean mortgaged) {
         isMortgaged = mortgaged;
     }
+
+
 }
+

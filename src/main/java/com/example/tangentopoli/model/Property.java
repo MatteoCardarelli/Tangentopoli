@@ -1,6 +1,7 @@
 package com.example.tangentopoli.model;
 
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
+import javafx.scene.image.Image;
 
 public class Property extends PurchasableBox {
     private int houseN = 0;
@@ -9,6 +10,7 @@ public class Property extends PurchasableBox {
     private int hotelPrice;
     private int rentPrice;
     private String color;
+
 
 
     public Property(String name, int price, int rentPrice, int mortgageValue, String color) {

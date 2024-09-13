@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -53,7 +54,7 @@ public class BoardController implements Initializable {
     private Button nextBtn;
 
     @FXML
-    private TextArea boxInfo;
+    private Label boxInfo;
 
     @FXML
     private Button actionsBtn;
@@ -63,6 +64,9 @@ public class BoardController implements Initializable {
 
     @FXML
     private Button mortgageBtn;
+
+    @FXML
+    private ImageView imageProperty;
 
     @FXML
     private Label winnerLabel;
@@ -1465,5 +1469,62 @@ public class BoardController implements Initializable {
         nextBtn.setDisable(setDisable);
         payPrisonBtn.setDisable(setDisable);
     }
+
+    @FXML
+    private void setImageOfProperties(MouseEvent mouseEvent) {
+        // Trova il nodo su cui si è passati con il mouse
+        Node source = (Node) mouseEvent.getSource();
+
+        // Ottieni le coordinate della casella nella griglia
+        Integer row = GridPane.getRowIndex(source) != null ? GridPane.getRowIndex(source) : 0;
+        Integer column = GridPane.getColumnIndex(source) != null ? GridPane.getColumnIndex(source) : 0;
+
+
+
+        // Cambia l'immagine in base alla posizione
+        String imagePath = getImagePathForGridPosition(row, column);
+        if (imagePath != null) {
+            imageProperty.setImage(new Image(getClass().getResourceAsStream(imagePath)));
+        }
+
+        System.out.println("Immagine della proprietà mostrata.");
+    }
+
+    @FXML
+    private void deleteImageOfProperties(MouseEvent mouseEvent) {
+        Node source = (Node) mouseEvent.getSource();
+        imageProperty.setImage(null);
+    }
+
+    private String getImagePathForGridPosition(int row, int column) {
+        // Logica che associa le posizioni a immagini specifiche
+        if (row == 0 && column == 0) {
+            return "/img/propertyImage1.png";
+        } else if (row == 0 && column == 1) {
+            return "/img/piazzaDuomo.png";
+        } else if (row == 0 && column == 3) {
+            return "/img/piazzaDuomp.png";
+        } else if (row == 1 && column == 5) {
+            return "/img/piazzaDuomo.png";
+        } else if (row == 2 && column == 5) {
+            return "/img/piazzaDuomo.png";
+        }else if (row == 4 && column == 5) {
+            return "/img/piazzaDuomo.png";
+        }else if (row == 5 && column == 4) {
+            return "/img/piazzaDuomo.png";
+        }else if (row == 5 && column == 3) {
+            return "/img/piazzaDuomo.png";
+        }else if (row == 1 && column == 0) {
+            return "/img/piazzaDuomo.png";
+        }else if (row == 4 && column == 0) {
+            return "/img/piazzaDuomo.png";
+        }
+
+
+        // Ritorna null se non esiste un'immagine associata alla posizione
+        return null;
+    }
+
+
 
 }

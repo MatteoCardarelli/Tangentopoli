@@ -1,10 +1,12 @@
 package com.example.tangentopoli.model;
 
+import javafx.scene.image.Image;
+
 public class ConcreteBoxFactory implements BoxFactory {
 
     @Override
     public Property createProperty(String name, int price, int rentPrice, int mortgageValue, String color) {
-        return new Property(name, price, rentPrice, mortgageValue,color );
+        return new Property(name, price, rentPrice, mortgageValue,color);
     }
 
     @Override

@@ -4,7 +4,6 @@
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -73,47 +72,47 @@
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8c663" height="150.0" stroke="BLACK" strokeType="INSIDE" width="150.0" GridPane.columnIndex="5" GridPane.rowIndex="5" />
             <ImageView fx:id="dice1ImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <ImageView fx:id="dice2ImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="180.0" GridPane.columnIndex="1">
+            <ImageView fx:id="piazzaDuomo" fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="180.0" GridPane.columnIndex="1">
                <image>
                   <Image url="@../img/smallBoardBoxes/1-piazzaDuomo.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="180.0" GridPane.columnIndex="3">
+            <ImageView fx:id="viaDellaSpiga" fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="180.0" GridPane.columnIndex="3">
                <image>
                   <Image url="@../img/smallBoardBoxes/2-viaDellaSpiga.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <image>
                   <Image url="@../img/smallBoardBoxes/3-piazzaFontana.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                <image>
                   <Image url="@../img/smallBoardBoxes/4-piazzaSanBabila.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <image>
                   <Image url="@../img/smallBoardBoxes/5-piazzaDellaScala.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" GridPane.columnIndex="4" GridPane.rowIndex="5">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" GridPane.columnIndex="4" GridPane.rowIndex="5">
                <image>
                   <Image url="@../img/smallBoardBoxes/6-vialeMazzini.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" GridPane.columnIndex="3" GridPane.rowIndex="5">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" GridPane.columnIndex="3" GridPane.rowIndex="5">
                <image>
                   <Image url="@../img/smallBoardBoxes/7-vialeMonza.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                <image>
                   <Image url="@../img/smallBoardBoxes/9-corsoBuenosAires.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <image>
                   <Image url="@../img/smallBoardBoxes/10-corsoGaribaldi.png" />
                </image>
@@ -223,11 +222,6 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextArea fx:id="boxInfo" layoutX="990.0" layoutY="600.0" prefHeight="210.0" prefWidth="500.0" text="Ti trovi su: Via Garbatella&#10;Costo: 250$&#10;">
-         <font>
-            <Font size="28.0" />
-         </font>
-      </TextArea>
       <Button fx:id="payPrisonBtn" layoutX="873.0" layoutY="52.0" mnemonicParsing="false" onAction="#exitFromPrison" prefHeight="38.0" prefWidth="171.0" text="paga per uscire" />
       <DialogPane fx:id="actionsDialog" layoutX="676.0" layoutY="355.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="171.0" prefWidth="395.0" visible="false">
           <header>
@@ -257,8 +251,8 @@
             </AnchorPane>
           </header>
       </DialogPane>
-      <Slider fx:id="sliderAudio" layoutX="1436.0" layoutY="862.0" value="50.0" />
-      <Text fill="WHITE" layoutX="1474.0" layoutY="847.0" strokeType="OUTSIDE" strokeWidth="0.0" text="volume" wrappingWidth="95.57861328125">
+      <Slider fx:id="sliderAudio" layoutX="1418.0" layoutY="832.0" value="50.0" />
+      <Text fill="WHITE" layoutX="1456.0" layoutY="817.0" strokeType="OUTSIDE" strokeWidth="0.0" text="volume" wrappingWidth="95.57861328125">
          <font>
             <Font size="21.0" />
          </font>
@@ -325,5 +319,12 @@
       <Rectangle fx:id="colorBox" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="76.0" layoutX="1195.0" layoutY="71.0" stroke="BLACK" strokeType="INSIDE" width="51.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f5f5f5" height="123.0" layoutX="1444.0" layoutY="30.0" stroke="BLACK" strokeType="INSIDE" width="123.0" />
       <ImageView fx:id="imageForScreen" fitHeight="123.0" fitWidth="123.0" layoutX="1444.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" />
+      <Rectangle arcHeight="5.0" arcWidth="10.0" fill="WHITE" height="60.0" layoutX="907.0" layoutY="794.0" stroke="BLACK" strokeType="INSIDE" width="479.0" />
+      <Label fx:id="boxInfo" layoutX="921.0" layoutY="802.0" prefHeight="42.0" prefWidth="451.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="imageProperty" fitHeight="484.0" fitWidth="348.0" layoutX="936.0" layoutY="203.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </Pane>
