@@ -60,7 +60,13 @@ public class BoardController implements Initializable {
     private Button actionsBtn;
 
     @FXML
+    private Button demolishBtn;
+
+    @FXML
     private Button buildBtn;
+
+    @FXML
+    private Button extinguishBtn;
 
     @FXML
     private Button mortgageBtn;
@@ -72,7 +78,7 @@ public class BoardController implements Initializable {
     private Label winnerLabel;
 
     @FXML
-    private DialogPane actionsDialog;
+    private ImageView ImgActionBtn;
 
     @FXML
     private Button buyBtn;
@@ -707,9 +713,29 @@ public class BoardController implements Initializable {
     }
 
     //Set the Actions DialogPane as visible
+    // Variabile di stato per sapere se si sta mostrando l'immagine alternativa
+    private boolean isDefaultImage = true;
+
+    // Metodo per mostrare il dialogo delle azioni
     public void showActionsDialog(ActionEvent actionEvent) {
-        actionsDialog.setVisible(!actionsDialog.isVisible());
+
+        // Alterna la visibilità dei pulsanti
+        buildBtn.setVisible(!buildBtn.isVisible());
+        mortgageBtn.setVisible(!mortgageBtn.isVisible());
+        demolishBtn.setVisible(!demolishBtn.isVisible());
+        extinguishBtn.setVisible(!extinguishBtn.isVisible());
+
+        // Cambia l'immagine del pulsante
+        if (isDefaultImage) {
+            ImgActionBtn.setImage(new Image(getClass().getResourceAsStream("/img/annulla.png")));
+        } else {
+            ImgActionBtn.setImage(new Image(getClass().getResourceAsStream("/img/ActionImg.png"))); // Sostituisci con l'immagine predefinita
+        }
+
+        // Inverte lo stato dell'immagine
+        isDefaultImage = !isDefaultImage;
     }
+
 
     //Builds on the property that has been directly clicked on the board
     public void buildOnProperty(int row, int col) {
@@ -1019,7 +1045,6 @@ public class BoardController implements Initializable {
     //Once the Construct button has been clicked, the method puts the overlays on all the buildable properties
     public void buildBtnClick(ActionEvent actionEvent) {
         removeAllOverlayRectangles();
-        actionsDialog.setVisible(false);
         updateBoxInfo("Clicca sulle proprietà su cui vuoi costruire");
         ArrayList<Integer> buildablePropertiesIndex = game.getBuildableProperties();
         int[] coords = {0, 0};
@@ -1081,7 +1106,6 @@ public class BoardController implements Initializable {
 
     public void mortgageBtnClick(ActionEvent actionEvent) {
         removeAllOverlayRectangles();
-        actionsDialog.setVisible(false);
         updateBoxInfo("Clicca sulle caselle che vuoi ipotecare");
         ArrayList<Integer> mortgageableProperties = game.getMortgageableBoxes();
         int[] coords = {0, 0};
@@ -1138,7 +1162,6 @@ public class BoardController implements Initializable {
 
     public void demolishBtnClick(ActionEvent actionEvent) {
         removeAllOverlayRectangles();
-        actionsDialog.setVisible(false);
         updateBoxInfo("Clicca sulle proprietà su cui vuoi demolire");
         ArrayList<Integer> demolishablePropertiesIndex = game.getDemolishableProperties();
         int[] coords = {0, 0};
@@ -1218,7 +1241,6 @@ public class BoardController implements Initializable {
 
     public void extinguishBtnClick(ActionEvent actionEvent) {
         removeAllOverlayRectangles();
-        actionsDialog.setVisible(false);
         updateBoxInfo("Clicca sulle caselle sulle quali vuoi estinguere l'ipoteca");
         ArrayList<Integer> extinguishableProperties = game.getExtinguishableBoxes();
         int[] coords = {0, 0};
@@ -1503,7 +1525,7 @@ public class BoardController implements Initializable {
         } else if (row == 0 && column == 1) {
             return "/img/piazzaDuomo.png";
         } else if (row == 0 && column == 3) {
-            return "/img/piazzaDuomp.png";
+            return "/img/piazzaDuomo.png";
         } else if (row == 1 && column == 5) {
             return "/img/piazzaDuomo.png";
         } else if (row == 2 && column == 5) {

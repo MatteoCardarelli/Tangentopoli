@@ -215,7 +215,7 @@
             <Font size="1.0" />
          </font>
          <graphic>
-            <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="ImgActionBtn" fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../img/actionImg.png" />
                </image>
@@ -223,34 +223,6 @@
          </graphic>
       </Button>
       <Button fx:id="payPrisonBtn" layoutX="873.0" layoutY="52.0" mnemonicParsing="false" onAction="#exitFromPrison" prefHeight="38.0" prefWidth="171.0" text="paga per uscire" />
-      <DialogPane fx:id="actionsDialog" layoutX="676.0" layoutY="355.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="171.0" prefWidth="395.0" visible="false">
-          <header>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="173.0" prefWidth="395.0">
-               <children>
-                  <Button fx:id="mortgageBtn" layoutX="211.0" layoutY="28.0" mnemonicParsing="false" onAction="#mortgageBtnClick" prefHeight="16.0" prefWidth="163.0" text="IPOTECA">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="demolishBtn" layoutX="21.0" layoutY="100.0" mnemonicParsing="false" onAction="#demolishBtnClick" prefHeight="16.0" prefWidth="163.0" text="DEMOLISCI">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="extinguishBtn" layoutX="211.0" layoutY="100.0" mnemonicParsing="false" onAction="#extinguishBtnClick" prefHeight="16.0" prefWidth="163.0" text="ESTINGUI">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="buildBtn" layoutX="21.0" layoutY="28.0" mnemonicParsing="false" onAction="#buildBtnClick" prefHeight="16.0" prefWidth="163.0" text="COSTRUISCI">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Button>
-               </children>
-            </AnchorPane>
-          </header>
-      </DialogPane>
       <Slider fx:id="sliderAudio" layoutX="1418.0" layoutY="832.0" value="50.0" />
       <Text fill="WHITE" layoutX="1456.0" layoutY="817.0" strokeType="OUTSIDE" strokeWidth="0.0" text="volume" wrappingWidth="95.57861328125">
          <font>
@@ -326,5 +298,53 @@
          </font>
       </Label>
       <ImageView fx:id="imageProperty" fitHeight="484.0" fitWidth="348.0" layoutX="936.0" layoutY="203.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="mortgageBtn" layoutX="1343.0" layoutY="482.0" mnemonicParsing="false" onAction="#mortgageBtnClick" prefHeight="60.0" prefWidth="220.0" visible="false">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/ipoteca.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="demolishBtn" layoutX="1343.0" layoutY="552.0" mnemonicParsing="false" onAction="#demolishBtnClick" prefHeight="60.0" prefWidth="220.0" visible="false">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/demolisci.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="extinguishBtn" layoutX="1343.0" layoutY="622.0" mnemonicParsing="false" onAction="#extinguishBtnClick" prefHeight="60.0" prefWidth="220.0" visible="false">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/estingui.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="buildBtn" layoutX="1343.0" layoutY="692.0" mnemonicParsing="false" onAction="#buildBtnClick" prefHeight="60.0" prefWidth="220.0" visible="false">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/costruisci.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
    </children>
 </Pane>
