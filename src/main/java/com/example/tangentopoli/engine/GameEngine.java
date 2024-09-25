@@ -7,16 +7,16 @@ public class GameEngine {
      private static GameEngine instance; // Istanza Singleton
 
      // Costruttore privato per evitare l'istanza diretta
-     public GameEngine(int playersN, BoardController boardController) {
-          Game game = new Game(playersN);
+     public GameEngine(int playersN, BoardController boardController, boolean CPUPlayers) {
+          Game game = new Game(playersN, CPUPlayers );
           boardController.setGame(game);
           game.setController(boardController);
      }
 
      // Metodo pubblico statico per ottenere l'istanza Singleton
-     public static synchronized GameEngine getInstance(int playersN, BoardController boardController) {
+     public static synchronized GameEngine getInstance(int playersN, BoardController boardController, boolean CPUPlayers) {
           if (instance == null) {
-               instance = new GameEngine(playersN, boardController);
+               instance = new GameEngine(playersN, boardController, CPUPlayers);
           }
           return instance;
      }

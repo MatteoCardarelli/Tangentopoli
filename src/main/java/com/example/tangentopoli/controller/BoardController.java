@@ -160,37 +160,44 @@ public class BoardController implements Initializable {
     }
 
     //Passes to the next turn
+
     public void nextTurn() {
         if(game.getPlayersN() >= 2) {
             removeAllOverlayRectangles();
 
             game.changeTurn();
-            diceEqualsCombo = 0;
-            exitPrisonFlag = false;
-            displayPlayerInfo(game.getPlayerInTurn());
-            displayBoxInfo(game.getPlayerInTurn());
-            diceBtn.setDisable(false);
-            nextBtn.setDisable(true);
-            buyBtn.setDisable(true);
+            startTurn();
 
-            //se il giocatore è in prigione attiva il pulsante per uscire pagando
-            if (game.getPlayerInTurn().isInPrison()) {
-                payPrisonBtn.setDisable(false);
-                payPrisonBtn.setVisible(true);
-            } else {
-                payPrisonBtn.setDisable(true);
-                payPrisonBtn.setVisible(false);
-            }
-
-            //se il giocatore è da 3 turni in prigione obbligalo a pagare per uscire
-            if (game.getPlayerInTurn().getTurnInPrison() == 3){
-                nextBtn.setDisable(true);
-                diceBtn.setDisable(true);
-                updateBoxInfo("Sei da tre turni in prigione sei obbligato a pagare");
-            }
         } else {
           disableAllBtns(true);
         }
+    }
+
+    public void startTurn(){
+        diceEqualsCombo = 0;
+        exitPrisonFlag = false;
+        displayPlayerInfo(game.getPlayerInTurn());
+        displayBoxInfo(game.getPlayerInTurn());
+        diceBtn.setDisable(false);
+        nextBtn.setDisable(true);
+        buyBtn.setDisable(true);
+
+        //se il giocatore è in prigione attiva il pulsante per uscire pagando
+        if (game.getPlayerInTurn().isInPrison()) {
+            payPrisonBtn.setDisable(false);
+            payPrisonBtn.setVisible(true);
+        } else {
+            payPrisonBtn.setDisable(true);
+            payPrisonBtn.setVisible(false);
+        }
+
+        //se il giocatore è da 3 turni in prigione obbligalo a pagare per uscire
+        if (game.getPlayerInTurn().getTurnInPrison() == 3){
+            nextBtn.setDisable(true);
+            diceBtn.setDisable(true);
+            updateBoxInfo("Sei da tre turni in prigione sei obbligato a pagare");
+        }
+
     }
 
     //DICES
@@ -209,6 +216,9 @@ public class BoardController implements Initializable {
         }
         else if (diceValue1 == diceValue2 && !game.getPlayerInTurn().isInPrison()) {
             diceEqualsCombo++;
+            if (game.getPlayerInTurn() instanceof CPUPlayer) {
+                ((CPUPlayer) game.getPlayerInTurn()).setCanLaunchAgain(true);
+            }
 
             if (diceEqualsCombo == 3)
                 sendToPrison();
@@ -228,7 +238,7 @@ public class BoardController implements Initializable {
     }
 
     //Launches the dices and manages the graphics of the animation
-    public void launchDices(ActionEvent actionEvent) {
+    public void launchDices() {
         diceBtn.setDisable(true);
         Player playerInTurn = game.getPlayerInTurn();
         removeAllOverlayRectangles();
@@ -355,6 +365,8 @@ public class BoardController implements Initializable {
 
         game.movePlayer(diceValue);
 
+
+
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
             rowPos = 0;
@@ -379,7 +391,6 @@ public class BoardController implements Initializable {
 
         displayBoxInfo(game.getPlayerInTurn());
 
-        //DA SPOSTARE IN GAME
         //metodo per pagare gli affitti di qualsiasi purchasablebox
         if (game.getPlayerInTurn().getPosition() instanceof PurchasableBox){
             game.getPlayerInTurn().payRent(this);
@@ -388,6 +399,10 @@ public class BoardController implements Initializable {
         else if (game.getPlayerInTurn().getPosition() instanceof Tax){
             game.getPlayerInTurn().payTax(this);
             game.checkPlayerAfterPayment(game.getPlayerInTurn());
+        }
+
+        if (game.getPlayerInTurn() instanceof CPUPlayer){
+            ((CPUPlayer) game.getPlayerInTurn()).takeStrategicDecisions();
         }
     }
 
@@ -1546,7 +1561,5 @@ public class BoardController implements Initializable {
         // Ritorna null se non esiste un'immagine associata alla posizione
         return null;
     }
-
-
 
 }
