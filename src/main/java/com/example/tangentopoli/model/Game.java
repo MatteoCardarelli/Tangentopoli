@@ -1,6 +1,7 @@
 package com.example.tangentopoli.model;
 
 import com.example.tangentopoli.controller.BoardController;
+import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -28,12 +29,13 @@ public class Game {
 
 
     //FAI SINGLETON
-    public Game(int playersN){
+    public Game(int playersN, boolean CPUPlayers){
         objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         board = new Board(playersN);
-        createPlayers(playersN);
+
+        createPlayers(playersN, CPUPlayers);
         loadCards("src/main/resources/serialization/cards/chances.json", "src/main/resources/serialization/cards/communityChests.json");
         System.out.println(communityChestCards);
     }
@@ -65,12 +67,28 @@ public class Game {
     }
 
     //Populates players list, assigning to each player an ID and the initial amount of money
-    private void createPlayers(int playersN) {
+    private void createPlayers(int playersN, boolean CPUPlayers) {
         players = new ArrayList<>(playersN);
-        for (int i = 0; i < playersN; i++) {
-            HumanPlayer player = new HumanPlayer(i+1, 1000);
-            players.add(player);
-            player.setPosition(board.getBoxFromIndex(0));   //Set player to start position
+        if (!CPUPlayers) {
+            for (int i = 0; i < playersN; i++) {
+                HumanPlayer player = new HumanPlayer(i+1, 1000);
+                players.add(player);
+                player.setPosition(board.getBoxFromIndex(0));   //Set player to start position
+            }
+        }
+        else {
+            for (int i = 0; i < playersN; i++) {
+                if (i==0) {
+                    HumanPlayer player = new HumanPlayer(i + 1, 1000);
+                    players.add(player);
+                    player.setPosition(board.getBoxFromIndex(0));   //Set player to start position
+                }
+                else {
+                    CPUPlayer player = new CPUPlayer(i + 1, 1000, this);
+                    players.add(player);
+                    player.setPosition(board.getBoxFromIndex(0)); //Set player to start position
+                }
+            }
         }
     }
 
@@ -89,6 +107,11 @@ public class Game {
             getPlayerInTurn().setSkipTurn(false);
             changeTurn();
         }
+
+        if (getPlayerInTurn() instanceof CPUPlayer){
+            ((CPUPlayer) getPlayerInTurn()).moveBot();  // Muovi il bot
+        }
+
     }
 
     public int getTurn(){
@@ -146,7 +169,6 @@ public class Game {
         //Positions the first element at the end of the list and shifts all the previous elements
         chanceCards.add(chanceCards.size()-1, chanceCards.remove(0));
         chanceCard.action(this);
-        System.out.println(chanceCards);
         return chanceCard;
     }
 
@@ -155,7 +177,6 @@ public class Game {
         //Positions the first element at the end of the list and shifts all the previous elements
         communityChestCards.add(communityChestCards.size()-1, communityChestCards.remove(0));
         communityChest.action(this);
-        System.out.println(communityChestCards);
         return communityChest;
     }
 
@@ -373,6 +394,7 @@ public class Game {
 
     public ArrayList<Player> getPlayers () {
             return players;
-        }
+    }
+
 }
 

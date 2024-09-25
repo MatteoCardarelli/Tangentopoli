@@ -2,10 +2,8 @@ package com.example.tangentopoli.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
-import com.example.tangentopoli.TangentopoliApp;
 import com.example.tangentopoli.engine.GameEngine;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -64,7 +62,7 @@ public class MenuController implements Initializable {
             stage.setScene(scene);
             stage.show();
 
-            new GameEngine((int)selectPlayerN.getValue(), loader.getController());
+            new GameEngine((int)selectPlayerN.getValue(), loader.getController(), CPUCheck.isSelected());
 
         } catch (IOException e) {
             e.printStackTrace();
