@@ -181,7 +181,7 @@
          <graphic>
             <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/BuyButtonImg.png" />
+                  <Image url="@../img/buttonImages/BuyButtonImg.png" />
                </image>
             </ImageView>
          </graphic>
@@ -193,7 +193,7 @@
          <graphic>
             <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/launchDicesImg.png" />
+                  <Image url="@../img/buttonImages/launchDicesImg.png" />
                </image>
             </ImageView>
          </graphic>
@@ -205,7 +205,7 @@
          <graphic>
             <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/skipTurnImg.png" />
+                  <Image url="@../img/buttonImages/skipTurnImg.png" />
                </image>
             </ImageView>
          </graphic>
@@ -217,7 +217,7 @@
          <graphic>
             <ImageView fx:id="ImgActionBtn" fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/actionImg.png" />
+                  <Image url="@../img/buttonImages/actionImg.png" />
                </image>
             </ImageView>
          </graphic>
@@ -235,7 +235,7 @@
                <children>
                   <ImageView fitHeight="356.0" fitWidth="671.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../img/davanti.png" />
+                        <Image url="@../img/buttonImages/davanti.png" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="imageRandomized" fitHeight="180.0" fitWidth="278.0" layoutX="15.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true" />
@@ -305,7 +305,7 @@
          <graphic>
             <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/ipoteca.png" />
+                  <Image url="@../img/buttonImages/ipoteca.png" />
                </image>
             </ImageView>
          </graphic>
@@ -317,7 +317,7 @@
          <graphic>
             <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/demolisci.png" />
+                  <Image url="@../img/buttonImages/demolisci.png" />
                </image>
             </ImageView>
          </graphic>
@@ -329,7 +329,7 @@
          <graphic>
             <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/estingui.png" />
+                  <Image url="@../img/buttonImages/estingui.png" />
                </image>
             </ImageView>
          </graphic>
@@ -341,7 +341,7 @@
          <graphic>
             <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../img/costruisci.png" />
+                  <Image url="@../img/buttonImages/costruisci.png" />
                </image>
             </ImageView>
          </graphic>

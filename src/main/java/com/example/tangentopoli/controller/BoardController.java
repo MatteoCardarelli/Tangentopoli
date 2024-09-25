@@ -19,7 +19,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -29,16 +28,23 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
+
+import static javafx.scene.paint.Color.RED;
 
 public class BoardController implements Initializable {
     public Label cardTitle;
     public Label cardDescription;
     public Button cardBtn;
     private int playerN;
+    private Timeline policeLightTimeline;
+    private Rectangle policeLightBox; // Rettangolo per le luci della polizia
+
+
+
 
     private int diceValue;
 
@@ -49,6 +55,8 @@ public class BoardController implements Initializable {
     private boolean exitPrisonFlag = false;
 
     private int diceEqualsCombo = 0;
+
+    private Map<Integer, Color> playerColors = new HashMap<>();
 
     @FXML
     private Button nextBtn;
@@ -111,7 +119,7 @@ public class BoardController implements Initializable {
     private GridPane boardGrid;
 
     @FXML
-    private List<Circle> playerTokens;
+    private List<ImageView> playerTokens;
 
     @FXML
     private Slider sliderAudio;
@@ -133,9 +141,17 @@ public class BoardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        playerColors.put(1, RED);
+        playerColors.put(2, Color.BLUE);
+        playerColors.put(3, Color.GREEN);
+        playerColors.put(4, Color.YELLOW);
+        playerColors.put(5, Color.ORANGE);
+        playerColors.put(6, Color.PURPLE);
+
         initializeBackgroundMusicAndVolumeControl();
-        dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png"))); //inizializzazione dadi
-        dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice1.png")));
+        dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/diceImages/dice1.png"))); //inizializzazione dadi
+        dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/diceImages/dice1.png")));
 
         nextBtn.setDisable(true);
         buyBtn.setDisable(true);
@@ -328,13 +344,13 @@ public class BoardController implements Initializable {
         if (game.getPlayerInTurn().isInPrison() || game.getPlayerInTurn().isSkipTurn()) return;
 
         //Circle playerToken = playerTokens.get(game.getPlayerTurn());
-        Circle playerToken = getPlayerTokenFromID(game.getPlayerInTurn().getPlayerID());
+        ImageView playerToken = getPlayerTokenFromID(game.getPlayerInTurn().getPlayerID());
         int rowPos = GridPane.getRowIndex(playerToken) == null ? 0 : GridPane.getRowIndex(playerToken);
         int columnPos = GridPane.getColumnIndex(playerToken) == null ? 0 : GridPane.getColumnIndex(playerToken);
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < diceValue; i++) {
+        for (int i = 0; i < 15; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -353,7 +369,7 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(diceValue);
+        game.movePlayer(15);
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
@@ -391,9 +407,9 @@ public class BoardController implements Initializable {
         }
     }
 
-    private Circle getPlayerTokenFromID(int playerID) {
-        Circle playerToken = playerTokens.get(0);
-        for(Circle token: playerTokens) {
+    private ImageView getPlayerTokenFromID(int playerID) {
+        ImageView playerToken = playerTokens.get(0);
+        for(ImageView token: playerTokens) {
             if(token.getStyleClass().contains(playerID + "playerToken"))
                 playerToken = token;
         }
@@ -405,55 +421,59 @@ public class BoardController implements Initializable {
     public void createPlayerTokens() {
         playerTokens = new ArrayList<>();
         // Definisci una lista di colori
-        List<Color> playerColors = List.of(
-                Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW,
-                Color.ORANGE, Color.PURPLE // Aggiungi altri colori se necessario
-        );
-
 
         for (int i = 0; i < playerN; i++) {
-            // Usa il colore corrispondente per ogni giocatore
-            Color playerColor = playerColors.get(i % playerColors.size());
 
-            Circle playerToken = new Circle(20, playerColor); // Cerchio con raggio 20 e colore specifico
+            String imagePath = "/img/pawn" + (i + 1) + ".png"; // Aggiunto (i + 1) per correggere la numerazione
+            InputStream imageStream = getClass().getResourceAsStream(imagePath);
 
-            playerToken.getStyleClass().add(i+1 +"playerToken");
-            playerTokens.add(playerToken);
-            boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
+            if (imageStream != null) {
+                ImageView playerToken = new ImageView(new Image(imageStream)); // Carica l'immagine correttamente
+                playerToken.getStyleClass().add((i + 1) + "playerToken");
 
-            switch (playerN) {
-                case 2, 3:
-                    setPlayerTokenPositionSmall(i, 0, 0); // Sposta il giocatore alla cella iniziale
-                    break;
-                case 4, 5:
-                    setPlayerTokenPositionMedium(i, 0, 0);
-                    break;
-                case 6:
-                    setPlayerTokenPositionLarge(i, 0, 0);
-                    break;
-                default:
-                    break;
+                playerTokens.add(playerToken);
+
+                boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
+
+
+                switch (playerN) {
+                    case 2, 3:
+                        setPlayerTokenPositionSmall(i, 0, 0); // Sposta il giocatore alla cella iniziale
+                        break;
+                    case 4, 5:
+                        setPlayerTokenPositionMedium(i, 0, 0);
+                        break;
+                    case 6:
+                        setPlayerTokenPositionLarge(i, 0, 0);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
 
     //Sets the tokens' position on the small board
     public void setPlayerTokenPositionSmall(int playerIndex, int row, int column) {
-        Circle playerToken = playerTokens.get(playerIndex);
+        ImageView playerToken = playerTokens.get(playerIndex);
         GridPane.setRowIndex(playerToken, row);
         GridPane.setColumnIndex(playerToken, column);
         switch (playerIndex) {
             case 0:
-                playerToken.setTranslateY(-47.0);
-                playerToken.setTranslateX(5.0);
-
+                playerToken.setFitWidth(100);
+                playerToken.setFitHeight(160);
+                playerToken.setTranslateY(-42.0);
                 break;
             case 1:
+                playerToken.setFitWidth(100);
+                playerToken.setFitHeight(160);
                 playerToken.setTranslateX(47.0);
                 break;
             case 2:
+                playerToken.setFitWidth(100);
+                playerToken.setFitHeight(160);
                 playerToken.setTranslateX(87.0);
-                playerToken.setTranslateY(-47.0);
+                playerToken.setTranslateY(-42.0);
                 break;
             default:
                 break;
@@ -462,8 +482,8 @@ public class BoardController implements Initializable {
 
     //Sets the tokens' position on the medium board
     public void setPlayerTokenPositionMedium(int playerIndex, int row, int column) {
-        Circle playerToken = playerTokens.get(playerIndex);
-        playerToken.setRadius(16);
+        ImageView playerToken = playerTokens.get(playerIndex);
+        //cambiare dimensione
         GridPane.setRowIndex(playerToken, row);
         GridPane.setColumnIndex(playerToken, column);
         switch (playerIndex) {
@@ -492,8 +512,8 @@ public class BoardController implements Initializable {
 
     //Sets the tokens' position on the large board
     public void setPlayerTokenPositionLarge(int playerIndex, int row, int column) {
-        Circle playerToken = playerTokens.get(playerIndex);
-        playerToken.setRadius(12.8);
+        ImageView playerToken = playerTokens.get(playerIndex);
+        //cambiare dimensione
         GridPane.setRowIndex(playerToken, row);
         GridPane.setColumnIndex(playerToken, column);
         switch (playerIndex) {
@@ -526,11 +546,20 @@ public class BoardController implements Initializable {
     public void sendToPrison() {
         Player playerInTurn = game.getPlayerInTurn();
 
+        // Avvia le luci della polizia
+        startPoliceLights();
+
+        // Ferma le luci dopo 5 secondi
+        Timeline stopTimeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> stopPoliceLights()));
+        stopTimeline.play();
+
+
+
         if (diceEqualsCombo==3){
             updateBoxInfo("Hai ottenuto tre doppi consecutivi! Vai direttamente in prigione.");
             diceEqualsCombo = 0;  // Resetta il conteggio dei doppi consecutivi
         } else {
-            updateBoxInfo("Sei sato mandato in prigione");
+            updateBoxInfo("Sei stato mandato in prigione");
         }
 
         game.goToPrison(playerInTurn);
@@ -563,12 +592,71 @@ public class BoardController implements Initializable {
     }
 
     //DISPLAY
+    private void startPoliceLights() {
+        // Crea il rettangolo per le luci della polizia
+        policeLightBox = new Rectangle(1600, 900);
+        policeLightBox.setFill(Color.TRANSPARENT); // Inizialmente trasparente
+        mainPane.getChildren().add(policeLightBox);
+        policeLightBox.toFront(); // Porta in primo piano
+
+        // Crea le immagini delle sbarre
+        ImageView barLeft = new ImageView(new Image(getClass().getResourceAsStream("/img/prisonBars.png")));
+        ImageView barRight = new ImageView(new Image(getClass().getResourceAsStream("/img/prisonBars.png")));
+
+        // Imposta la dimensione delle sbarre
+        barLeft.setFitHeight(900);
+        barLeft.setFitWidth(800);
+        barRight.setFitHeight(900);
+        barRight.setFitWidth(800);
+
+        // Posiziona le sbarre inizialmente fuori dallo schermo
+        barLeft.setTranslateX(-800); // A sinistra fuori schermo
+        barRight.setTranslateX(2400); // A destra fuori schermo
+
+        // Aggiungi le sbarre al mainPane
+        mainPane.getChildren().addAll(barLeft, barRight);
+        barLeft.toFront(); // Porta le sbarre in primo piano
+        barRight.toFront();
+
+        // Animazione per le luci della polizia
+        Timeline policeLightTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(0.0), e -> {
+                    policeLightBox.setFill(Color.RED);
+                    policeLightBox.setOpacity(0.5); // Imposta l'opacità al 50% per il rosso
+                }),
+                new KeyFrame(Duration.seconds(0.5), e -> {
+                    policeLightBox.setFill(Color.BLUE);
+                    policeLightBox.setOpacity(0.5); // Imposta l'opacità al 50% per il blu
+                })
+        );
+        policeLightTimeline.setCycleCount(Timeline.INDEFINITE); // Cicla indefinitamente
+        policeLightTimeline.play(); // Avvia l'animazione delle luci della polizia
+
+        // Animazione per chiudere le sbarre
+        TranslateTransition barLeftTransition = new TranslateTransition(Duration.seconds(1), barLeft);
+        barLeftTransition.setToX(0); // Sposta la sbarra sinistra al centro
+
+        TranslateTransition barRightTransition = new TranslateTransition(Duration.seconds(1), barRight);
+        barRightTransition.setToX(800); // Sposta la sbarra destra al centro
+
+        // Esegui l'animazione delle sbarre in parallelo
+        ParallelTransition parallelTransition = new ParallelTransition(barLeftTransition, barRightTransition);
+        parallelTransition.play(); // Avvia l'animazione delle sbarre
+    }
+
+    // Metodo per fermare le luci della polizia e l'animazione delle sbarre
+    private void stopPoliceLights() {
+        // Rimuove il rettangolo delle luci e le sbarre dalla schermata
+        mainPane.getChildren().remove(policeLightBox);
+    }
+
 
     //Displays player data in the top textArea
     public void displayPlayerInfo(Player player) {
         // Ottieni il colore del giocatore
-        Circle playerToken = getPlayerTokenFromID(player.getPlayerID());
-        Color playerColor = (Color) playerToken.getFill();
+        Color playerColor = getPlayerColor(player.getPlayerID());
+        ImageView playerToken = getPlayerTokenFromID(player.getPlayerID());
+
         String playerInfoStr[] = player.toStringArray();
 
         switch(player.getPlayerID()) {
@@ -583,6 +671,11 @@ public class BoardController implements Initializable {
         nameLabel.setText(playerInfoStr[0]);
         moneyLabel.setText(playerInfoStr[1]);
         colorBox.setFill(playerColor);
+    }
+
+    // Metodo per ottenere il colore in base al playerID
+    private Color getPlayerColor(int playerID) {
+        return playerColors.getOrDefault(playerID, Color.GRAY); // Colore di default in caso di errore
     }
 
     //Displays the current player's Box infos
@@ -652,8 +745,8 @@ public class BoardController implements Initializable {
     //metodo che crea e posiziona i marker di acquisto
     public void createPropertyMarkerFromID(int playerID) {
         // Ottieni il colore del giocatore
-        Circle playerToken = getPlayerTokenFromID(playerID);
-        Color playerColor = (Color) playerToken.getFill();
+        ImageView playerToken = getPlayerTokenFromID(playerID);
+        Color playerColor = getPlayerColor(game.getPlayerInTurn().getPlayerID());
 
 
 
@@ -727,7 +820,7 @@ public class BoardController implements Initializable {
 
         // Cambia l'immagine del pulsante
         if (isDefaultImage) {
-            ImgActionBtn.setImage(new Image(getClass().getResourceAsStream("/img/annulla.png")));
+            ImgActionBtn.setImage(new Image(getClass().getResourceAsStream("/img/buttonImages/annulla.png")));
         } else {
             ImgActionBtn.setImage(new Image(getClass().getResourceAsStream("/img/ActionImg.png"))); // Sostituisci con l'immagine predefinita
         }
@@ -1405,7 +1498,7 @@ public class BoardController implements Initializable {
 
         // Usa un iteratore per evitare ConcurrentModificationException
         Iterator<Node> iterator = children.iterator();
-        Circle playerToken = getPlayerTokenFromID(playerID);
+        ImageView playerToken = getPlayerTokenFromID(playerID);
         playerTokens.remove(playerToken);
 
         while (iterator.hasNext()) {
@@ -1525,13 +1618,13 @@ public class BoardController implements Initializable {
         } else if (row == 0 && column == 1) {
             return "/img/piazzaDuomo.png";
         } else if (row == 0 && column == 3) {
-            return "/img/piazzaDuomo.png";
+            return "/img/viaDellaSpiga.png";
         } else if (row == 1 && column == 5) {
-            return "/img/piazzaDuomo.png";
+            return "/img/piazzaFontana.png";
         } else if (row == 2 && column == 5) {
-            return "/img/piazzaDuomo.png";
+            return "/img/piazzaSanBabila.png";
         }else if (row == 4 && column == 5) {
-            return "/img/piazzaDuomo.png";
+            return "/img/piazzaDellaScala.png";
         }else if (row == 5 && column == 4) {
             return "/img/piazzaDuomo.png";
         }else if (row == 5 && column == 3) {
