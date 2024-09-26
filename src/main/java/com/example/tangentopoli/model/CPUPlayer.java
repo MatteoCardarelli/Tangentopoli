@@ -1,6 +1,11 @@
 package com.example.tangentopoli.model;
 
 
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+
+import java.util.Random;
+
 public class CPUPlayer extends Player {
 
     private Game game;
@@ -15,44 +20,71 @@ public class CPUPlayer extends Player {
         this.canLaunchAgain = canLaunchAgain;
     }
 
-    public void moveBot(){
-        // Logica per tirare i dadi
-        game.getController().launchDices();
+    public void moveBot() {
+
+        // Logica per tirare i dadi con un ritardo
+        PauseTransition delay = new PauseTransition(Duration.seconds(1)); // 1 secondo di ritardo
+        delay.setOnFinished(event -> {
+
+            //se il bot è in prigione e ha i soldi per uscire lo fa
+            if (isInPrison() && getMoney() > 50) game.getController().exitFromPrison();
+
+            game.getController().launchDices();
+        });
+        delay.play();
     }
 
-    public void takeStrategicDecisions(){
-        if (getPosition() instanceof PurchasableBox) {
-            game.getController().buyCurrentBox();
+    public void takeStrategicDecisions() {
+        PauseTransition delay = new PauseTransition(Duration.seconds(0.5)); // Ritardo di 500ms
+        delay.setOnFinished(event -> {
 
-            // Aggiungi un ritardo per permettere alla GUI di aggiornarsi
-            try {
-                Thread.sleep(500); // Ritardo di 500 millisecondi (mezzo secondo)
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // In caso di interruzione, reimposta lo stato del thread
-            }
-        }
-
-        if (canLaunchAgain) {
-            moveBot();
-
-            // Aggiungi un altro ritardo prima della prossima azione
-            try {
-                Thread.sleep(1500); // Ritardo di 500 millisecondi
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+            // Acquisto proprietà se disponibile
+            if (getPosition() instanceof PurchasableBox) {
+                game.getController().buyCurrentBox();
             }
 
-            canLaunchAgain = false;
-        } else {
-            game.getController().nextTurn();
-
-            // Ritardo prima del cambio di turno, se necessario
+           /*
+           //costruisce sulle proprietà
+            int buildableProperiesSize = game.getBuildableProperties().size();
             try {
-                Thread.sleep(500); // Ritardo di 500 millisecondi
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                game.buildOnProperty(new Random().nextInt(buildableProperiesSize));
+            } catch (MaximumConstructionOnProperty | NotEnoughMoneyException e) {
+                e.printStackTrace();
             }
-        }
+            if(this.getMoney() < 200) {
+                int mortgageableBoxessSize = game.getMortgageableBoxes().size();
+                game.mortgageBox(new Random().nextInt(mortgageableBoxessSize));
+            }
+            if (this.getMoney() < 200) {
+                int demolishablePropertiesSize = game.getDemolishableProperties().size();
+                game.demolishOnProperty(new Random().nextInt(demolishablePropertiesSize));
+            }
+
+
+            */
+
+
+
+
+
+
+
+            if (canLaunchAgain) {
+                moveBot();
+                PauseTransition secondDelay = new PauseTransition(Duration.seconds(1.5)); // Ritardo di 1.5 secondi
+                secondDelay.setOnFinished(e -> {
+                    canLaunchAgain = false;
+                });
+                secondDelay.play();
+            } else {
+                // Cambio turno dopo un ritardo
+                PauseTransition nextTurnDelay = new PauseTransition(Duration.seconds(0.5)); // Ritardo di 500ms
+                nextTurnDelay.setOnFinished(e -> game.getController().nextTurn());
+                nextTurnDelay.play();
+            }
+        });
+        delay.play();
     }
-
 }
+
+

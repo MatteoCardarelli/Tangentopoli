@@ -40,7 +40,6 @@ public class BoardController implements Initializable {
     public Label cardDescription;
     public Button cardBtn;
     private int playerN;
-    private Timeline policeLightTimeline;
     private Rectangle policeLightBox; // Rettangolo per le luci della polizia
 
 
@@ -57,6 +56,10 @@ public class BoardController implements Initializable {
     private int diceEqualsCombo = 0;
 
     private Map<Integer, Color> playerColors = new HashMap<>();
+
+    //Set the Actions DialogPane as visible
+    // Variabile di stato per sapere se si sta mostrando l'immagine alternativa
+    private boolean isDefaultImage = true;
 
     @FXML
     private Button nextBtn;
@@ -139,6 +142,8 @@ public class BoardController implements Initializable {
     private ImageView imageRandomized;
 
 
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -177,44 +182,48 @@ public class BoardController implements Initializable {
 
     //Passes to the next turn
 
+    //prossimo turno
     public void nextTurn() {
-        if(game.getPlayersN() >= 2) {
+        if (game.getPlayersN() >= 2) {
             removeAllOverlayRectangles();
 
             game.changeTurn();
-            startTurn();
-
+            Platform.runLater(this::startTurn);  // Usa Platform.runLater per aggiornare la UI
         } else {
-          disableAllBtns(true);
+            Platform.runLater(() -> disableAllBtns(true));
         }
     }
 
-    public void startTurn(){
+    //tutte le azione da fare ogni inizio turno
+    public void startTurn() {
         diceEqualsCombo = 0;
         exitPrisonFlag = false;
-        displayPlayerInfo(game.getPlayerInTurn());
-        displayBoxInfo(game.getPlayerInTurn());
-        diceBtn.setDisable(false);
-        nextBtn.setDisable(true);
-        buyBtn.setDisable(true);
 
-        //se il giocatore è in prigione attiva il pulsante per uscire pagando
-        if (game.getPlayerInTurn().isInPrison()) {
-            payPrisonBtn.setDisable(false);
-            payPrisonBtn.setVisible(true);
-        } else {
-            payPrisonBtn.setDisable(true);
-            payPrisonBtn.setVisible(false);
-        }
-
-        //se il giocatore è da 3 turni in prigione obbligalo a pagare per uscire
-        if (game.getPlayerInTurn().getTurnInPrison() == 3){
+        Platform.runLater(() -> {
+            displayPlayerInfo(game.getPlayerInTurn());
+            displayBoxInfo(game.getPlayerInTurn());
+            diceBtn.setDisable(false);   // Abilita il bottone del dado
             nextBtn.setDisable(true);
-            diceBtn.setDisable(true);
-            updateBoxInfo("Sei da tre turni in prigione sei obbligato a pagare");
-        }
+            buyBtn.setDisable(true);
 
+            // Se il giocatore è in prigione
+            if (game.getPlayerInTurn().isInPrison()) {
+                payPrisonBtn.setDisable(false);
+                payPrisonBtn.setVisible(true);
+            } else {
+                payPrisonBtn.setDisable(true);
+                payPrisonBtn.setVisible(false);
+            }
+
+            // Se il giocatore è da 3 turni in prigione obbligalo a pagare per uscire
+            if (game.getPlayerInTurn().getTurnInPrison() == 3) {
+                nextBtn.setDisable(true);
+                diceBtn.setDisable(true);
+                updateBoxInfo("Sei da tre turni in prigione sei obbligato a pagare");
+            }
+        });
     }
+
 
     //DICES
 
@@ -560,6 +569,9 @@ public class BoardController implements Initializable {
 
     public void sendToPrison() {
         Player playerInTurn = game.getPlayerInTurn();
+        if (playerInTurn instanceof CPUPlayer) {
+            ((CPUPlayer) game.getPlayerInTurn()).setCanLaunchAgain(false);
+        }
 
         // Avvia le luci della polizia
         startPoliceLights();
@@ -820,9 +832,7 @@ public class BoardController implements Initializable {
         }
     }
 
-    //Set the Actions DialogPane as visible
-    // Variabile di stato per sapere se si sta mostrando l'immagine alternativa
-    private boolean isDefaultImage = true;
+
 
     // Metodo per mostrare il dialogo delle azioni
     public void showActionsDialog(ActionEvent actionEvent) {
@@ -1121,6 +1131,7 @@ public class BoardController implements Initializable {
         return new int[] { row, col };
     }
 
+    //converte le coordinate della pedina sulla griglia in una posizione
     public int convertGridCoordsToPosition(int row, int col) {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
@@ -1151,7 +1162,7 @@ public class BoardController implements Initializable {
     }
 
     //Once the Construct button has been clicked, the method puts the overlays on all the buildable properties
-    public void buildBtnClick(ActionEvent actionEvent) {
+    public void buildBtnClick() {
         removeAllOverlayRectangles();
         updateBoxInfo("Clicca sulle proprietà su cui vuoi costruire");
         ArrayList<Integer> buildablePropertiesIndex = game.getBuildableProperties();
@@ -1162,6 +1173,7 @@ public class BoardController implements Initializable {
         }
     }
 
+    //ipoteca le proprietà
     public void mortgageBox(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
             game.mortgageBox(pos);
@@ -1169,9 +1181,9 @@ public class BoardController implements Initializable {
             updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
         removeAllOverlayRectangles();
         createNotAvailableBoxOverlay(row, col);
-
     }
 
+    //crea l'overlay per la decisione delle caselle da ipotecare
     public void createMortgageOverlay(int row, int col) {
         // Crea il rettangolo semi-trasparente
         Rectangle overlay = new Rectangle(126, 150);
@@ -1196,6 +1208,7 @@ public class BoardController implements Initializable {
         });
     }
 
+    //crea overlay caselle ipotecate
     private void createNotAvailableBoxOverlay(int row, int col) {
         // Crea il rettangolo semi-trasparente
         Rectangle overlay = new Rectangle(126, 150);
@@ -1212,7 +1225,8 @@ public class BoardController implements Initializable {
         boardGrid.add(overlay, col, row);
     }
 
-    public void mortgageBtnClick(ActionEvent actionEvent) {
+    //gestisce il click sulle caselle da ipotecare
+    public void mortgageBtnClick() {
         removeAllOverlayRectangles();
         updateBoxInfo("Clicca sulle caselle che vuoi ipotecare");
         ArrayList<Integer> mortgageableProperties = game.getMortgageableBoxes();
@@ -1241,6 +1255,7 @@ public class BoardController implements Initializable {
         }
     }
 
+    //rimuove gli overlay delle proprietà ipotecate
     public void removeNotAvailableBoxOverlay(int row, int col) {
         // Ottieni la lista di tutti i figli del GridPane
         ObservableList<Node> children = boardGrid.getChildren();
@@ -1268,6 +1283,7 @@ public class BoardController implements Initializable {
         }
     }
 
+    //quando viene cliccato il tasto demolisci
     public void demolishBtnClick(ActionEvent actionEvent) {
         removeAllOverlayRectangles();
         updateBoxInfo("Clicca sulle proprietà su cui vuoi demolire");
@@ -1279,6 +1295,7 @@ public class BoardController implements Initializable {
         }
     }
 
+    //crea l'overlay per le proprietà a cui si vuole demolire una costruzione
     public void createDemolitionOverlay(int row, int col) {
         // Crea il rettangolo semi-trasparente
         Rectangle overlay = new Rectangle(126, 150);
@@ -1304,6 +1321,7 @@ public class BoardController implements Initializable {
         });
     }
 
+    //demolisci una costruzione
     public void demolishOnProperty(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
 
@@ -1315,6 +1333,7 @@ public class BoardController implements Initializable {
         removeAllOverlayRectangles();
     }
 
+    //crea l'overlay per rimuovere l'ipoteca
     public void createExtinguishableMortgageOverlay(int row, int col) {
         // Crea il rettangolo semi-trasparente
         Rectangle overlay = new Rectangle(126, 150);
@@ -1338,6 +1357,7 @@ public class BoardController implements Initializable {
         });
     }
 
+    //estingue un'ipoteca
     public void extinguishMortgageBox(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
         game.extinguishMortgageBox(pos);
@@ -1347,6 +1367,7 @@ public class BoardController implements Initializable {
         removeNotAvailableBoxOverlay(row, col);
     }
 
+    //gestisce il pulsante per estinguire le ipoteche
     public void extinguishBtnClick(ActionEvent actionEvent) {
         removeAllOverlayRectangles();
         updateBoxInfo("Clicca sulle caselle sulle quali vuoi estinguere l'ipoteca");
@@ -1358,6 +1379,7 @@ public class BoardController implements Initializable {
         }
     }
 
+    //iniziallizza musica di sottofondo
     public void initializeBackgroundMusicAndVolumeControl() {
 
         // Inizializza la musica di sottofondo
@@ -1379,14 +1401,17 @@ public class BoardController implements Initializable {
 
     }
 
+    //apre le carte di dialogo
     public void openCardDialog() {
         cardDialog.setVisible(true);
     }
 
+    //chiude le carte di dialogo
     public void closeCardDialog(ActionEvent actionEvent) {
         cardDialog.setVisible(false);
     }
 
+    //mette messaggio alla carta
     public void setCardInfo(Card card) {
 
         cardDialog.setScaleY(0);
@@ -1499,6 +1524,7 @@ public class BoardController implements Initializable {
         cardDescription.setText(card.getDescription());
         }
 
+    //perde un giocatore
     public void loseGame(Player player) {
         System.out.println("Loser id: " + player.getPlayerID());
         deletePropertyMarkersAndMortgageOverlays(player.getPlayerID());
@@ -1507,6 +1533,7 @@ public class BoardController implements Initializable {
         nextTurn();
     }
 
+    //elimina la pedina
     private void deletePlayerTokenFromID(int playerID) {
         // Ottieni la lista di tutti i figli del GridPane
         ObservableList<Node> children = boardGrid.getChildren();
@@ -1535,6 +1562,7 @@ public class BoardController implements Initializable {
         }
     }
 
+
     private void deletePropertyMarkersAndMortgageOverlays(int playerID) {
         // Ottieni una copia dei figli della GridPane per evitare modifiche dirette durante l'iterazione
         List<Node> childrenCopy = new ArrayList<>(boardGrid.getChildren());
@@ -1559,6 +1587,7 @@ public class BoardController implements Initializable {
         }
     }
 
+    //finisce il gioco
     public void gameEnd() {
         updateBoxInfo("bro hai vinto");
         disableAllBtns(true);
@@ -1566,6 +1595,7 @@ public class BoardController implements Initializable {
         endDialog.setVisible(true);
     }
 
+    //chiude il gioco
     public void closeGames(ActionEvent actionEvent) {
         Stage stage = (Stage) boardGrid.getScene().getWindow();
         stage.close();
@@ -1592,6 +1622,7 @@ public class BoardController implements Initializable {
         }
     }
 
+    //disattiva tutti i pulsanti
     private void disableAllBtns(boolean setDisable) {
         buyBtn.setDisable(setDisable);
         actionsBtn.setDisable(setDisable);
