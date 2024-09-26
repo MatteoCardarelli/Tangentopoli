@@ -112,7 +112,6 @@ public class Game {
         if (getPlayerInTurn() instanceof CPUPlayer){
             ((CPUPlayer) getPlayerInTurn()).moveBot();  // Muovi il bot
         }
-
     }
 
     public int getTurn(){
