@@ -1,5 +1,7 @@
 package com.example.tangentopoli.model;
 
+import java.util.ArrayList;
+
 public class Auction {
     private int cashout;
     private int bid;
@@ -7,9 +9,6 @@ public class Auction {
 
 
     public Auction(int cashout, int bid, int winner) {
-        this.cashout = cashout;
-        this.bid = bid;
-        this.winner = winner;
 
     }
 
@@ -31,6 +30,8 @@ public class Auction {
 
     public void setWinner(int winner) {this.winner = winner;}
 
+    public void startAuction(ArrayList<Player> players){
 
+    }
 
 }

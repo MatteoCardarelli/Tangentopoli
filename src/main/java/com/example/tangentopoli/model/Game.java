@@ -1,6 +1,7 @@
 package com.example.tangentopoli.model;
 
 import com.example.tangentopoli.controller.BoardController;
+import com.example.tangentopoli.model.Auction;
 import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -394,6 +395,11 @@ public class Game {
 
     public ArrayList<Player> getPlayers () {
             return players;
+    }
+
+    public void startAuctionLogic(Player player) {
+        if(player.getPosition() instanceof PurchasableBox && ((PurchasableBox) player.getPosition()).isPurchased()) {
+        }
     }
 
 }

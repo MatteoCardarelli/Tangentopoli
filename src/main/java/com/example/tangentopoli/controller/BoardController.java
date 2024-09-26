@@ -42,6 +42,8 @@ public class BoardController implements Initializable {
     private int playerN;
     private Timeline policeLightTimeline;
     private Rectangle policeLightBox; // Rettangolo per le luci della polizia
+    private ImageView barLeft;
+    private ImageView barRight;
 
 
 
@@ -360,7 +362,7 @@ public class BoardController implements Initializable {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < diceValue; i++) {
             // Movimento orizzontale da sinistra a destra
             if (rowPos == 0 && columnPos < maxC - 1) {
                 columnPos++;
@@ -379,14 +381,13 @@ public class BoardController implements Initializable {
             }
         }
 
-        game.movePlayer(15);
+        game.movePlayer(diceValue);
 
 
 
         //If the player is on the GoToPrison box
         if(rowPos == maxR-1 && columnPos == 0) {
-            rowPos = 0;
-            columnPos = maxC - 1;
+            sendToPrison();
             payPrisonBtn.setDisable(false);
         }
 
@@ -561,12 +562,13 @@ public class BoardController implements Initializable {
     public void sendToPrison() {
         Player playerInTurn = game.getPlayerInTurn();
 
-        // Avvia le luci della polizia
+        // Avvia l'animazione delle sbarre
         startPoliceLights();
 
-        // Ferma le luci dopo 5 secondi
-        Timeline stopTimeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> stopPoliceLights()));
+        // Ferma l'animazione delle sbarre dopo 3 secondi
+        Timeline stopTimeline = new Timeline(new KeyFrame(Duration.seconds(3), e -> stopPoliceLights()));
         stopTimeline.play();
+
 
 
 
@@ -607,16 +609,50 @@ public class BoardController implements Initializable {
     }
 
     //DISPLAY
+
     private void startPoliceLights() {
-        // Crea il rettangolo per le luci della polizia
+        System.out.println("Inizio animazione luci della polizia");
+
+        // Crea il rettangolo per le luci della polizia (rettangolo rosso/trasparente visibile per debug)
         policeLightBox = new Rectangle(1600, 900);
-        policeLightBox.setFill(Color.TRANSPARENT); // Inizialmente trasparente
-        mainPane.getChildren().add(policeLightBox);
+        policeLightBox.setFill(RED); // Imposta il colore iniziale a rosso per renderlo visibile
+        policeLightBox.setOpacity(0.3); // Opacità leggera per evidenziarlo sullo schermo
+        mainPane.getChildren().add(policeLightBox);  // Aggiungi il rettangolo al mainPane
         policeLightBox.toFront(); // Porta in primo piano
 
+        // Controlla se è stato aggiunto correttamente
+        System.out.println("Rettangolo aggiunto al mainPane");
+
+        // Animazione per le luci della polizia (rosso e blu alternati)
+        Timeline policeLightTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(0), e -> {
+                    policeLightBox.setFill(RED);
+                    policeLightBox.setOpacity(0.5); // Imposta l'opacità al 50% per il rosso
+                    System.out.println("Luce rossa");
+                }),
+                new KeyFrame(Duration.seconds(0.5), e -> {
+                    policeLightBox.setFill(Color.BLUE);
+                    policeLightBox.setOpacity(0.5); // Imposta l'opacità al 50% per il blu
+                    System.out.println("Luce blu");
+                })
+        );
+        policeLightTimeline.setCycleCount(Timeline.INDEFINITE); // Cicla indefinitamente
+        policeLightTimeline.setAutoReverse(true); // Inverte automaticamente i colori
+        policeLightTimeline.play(); // Avvia l'animazione delle luci della polizia
+        System.out.println("Animazione luci della polizia avviata");
+
+        // Dopo 1 secondo dall'inizio delle luci, avvia l'animazione delle sbarre
+        Timeline startBarsTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> startBarAnimation()));
+        startBarsTimeline.play();
+    }
+
+    // Metodo per avviare l'animazione delle sbarre
+    private void startBarAnimation() {
+        System.out.println("Inizio animazione sbarre");
+
         // Crea le immagini delle sbarre
-        ImageView barLeft = new ImageView(new Image(getClass().getResourceAsStream("/img/prisonBars.png")));
-        ImageView barRight = new ImageView(new Image(getClass().getResourceAsStream("/img/prisonBars.png")));
+         barLeft = new ImageView(new Image(getClass().getResourceAsStream("/img/prisonBars.png")));
+         barRight = new ImageView(new Image(getClass().getResourceAsStream("/img/prisonBars.png")));
 
         // Imposta la dimensione delle sbarre
         barLeft.setFitHeight(900);
@@ -626,45 +662,34 @@ public class BoardController implements Initializable {
 
         // Posiziona le sbarre inizialmente fuori dallo schermo
         barLeft.setTranslateX(-800); // A sinistra fuori schermo
-        barRight.setTranslateX(2400); // A destra fuori schermo
+        barRight.setTranslateX(1600); // A destra fuori schermo
 
         // Aggiungi le sbarre al mainPane
         mainPane.getChildren().addAll(barLeft, barRight);
         barLeft.toFront(); // Porta le sbarre in primo piano
         barRight.toFront();
 
-        // Animazione per le luci della polizia
-        Timeline policeLightTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(0.0), e -> {
-                    policeLightBox.setFill(Color.RED);
-                    policeLightBox.setOpacity(0.5); // Imposta l'opacità al 50% per il rosso
-                }),
-                new KeyFrame(Duration.seconds(0.5), e -> {
-                    policeLightBox.setFill(Color.BLUE);
-                    policeLightBox.setOpacity(0.5); // Imposta l'opacità al 50% per il blu
-                })
-        );
-        policeLightTimeline.setCycleCount(Timeline.INDEFINITE); // Cicla indefinitamente
-        policeLightTimeline.play(); // Avvia l'animazione delle luci della polizia
+        System.out.println("Sbarre aggiunte e portate in primo piano");
 
         // Animazione per chiudere le sbarre
-        TranslateTransition barLeftTransition = new TranslateTransition(Duration.seconds(1), barLeft);
-        barLeftTransition.setToX(0); // Sposta la sbarra sinistra al centro
+        TranslateTransition barLeftTransition = new TranslateTransition(Duration.seconds(2), barLeft);
+        barLeftTransition.setToX(0); // Sposta la sbarra sinistra verso il centro
 
-        TranslateTransition barRightTransition = new TranslateTransition(Duration.seconds(1), barRight);
-        barRightTransition.setToX(800); // Sposta la sbarra destra al centro
+        TranslateTransition barRightTransition = new TranslateTransition(Duration.seconds(2), barRight);
+        barRightTransition.setToX(800); // Sposta la sbarra destra verso il centro
 
         // Esegui l'animazione delle sbarre in parallelo
-        ParallelTransition parallelTransition = new ParallelTransition(barLeftTransition, barRightTransition);
-        parallelTransition.play(); // Avvia l'animazione delle sbarre
+        ParallelTransition barTransition = new ParallelTransition(barLeftTransition, barRightTransition);
+        barTransition.play(); // Avvia l'animazione delle sbarre
+        System.out.println("Animazione sbarre avviata");
     }
 
-    // Metodo per fermare le luci della polizia e l'animazione delle sbarre
+    // Metodo per fermare le luci della polizia e rimuovere le sbarre
     private void stopPoliceLights() {
-        // Rimuove il rettangolo delle luci e le sbarre dalla schermata
-        mainPane.getChildren().remove(policeLightBox);
+        System.out.println("Ferma animazione luci della polizia");
+        mainPane.getChildren().remove(policeLightBox); // Rimuove il rettangolo delle luci dalla schermata
+        mainPane.getChildren().removeAll(barRight,barLeft); // Rimuove il rettangolo delle luci dalla schermata
     }
-
 
     //Displays player data in the top textArea
     public void displayPlayerInfo(Player player) {
