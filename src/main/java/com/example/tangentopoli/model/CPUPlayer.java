@@ -36,7 +36,7 @@ public class CPUPlayer extends Player {
         PauseTransition delay = new PauseTransition(Duration.seconds(0.5)); // Ritardo di 500ms
         delay.setOnFinished(event -> {
 
-            // Acquisto proprietà se disponibile
+            // Acquisto proprietà se disponibile se ha più di 500€
             if (this.getMoney() > 500) {
                 if (getPosition() instanceof PurchasableBox) {
                     game.getController().buyCurrentBox();
