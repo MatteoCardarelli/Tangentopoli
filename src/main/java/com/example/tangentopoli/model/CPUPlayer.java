@@ -1,6 +1,4 @@
 package com.example.tangentopoli.model;
-
-
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
@@ -39,31 +37,53 @@ public class CPUPlayer extends Player {
         delay.setOnFinished(event -> {
 
             // Acquisto proprietà se disponibile
-            if (getPosition() instanceof PurchasableBox) {
-                game.getController().buyCurrentBox();
+            if (this.getMoney() > 500) {
+                if (getPosition() instanceof PurchasableBox) {
+                    game.getController().buyCurrentBox();
+                }
             }
 
-           /*
-           //costruisce sulle proprietà
-            int buildableProperiesSize = game.getBuildableProperties().size();
-            try {
-                game.buildOnProperty(new Random().nextInt(buildableProperiesSize));
-            } catch (MaximumConstructionOnProperty | NotEnoughMoneyException e) {
-                e.printStackTrace();
-            }
+
+            //se il bot ha meno di 200€ ipoteca una proprietà casuale
             if(this.getMoney() < 200) {
                 int mortgageableBoxessSize = game.getMortgageableBoxes().size();
-                game.mortgageBox(new Random().nextInt(mortgageableBoxessSize));
+                if (mortgageableBoxessSize != 0) {
+                    Integer propertyIndex = game.getMortgageableBoxes().get(new Random().nextInt(mortgageableBoxessSize));
+                    int[] propertyCoords = game.getController().convertPositionToGridCoords(propertyIndex.intValue());
+                    game.getController().mortgageBox(propertyCoords[0], propertyCoords[1]);
+
+                }
             }
+
+            //se dopo aver ipotecato ha ancora sotto i 200€ demolisci una propietà casuale
             if (this.getMoney() < 200) {
                 int demolishablePropertiesSize = game.getDemolishableProperties().size();
-                game.demolishOnProperty(new Random().nextInt(demolishablePropertiesSize));
+                if (demolishablePropertiesSize != 0) {
+                    Integer propertyIndex = game.getDemolishableProperties().get(new Random().nextInt(demolishablePropertiesSize));
+                    int[] propertyCoords = game.getController().convertPositionToGridCoords(propertyIndex.intValue());
+                    game.getController().demolishOnProperty(propertyCoords[0], propertyCoords[1]);
+
+                }
             }
 
+            //se ha più di 700€ e delle propietà ipotecate estingue l'ipoteca
+            if (this.getMoney() > 700) {
+                int extinguishablePropertiesSize = game.getExtinguishableBoxes().size();
+                if (extinguishablePropertiesSize != 0) {
+                    Integer propertyIndex = game.getExtinguishableBoxes().get(new Random().nextInt(extinguishablePropertiesSize));
+                    int[] propertyCoords = game.getController().convertPositionToGridCoords(propertyIndex.intValue());
+                    game.getController().extinguishMortgageBox(propertyCoords[0], propertyCoords[1]);
+                }
+            }
 
-            */
-
-
+            //costruisce sulle proprietà
+            if (this.getMoney() > 700) {}
+            int buildableProperiesSize = game.getBuildableProperties().size();
+            if (buildableProperiesSize != 0) {
+                Integer propertyIndex = game.getBuildableProperties().get(new Random().nextInt(buildableProperiesSize));
+                int[] propertyCoords = game.getController().convertPositionToGridCoords(propertyIndex.intValue());
+                game.getController().buildOnProperty(propertyCoords[0], propertyCoords[1]);
+            }
 
 
 

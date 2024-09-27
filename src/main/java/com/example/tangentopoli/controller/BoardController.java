@@ -315,7 +315,7 @@ public class BoardController implements Initializable {
         // Combina le animazioni per il primo dado
         SequentialTransition sequentialTransition1 = new SequentialTransition(translateTransition1, rotateTransition1);
         sequentialTransition1.setOnFinished(event ->
-                dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice" + diceValue1 + ".png")))
+                dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/diceImages/dice" + diceValue1 + ".png")))
         );
 
         // Crea l'animazione di rotazione per il secondo dado
@@ -334,7 +334,7 @@ public class BoardController implements Initializable {
         // Combina le animazioni per il secondo dado
         SequentialTransition sequentialTransition2 = new SequentialTransition(translateTransition2, rotateTransition2);
         sequentialTransition2.setOnFinished(event ->
-                dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/dice" + diceValue2 + ".png")))
+                dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/diceImages/dice" + diceValue2 + ".png")))
         );
 
         // Combina le animazioni di entrambi i dadi in un'unica transizione parallela
@@ -707,17 +707,16 @@ public class BoardController implements Initializable {
     public void displayPlayerInfo(Player player) {
         // Ottieni il colore del giocatore
         Color playerColor = getPlayerColor(player.getPlayerID());
-        ImageView playerToken = getPlayerTokenFromID(player.getPlayerID());
 
         String playerInfoStr[] = player.toStringArray();
 
         switch(player.getPlayerID()) {
-            case 1:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 1 + ".png")));break;
-            case 2:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 2 + ".png")));break;
-            case 3:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 3 + ".png")));break;
-            case 4:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 4 + ".png")));break;
-            case 5:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 5 + ".png")));break;
-            case 6:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/imgForPlayer" + 6 + ".png")));break;
+            case 1:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer1.png")));break;
+            case 2:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer2.png")));break;
+            case 3:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer3.png")));break;
+            case 4:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer4.png")));break;
+            case 5:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer5.png")));break;
+            case 6:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer6.png")));break;
         }
 
         nameLabel.setText(playerInfoStr[0]);
@@ -872,7 +871,7 @@ public class BoardController implements Initializable {
         if (isDefaultImage) {
             ImgActionBtn.setImage(new Image(getClass().getResourceAsStream("/img/buttonImages/annulla.png")));
         } else {
-            ImgActionBtn.setImage(new Image(getClass().getResourceAsStream("/img/ActionImg.png"))); // Sostituisci con l'immagine predefinita
+            ImgActionBtn.setImage(new Image(getClass().getResourceAsStream("/img/buttonImages/ActionImg.png"))); // Sostituisci con l'immagine predefinita
         }
 
         // Inverte lo stato dell'immagine

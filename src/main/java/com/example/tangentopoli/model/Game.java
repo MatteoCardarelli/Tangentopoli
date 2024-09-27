@@ -1,8 +1,6 @@
 package com.example.tangentopoli.model;
 
 import com.example.tangentopoli.controller.BoardController;
-import com.example.tangentopoli.model.Auction;
-import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -145,7 +143,7 @@ public class Game {
 
         //Once the player passes on the START the game gives him 200€
         if(nextPosIndexMod < currentPosIndex) {
-            player.setMoney(player.getMoney() + 0);
+            player.setMoney(player.getMoney() + 200);
         }
 
         if(nextPos.getName().equals("GoToPrison"))
@@ -402,4 +400,3 @@ public class Game {
     }
 
 }
-

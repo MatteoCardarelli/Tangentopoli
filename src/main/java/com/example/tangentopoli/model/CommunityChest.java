@@ -1,11 +1,6 @@
 package com.example.tangentopoli.model;
 
-import com.example.tangentopoli.exception.NotEnoughMoneyException;
-
 public class CommunityChest extends Card {
-    public CommunityChest(String title, String description, int type, int moneyAmount) {
-        super(title, description, type, moneyAmount);
-    }
 
     public CommunityChest() {
         super();
