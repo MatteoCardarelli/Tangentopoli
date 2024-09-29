@@ -1,6 +1,8 @@
 package com.example.tangentopoli.model;
 
-public abstract class Card {
+import java.io.Serializable;
+
+public abstract class Card implements Serializable {
     private String title;
     private String description;
     private int type;

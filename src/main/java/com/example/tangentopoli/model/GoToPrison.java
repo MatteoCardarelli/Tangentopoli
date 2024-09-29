@@ -1,6 +1,8 @@
 package com.example.tangentopoli.model;
 
-public class GoToPrison implements Box {
+import java.io.Serializable;
+
+public class GoToPrison implements Box, Serializable {
     @Override
     public String getName() {
         return "GoToPrison";

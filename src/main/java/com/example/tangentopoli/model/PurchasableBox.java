@@ -1,6 +1,8 @@
 package com.example.tangentopoli.model;
 
-public abstract class PurchasableBox implements Box {
+import java.io.Serializable;
+
+public abstract class PurchasableBox implements Box, Serializable {
     private String name;
     private int price;
     private boolean purchased = false;

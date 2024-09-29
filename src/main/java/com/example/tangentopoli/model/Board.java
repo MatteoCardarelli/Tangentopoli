@@ -1,8 +1,9 @@
 package com.example.tangentopoli.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Board {
+public class Board implements Serializable {
     private ArrayList<Box> boxes = new ArrayList<>();
     private int size;
 

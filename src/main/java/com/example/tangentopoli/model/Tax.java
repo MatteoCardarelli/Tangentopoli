@@ -1,6 +1,8 @@
 package com.example.tangentopoli.model;
 
-public class Tax implements Box {
+import java.io.Serializable;
+
+public class Tax implements Box, Serializable {
     private String name;
     private int price;
 

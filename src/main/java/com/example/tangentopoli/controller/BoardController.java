@@ -5,6 +5,7 @@ import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
 import com.example.tangentopoli.model.*;
+import com.example.tangentopoli.serialization.Serializer;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -30,12 +31,13 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
 
 import static javafx.scene.paint.Color.RED;
 
-public class BoardController implements Initializable {
+public class BoardController implements Initializable, Serializable {
     public Label cardTitle;
     public Label cardDescription;
     public Button cardBtn;
@@ -143,6 +145,8 @@ public class BoardController implements Initializable {
     @FXML
     private ImageView imageRandomized;
 
+    private Stage stage;
+
 
 
 
@@ -167,6 +171,40 @@ public class BoardController implements Initializable {
         endDialog.setVisible(false);
     }
 
+    private void askSaveConfirmation() {
+        // Creare un Alert di conferma
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Conferma Uscita");
+        alert.setHeaderText("Vuoi salvare prima di uscire?");
+        alert.setContentText("Scegli un'opzione:");
+
+        // Definire pulsanti personalizzati
+        ButtonType saveAndExit = new ButtonType("Salva e Esci");
+        ButtonType exitWithoutSave = new ButtonType("Esci senza Salvare");
+
+        // Aggiungere i pulsanti all'Alert
+        alert.getButtonTypes().setAll(saveAndExit, exitWithoutSave);
+
+        // Attendere la risposta dell'utente
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent()) {
+            if (result.get() == saveAndExit) {
+                // Logica per salvare e uscire
+                System.out.println("Salvataggio effettuato. Uscita...");
+                saveCurrentGame();
+                closeGames();
+            } else if (result.get() == exitWithoutSave) {
+                // Logica per uscire senza salvare
+                System.out.println("Uscita senza salvataggio.");
+                closeGames();
+            }
+        }
+    }
+
+    private void saveCurrentGame() {
+        Serializer.serialize(game);
+    }
+
     //GAME LOGIC & SETUP
 
     public void setGame(Game game) {
@@ -180,6 +218,13 @@ public class BoardController implements Initializable {
     public void setPlayerN() {
         this.playerN = game.getPlayersN();
         createPlayerTokens();
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+        stage.setOnCloseRequest(windowEvent ->{
+            askSaveConfirmation();
+        });
     }
 
     //Passes to the next turn
@@ -476,6 +521,8 @@ public class BoardController implements Initializable {
                 }
             }
         }
+
+        setStage((Stage)mainPane.getScene().getWindow());
     }
 
     //Sets the tokens' position on the small board
@@ -1620,7 +1667,7 @@ public class BoardController implements Initializable {
     }
 
     //chiude il gioco
-    public void closeGames(ActionEvent actionEvent) {
+    public void closeGames() {
         Stage stage = (Stage) boardGrid.getScene().getWindow();
         stage.close();
         try {
