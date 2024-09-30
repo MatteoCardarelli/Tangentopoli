@@ -22,7 +22,7 @@ public class Game implements Serializable {
     private ArrayList<Player> players;
     private ArrayList<CommunityChest> communityChestCards = new ArrayList<>();
     private ArrayList<Chance> chanceCards = new ArrayList<>();
-    private BoardController boardController;
+    private transient BoardController boardController;
     private int turn = 0;
     private int playerInTurn=0;
     private ObjectMapper objectMapper;

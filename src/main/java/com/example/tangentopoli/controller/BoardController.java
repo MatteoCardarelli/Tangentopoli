@@ -37,7 +37,7 @@ import java.util.*;
 
 import static javafx.scene.paint.Color.RED;
 
-public class BoardController implements Initializable, Serializable {
+public class BoardController implements Initializable {
     public Label cardTitle;
     public Label cardDescription;
     public Button cardBtn;
