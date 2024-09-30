@@ -11,12 +11,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
 
-public class Game {
+public class Game implements Serializable {
     private Board board;
     private ArrayList<Player> players;
     private ArrayList<CommunityChest> communityChestCards = new ArrayList<>();

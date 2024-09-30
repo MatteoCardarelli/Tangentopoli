@@ -85,10 +85,6 @@ public class CPUPlayer extends Player {
                 game.getController().buildOnProperty(propertyCoords[0], propertyCoords[1]);
             }
 
-
-
-
-
             if (canLaunchAgain) {
                 moveBot();
                 PauseTransition secondDelay = new PauseTransition(Duration.seconds(1.5)); // Ritardo di 1.5 secondi

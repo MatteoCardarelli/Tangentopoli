@@ -69,6 +69,16 @@ public class MenuController implements Initializable {
 
     }
 
+    public void loadSavedGames(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/SavedGames.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setTitle("Carica partita");
+        stage.setScene(scene);
+        stage.show();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 

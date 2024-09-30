@@ -28,7 +28,7 @@
          </styleClass></Button>
       <Rectangle arcHeight="30.0" arcWidth="30.0" fill="#ffffff00" height="50.0" layoutX="354.0" layoutY="261.0" stroke="WHITE" strokeLineCap="ROUND" strokeType="INSIDE" width="180.0" />
       <CheckBox fx:id="CPUCheck" layoutX="363.0" layoutY="277.0" mnemonicParsing="false" text="GIOCA CONTRO IL PC" textFill="WHITE" />
-      <Button layoutX="258.0" layoutY="355.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="180.0" styleClass="loadBtn" text="CARICA PARTITA" textFill="WHITE" />
+      <Button layoutX="258.0" layoutY="355.0" mnemonicParsing="false" onAction="#loadSavedGames" prefHeight="50.0" prefWidth="180.0" styleClass="loadBtn" text="CARICA PARTITA" textFill="WHITE" />
       <Rectangle arcHeight="30.0" arcWidth="30.0" fill="#ffffff61" height="106.0" layoutX="228.0" layoutY="124.0" stroke="WHITE" strokeLineCap="ROUND" strokeType="INSIDE" width="243.0" />
       <Slider fx:id="selectPlayerN" blockIncrement="1.0" layoutX="248.0" layoutY="180.0" majorTickUnit="1.0" max="6.0" min="2.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="2.0" />
       <Label layoutX="287.0" layoutY="146.0" text="#  GIOCATORI (2-6)" />

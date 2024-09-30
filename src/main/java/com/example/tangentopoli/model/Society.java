@@ -1,6 +1,6 @@
 package com.example.tangentopoli.model;
 
-public class Society extends PurchasableBox{
+public class Society extends PurchasableBox {
 
 
     public Society(String name, int price, int mortgageValue) {

@@ -1,7 +1,9 @@
 package com.example.tangentopoli.model;
 
 
-public class CardBox implements Box {
+import java.io.Serializable;
+
+public class CardBox implements Box, Serializable {
     private String name;
 
     public CardBox(String name) {

@@ -1,6 +1,8 @@
 package com.example.tangentopoli.model;
 
-public class Start implements Box{
+import java.io.Serializable;
+
+public class Start implements Box, Serializable {
     private String name;
 
     public Start() {
