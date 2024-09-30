@@ -15,7 +15,7 @@
    <children>
       <ImageView fitHeight="464.0" fitWidth="837.0" layoutX="-22.0" layoutY="-7.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../img/menuBG.png" />
+            <Image url="@../img/animationAndGameBaseImages/menuBG.png" />
          </image>
       </ImageView>
       <Button layoutX="167.0" layoutY="261.0" mnemonicParsing="false" onAction="#startNewGame" prefHeight="50.0" prefWidth="180.0" stylesheets="@../style/menu.css" text="INIZIA PARTITA" textFill="WHITE">

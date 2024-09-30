@@ -13,7 +13,7 @@ public class TangentopoliApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/MenuView.fxml")));
-        Image icon = new Image(getClass().getResourceAsStream("/img/icon.png"));
+        Image icon = new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/icon.png"));
         stage.getIcons().add(icon);
 
         stage.getIcons().add(icon);

@@ -663,8 +663,8 @@ public class BoardController implements Initializable {
         System.out.println("Inizio animazione sbarre");
 
         // Crea le immagini delle sbarre
-         barLeft = new ImageView(new Image(getClass().getResourceAsStream("/img/prisonBars.png")));
-         barRight = new ImageView(new Image(getClass().getResourceAsStream("/img/prisonBars.png")));
+         barLeft = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/prisonBars.png")));
+         barRight = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/prisonBars.png")));
 
         // Imposta la dimensione delle sbarre
         barLeft.setFitHeight(900);
@@ -934,7 +934,7 @@ public class BoardController implements Initializable {
             // Aggiunta di nuove casette o costruzione di un albergo
             if (numberOfHouses < 5 && numberOfHotels == 0) {
                 for (int i = 0; i < numberOfHouses; i++) {
-                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/privateBox.png")));
+                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/privateBox.png")));
                     buildingImageView.setFitHeight(40); // Altezza dell'immagine
                     buildingImageView.setFitWidth(40);  // Larghezza dell'immagine
                     buildingImageView.setRotate(180);
@@ -944,7 +944,7 @@ public class BoardController implements Initializable {
                     boardGrid.add(buildingImageView, col, row);
                 }
             } else if (numberOfHouses == 0 && numberOfHotels == 1) {
-                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/cantiereAbusivo.png")));
+                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/cantiereAbusivo.png")));
                 cantiereImageView.setFitHeight(50);
                 cantiereImageView.setFitWidth(50);
                 cantiereImageView.setRotate(180);
@@ -980,7 +980,7 @@ public class BoardController implements Initializable {
             // Aggiunta di nuove casette o costruzione di un albergo
             if (numberOfHouses < 5 && numberOfHotels == 0) {
                 for (int i = 0; i < numberOfHouses; i++) {
-                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/privateBox.png")));
+                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/privateBox.png")));
                     buildingImageView.setFitHeight(40); // Altezza dell'immagine
                     buildingImageView.setFitWidth(40);  // Larghezza dell'immagine
                     buildingImageView.setRotate(270);
@@ -990,7 +990,7 @@ public class BoardController implements Initializable {
                     boardGrid.add(buildingImageView, col, row);
                 }
             } else if (numberOfHouses == 0 && numberOfHotels == 1) {
-                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/cantiereAbusivo.png")));
+                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/cantiereAbusivo.png")));
                 cantiereImageView.setFitHeight(50);
                 cantiereImageView.setFitWidth(50);
                 cantiereImageView.setRotate(270);
@@ -1025,7 +1025,7 @@ public class BoardController implements Initializable {
             // Aggiunta di nuove casette o costruzione di un albergo
             if (numberOfHouses < 5 && numberOfHotels == 0) {
                 for (int i = 0; i < numberOfHouses; i++) {
-                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/privateBox.png")));
+                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/privateBox.png")));
                     buildingImageView.setFitHeight(40); // Altezza dell'immagine
                     buildingImageView.setFitWidth(40);  // Larghezza dell'immagine
                     buildingImageView.setRotate(0);
@@ -1035,7 +1035,7 @@ public class BoardController implements Initializable {
                     boardGrid.add(buildingImageView, col, row);
                 }
             } else if (numberOfHouses == 0 && numberOfHotels == 1) {
-                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/cantiereAbusivo.png")));
+                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/cantiereAbusivo.png")));
                 cantiereImageView.setFitHeight(50);
                 cantiereImageView.setFitWidth(50);
                 cantiereImageView.setRotate(180);
@@ -1069,7 +1069,7 @@ public class BoardController implements Initializable {
             // Aggiunta di nuove casette o costruzione di un albergo
             if (numberOfHouses < 5 && numberOfHotels == 0) {
                 for (int i = 0; i < numberOfHouses; i++) {
-                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/privateBox.png")));
+                    ImageView buildingImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/privateBox.png")));
                     buildingImageView.setFitHeight(40); // Altezza dell'immagine
                     buildingImageView.setFitWidth(40);  // Larghezza dell'immagine
                     buildingImageView.setRotate(90);
@@ -1079,7 +1079,7 @@ public class BoardController implements Initializable {
                     boardGrid.add(buildingImageView, col, row);
                 }
             } else if (numberOfHouses == 0 && numberOfHotels == 1) {
-                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/cantiereAbusivo.png")));
+                ImageView cantiereImageView = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/cantiereAbusivo.png")));
                 cantiereImageView.setFitHeight(50);
                 cantiereImageView.setFitWidth(50);
                 cantiereImageView.setRotate(90);
@@ -1453,7 +1453,7 @@ public class BoardController implements Initializable {
         }
         if (card instanceof CommunityChest) {
             // Imposta l'immagine della carta
-            cardImg.setImage(new Image(getClass().getResourceAsStream("/img/chanceimgop.png")));
+            cardImg.setImage(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/chanceimgop.png")));
             cardImg.setX(240);
             cardImg.setY(250);
             cardImg.setRotate(135);
@@ -1496,7 +1496,7 @@ public class BoardController implements Initializable {
 
             } else {
             // Imposta l'immagine della carta
-            cardImg.setImage(new Image(getClass().getResourceAsStream("/img/communitychestop.png")));
+            cardImg.setImage(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/communitychestop.png")));
             cardImg.setX(550);
             cardImg.setY(570);
             cardImg.setRotate(135);
@@ -1686,23 +1686,23 @@ public class BoardController implements Initializable {
         if (row == 0 && column == 0) {
             return "/img/propertyImage1.png";
         } else if (row == 0 && column == 1) {
-            return "/img/piazzaDuomo.png";
+            return "/img/cardBoxImages/piazzaDuomo.png";
         } else if (row == 0 && column == 3) {
-            return "/img/viaDellaSpiga.png";
+            return "/img/cardBoxImages/viaDellaSpiga.png";
         } else if (row == 1 && column == 5) {
-            return "/img/piazzaFontana.png";
+            return "/img/cardBoxImages/piazzaFontana.png";
         } else if (row == 2 && column == 5) {
-            return "/img/piazzaSanBabila.png";
+            return "/img/cardBoxImages/piazzaSanBabila.png";
         }else if (row == 4 && column == 5) {
-            return "/img/piazzaDellaScala.png";
+            return "/img/cardBoxImages/piazzaDellaScala.png";
         }else if (row == 5 && column == 4) {
-            return "/img/piazzaDuomo.png";
+            return "/img/cardBoxImages/piazzaDuomo.png";
         }else if (row == 5 && column == 3) {
-            return "/img/piazzaDuomo.png";
+            return "/img/cardBoxImages/piazzaDuomo.png";
         }else if (row == 1 && column == 0) {
-            return "/img/piazzaDuomo.png";
+            return "/img/cardBoxImages/piazzaDuomo.png";
         }else if (row == 4 && column == 0) {
-            return "/img/piazzaDuomo.png";
+            return "/img/cardBoxImages/piazzaDuomo.png";
         }
 
 
