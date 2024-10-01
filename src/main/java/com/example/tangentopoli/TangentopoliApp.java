@@ -15,11 +15,11 @@ public class TangentopoliApp extends Application {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/MenuView.fxml")));
         Image icon = new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/icon.png"));
         stage.getIcons().add(icon);
-
         stage.getIcons().add(icon);
         Scene scene = new Scene(root);
         stage.setTitle("Tangentopoli");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
