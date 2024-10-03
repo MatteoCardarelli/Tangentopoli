@@ -259,6 +259,7 @@ public abstract class Player implements Serializable {
         strInfo[1] =  this.money + "€" ;
         return strInfo;
     }
+
     public void demolishOnProperty(Property property) {
         int price = property.getDemolitionPrice();
         property.demolishConstruction();

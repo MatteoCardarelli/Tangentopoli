@@ -1,6 +1,5 @@
 package com.example.tangentopoli.controller;
 
-import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
@@ -56,8 +55,6 @@ public class BoardController implements Initializable, Serializable {
 
     private MediaPlayer mediaPlayer;
 
-    private boolean exitPrisonFlag = false;
-
     private int diceEqualsCombo = 0;
 
     private Map<Integer, Color> playerColors = new HashMap<>();
@@ -65,9 +62,6 @@ public class BoardController implements Initializable, Serializable {
     //Set the Actions DialogPane as visible
     // Variabile di stato per sapere se si sta mostrando l'immagine alternativa
     private boolean isDefaultImage = true;
-
-    @FXML
-    private Button nextBtn;
 
     @FXML
     private Label boxInfo;
@@ -80,6 +74,18 @@ public class BoardController implements Initializable, Serializable {
 
     @FXML
     private Button buildBtn;
+
+    @FXML
+    private Button payPrisonBtn;
+
+    @FXML
+    private Button diceBtn;
+
+    @FXML
+    private Button nextBtn;
+
+    @FXML
+    private Button buyBtn;
 
     @FXML
     private Button extinguishBtn;
@@ -95,15 +101,6 @@ public class BoardController implements Initializable, Serializable {
 
     @FXML
     private ImageView ImgActionBtn;
-
-    @FXML
-    private Button buyBtn;
-
-    @FXML
-    private Button diceBtn;
-
-    @FXML
-    private Button payPrisonBtn;
 
     @FXML
     private DialogPane endDialog;
@@ -244,70 +241,18 @@ public class BoardController implements Initializable, Serializable {
 
     //tutte le azione da fare ogni inizio turno
     public void startTurn() {
-        diceEqualsCombo = 0;
-        exitPrisonFlag = false;
-
+        game.startTurn();  // Chiama la logica del turno da Game
         Platform.runLater(() -> {
             displayPlayerInfo(game.getPlayerInTurn());
             displayBoxInfo(game.getPlayerInTurn());
-            diceBtn.setDisable(false);   // Abilita il bottone del dado
-            nextBtn.setDisable(true);
-            buyBtn.setDisable(true);
-
-            // Se il giocatore è in prigione
-            if (game.getPlayerInTurn().isInPrison()) {
-                payPrisonBtn.setDisable(false);
-                payPrisonBtn.setVisible(true);
-            } else {
-                payPrisonBtn.setDisable(true);
-                payPrisonBtn.setVisible(false);
-            }
-
-            // Se il giocatore è da 3 turni in prigione obbligalo a pagare per uscire
-            if (game.getPlayerInTurn().getTurnInPrison() == 3) {
-                nextBtn.setDisable(true);
-                diceBtn.setDisable(true);
-                updateBoxInfo("Sei da tre turni in prigione sei obbligato a pagare");
-            }
         });
     }
-
 
     //DICES
 
     //Returns the dice value (int)
     public int getDiceValue() {
         return diceValue;
-    }
-
-    //Manage both cases of equals or different dices values
-    public void dicesEquals(int diceValue1, int diceValue2) {
-        if (exitPrisonFlag) {
-            diceBtn.setDisable(true);
-            nextBtn.setDisable(false);
-            buyBtn.setDisable(false);
-        }
-        else if (diceValue1 == diceValue2 && !game.getPlayerInTurn().isInPrison()) {
-            diceEqualsCombo++;
-            if (game.getPlayerInTurn() instanceof CPUPlayer) {
-                ((CPUPlayer) game.getPlayerInTurn()).setCanLaunchAgain(true);
-            }
-
-            if (diceEqualsCombo == 3)
-                sendToPrison();
-            else{
-                diceBtn.setDisable(false);  //abilita il bottone
-                nextBtn.setDisable(true);   //disabilita il bottone
-                buyBtn.setDisable(false);
-            }
-        }
-
-        else {
-            diceEqualsCombo = 0;
-            diceBtn.setDisable(true);   // Disabilita il bottone dopo aver mosso la pedina
-            nextBtn.setDisable(false);  // Abilita il bottono
-            buyBtn.setDisable(false);
-        }
     }
 
     //Launches the dices and manages the graphics of the animation
@@ -335,15 +280,7 @@ public class BoardController implements Initializable, Serializable {
         diceValue = diceValue1 + diceValue2;
 
         //se il giocatore è in prigione e fa un lancio doppio esce e non può ritirare
-        if (diceValue1==diceValue2 && playerInTurn.isInPrison()){
-            playerInTurn.setInPrison(false);
-
-            //disabilita il lancio anche se i valori sono uguali
-            diceBtn.setDisable(true);
-            nextBtn.setDisable(false);
-
-            exitPrisonFlag = true ;
-        }
+        game.exitFromPrisonWithDicesEqual(diceValue1,diceValue2);
 
         // Crea l'animazione di rotazione per il primo dado
         RotateTransition rotateTransition1 = new RotateTransition(Duration.seconds(1), dice1ImageView);
@@ -389,14 +326,8 @@ public class BoardController implements Initializable, Serializable {
         // Aggiungi un listener per eseguire il movimento del giocatore dopo il completamento delle animazioni
         parallelTransition.setOnFinished(event -> {
                 movePlayer(diceValue);
-            // Se il giocatore è in prigione, disabilita il lancio di nuovo anche con valori uguali
-            if (playerInTurn.isInPrison()) {
-                diceBtn.setDisable(true);
-                nextBtn.setDisable(false);
-            } else {
-                // Se il valore dei dadi è lo stesso, verifica se il giocatore può rilanciare
-                dicesEquals(diceValue1, diceValue2);
-            }
+
+                game.handlePlayerTurnAfterRol(diceValue1,diceValue2);
         });
 
         // Avvia la transizione parallela (che avvierà tutte le animazioni)
@@ -685,179 +616,6 @@ public class BoardController implements Initializable, Serializable {
 
     }
 
-    //DISPLAY
-
-    private void startPoliceLights() {
-        System.out.println("Inizio animazione luci della polizia");
-
-        // Crea il rettangolo per le luci della polizia (rettangolo rosso/trasparente visibile per debug)
-        policeLightBox = new Rectangle(1600, 900);
-        policeLightBox.setFill(RED); // Imposta il colore iniziale a rosso per renderlo visibile
-        policeLightBox.setOpacity(0.3); // Opacità leggera per evidenziarlo sullo schermo
-        mainPane.getChildren().add(policeLightBox);  // Aggiungi il rettangolo al mainPane
-        policeLightBox.toFront(); // Porta in primo piano
-
-        // Controlla se è stato aggiunto correttamente
-        System.out.println("Rettangolo aggiunto al mainPane");
-
-        // Animazione per le luci della polizia (rosso e blu alternati)
-        Timeline policeLightTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(0), e -> {
-                    policeLightBox.setFill(RED);
-                    policeLightBox.setOpacity(0.5); // Imposta l'opacità al 50% per il rosso
-                    System.out.println("Luce rossa");
-                }),
-                new KeyFrame(Duration.seconds(0.5), e -> {
-                    policeLightBox.setFill(Color.BLUE);
-                    policeLightBox.setOpacity(0.5); // Imposta l'opacità al 50% per il blu
-                    System.out.println("Luce blu");
-                })
-        );
-        policeLightTimeline.setCycleCount(4); // Cicla indefinitamente
-        policeLightTimeline.setAutoReverse(true); // Inverte automaticamente i colori
-        policeLightTimeline.play(); // Avvia l'animazione delle luci della polizia
-        System.out.println("Animazione luci della polizia avviata");
-
-        // Dopo 1 secondo dall'inizio delle luci, avvia l'animazione delle sbarre
-        Timeline startBarsTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> startBarAnimation()));
-        startBarsTimeline.play();
-    }
-
-    // Metodo per avviare l'animazione delle sbarre
-    private void startBarAnimation() {
-        System.out.println("Inizio animazione sbarre");
-
-        // Crea le immagini delle sbarre
-         barLeft = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/prisonBars.png")));
-         barRight = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/prisonBars.png")));
-
-        // Imposta la dimensione delle sbarre
-        barLeft.setFitHeight(900);
-        barLeft.setFitWidth(800);
-        barRight.setFitHeight(900);
-        barRight.setFitWidth(800);
-
-        // Posiziona le sbarre inizialmente fuori dallo schermo
-        barLeft.setTranslateX(-800); // A sinistra fuori schermo
-        barRight.setTranslateX(1600); // A destra fuori schermo
-
-        // Aggiungi le sbarre al mainPane
-        mainPane.getChildren().addAll(barLeft, barRight);
-        barLeft.toFront(); // Porta le sbarre in primo piano
-        barRight.toFront();
-
-        System.out.println("Sbarre aggiunte e portate in primo piano");
-
-        // Animazione per chiudere le sbarre
-        TranslateTransition barLeftTransition = new TranslateTransition(Duration.seconds(2), barLeft);
-        barLeftTransition.setToX(0); // Sposta la sbarra sinistra verso il centro
-
-        TranslateTransition barRightTransition = new TranslateTransition(Duration.seconds(2), barRight);
-        barRightTransition.setToX(800); // Sposta la sbarra destra verso il centro
-
-        // Esegui l'animazione delle sbarre in parallelo
-        ParallelTransition barTransition = new ParallelTransition(barLeftTransition, barRightTransition);
-        barTransition.play(); // Avvia l'animazione delle sbarre
-        System.out.println("Animazione sbarre avviata");
-    }
-
-    // Metodo per fermare le luci della polizia e rimuovere le sbarre
-    private void stopPoliceLights() {
-        System.out.println("Ferma animazione luci della polizia");
-        mainPane.getChildren().remove(policeLightBox); // Rimuove il rettangolo delle luci dalla schermata
-        mainPane.getChildren().removeAll(barRight,barLeft); // Rimuove il rettangolo delle luci dalla schermata
-    }
-
-    //Displays player data in the top textArea
-    public void displayPlayerInfo(Player player) {
-        // Ottieni il colore del giocatore
-        Color playerColor = getPlayerColor(player.getPlayerID());
-
-        String playerInfoStr[] = player.toStringArray();
-
-        switch(player.getPlayerID()) {
-            case 1:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer1.png")));break;
-            case 2:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer2.png")));break;
-            case 3:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer3.png")));break;
-            case 4:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer4.png")));break;
-            case 5:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer5.png")));break;
-            case 6:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer6.png")));break;
-        }
-
-        nameLabel.setText(playerInfoStr[0]);
-        moneyLabel.setText(playerInfoStr[1]);
-        colorBox.setFill(playerColor);
-    }
-
-    // Metodo per ottenere il colore in base al playerID
-    private Color getPlayerColor(int playerID) {
-        return playerColors.getOrDefault(playerID, Color.GRAY); // Colore di default in caso di errore
-    }
-
-    //Displays the current player's Box infos
-    private void displayBoxInfo(Player player) {
-        String boxInfoStr = "Ti trovi su:\n" + player.getPosition().getDescription();
-        boxInfo.setText(boxInfoStr);
-    }
-
-    //metodo per aggiornare il boxInfo
-    public void updateBoxInfo(String message) {
-        boxInfo.setText(message);
-    }
-
-    //Makes the player buy any purchasable box (properties, stations, societies)
-    public void buyCurrentBox() {
-        // Ottieni il giocatore corrente
-        Player currentPlayer = game.getPlayerInTurn();
-
-        // Ottieni la casella su cui si trova il giocatore
-        Box currentBox = currentPlayer.getPosition();
-
-        // Controlla se la casella corrente è una PurchasableBox
-        if (currentBox instanceof PurchasableBox purchasableBox) {
-            try {
-                // Tenta di acquistare la casella
-                currentPlayer.buyPurchasableBox(purchasableBox);
-
-                // Aggiorna l'interfaccia con le nuove informazioni
-                displayPlayerInfo(currentPlayer);
-                displayBoxInfo(currentPlayer);
-
-                // Notifica all'utente dell'acquisto avvenuto con successo
-                updateBoxInfo("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "€!");
-                createPropertyMarkerFromID(game.getPlayerInTurn().getPlayerID());
-                buyBtn.setDisable(true);
-            } catch (NotEnoughMoneyException e) {
-                // Gestisci l'eccezione se il giocatore non ha abbastanza soldi
-                updateBoxInfo(e.getMessage());
-            }
-            catch (BoxAlreadyPurchasedException e) {
-                updateBoxInfo(e.getMessage());
-            }
-        } else {
-            // Gestisci il caso in cui la casella non sia acquistabile (non è necessario ma aggiunge sicurezza)
-            updateBoxInfo("Questa casella non è acquistabile.");
-        }
-    }
-
-    //Makes the player exit from prison after a payment
-    public void exitFromPrison()  {
-        //paga €50 per uscire ed esci dalla prigione
-        game.getPlayerInTurn().exitFromPrison();
-        game.checkPlayerAfterPayment(game.getPlayerInTurn());
-
-        //disabilita il pulsante per pagare una volta uscito di prigione
-        payPrisonBtn.setDisable(true);
-        payPrisonBtn.setVisible(false);
-
-        //attiva i dadi
-        diceBtn.setDisable(false);
-
-        //aggiorna i display
-        updateBoxInfo("hai pagato €50 ora puoi muoverti dalla prigione");
-        displayPlayerInfo(game.getPlayerInTurn());
-    }
-
     //metodo che crea e posiziona i marker di acquisto
     public void createPropertyMarkerFromID(int playerID) {
         // Ottieni il colore del giocatore
@@ -921,6 +679,182 @@ public class BoardController implements Initializable, Serializable {
         }
     }
 
+    //DISPLAY
+
+        //BUTTON
+
+        public void setPayPrisonBtn(boolean b) {
+        payPrisonBtn.setDisable(b);
+    }
+
+        //ANIMATION
+
+        private void startPoliceLights() {
+
+        // Crea il rettangolo per le luci della polizia (rettangolo rosso/trasparente visibile per debug)
+        policeLightBox = new Rectangle(1600, 900);
+        policeLightBox.setFill(RED); // Imposta il colore iniziale a rosso per renderlo visibile
+        policeLightBox.setOpacity(0.3); // Opacità leggera per evidenziarlo sullo schermo
+        mainPane.getChildren().add(policeLightBox);  // Aggiungi il rettangolo al mainPane
+        policeLightBox.toFront(); // Porta in primo piano
+
+        // Animazione per le luci della polizia (rosso e blu alternati)
+        Timeline policeLightTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(0), e -> {
+                    policeLightBox.setFill(RED);
+                    policeLightBox.setOpacity(0.5); // Imposta l'opacità al 50% per il rosso
+                    System.out.println("Luce rossa");
+                }),
+                new KeyFrame(Duration.seconds(0.5), e -> {
+                    policeLightBox.setFill(Color.BLUE);
+                    policeLightBox.setOpacity(0.5); // Imposta l'opacità al 50% per il blu
+                    System.out.println("Luce blu");
+                })
+        );
+        policeLightTimeline.setCycleCount(4); // Cicla indefinitamente
+        policeLightTimeline.setAutoReverse(true); // Inverte automaticamente i colori
+        policeLightTimeline.play(); // Avvia l'animazione delle luci della polizia
+        System.out.println("Animazione luci della polizia avviata");
+
+        // Dopo 1 secondo dall'inizio delle luci, avvia l'animazione delle sbarre
+        Timeline startBarsTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> startBarAnimation()));
+        startBarsTimeline.play();
+    }
+
+        // Metodo per avviare l'animazione delle sbarre
+        private void startBarAnimation() {
+            System.out.println("Inizio animazione sbarre");
+
+            // Crea le immagini delle sbarre
+             barLeft = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/prisonBars.png")));
+             barRight = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/prisonBars.png")));
+
+            // Imposta la dimensione delle sbarre
+            barLeft.setFitHeight(900);
+            barLeft.setFitWidth(800);
+            barRight.setFitHeight(900);
+            barRight.setFitWidth(800);
+
+            // Posiziona le sbarre inizialmente fuori dallo schermo
+            barLeft.setTranslateX(-800); // A sinistra fuori schermo
+            barRight.setTranslateX(1600); // A destra fuori schermo
+
+            // Aggiungi le sbarre al mainPane
+            mainPane.getChildren().addAll(barLeft, barRight);
+            barLeft.toFront(); // Porta le sbarre in primo piano
+            barRight.toFront();
+
+            System.out.println("Sbarre aggiunte e portate in primo piano");
+
+            // Animazione per chiudere le sbarre
+            TranslateTransition barLeftTransition = new TranslateTransition(Duration.seconds(2), barLeft);
+            barLeftTransition.setToX(0); // Sposta la sbarra sinistra verso il centro
+
+            TranslateTransition barRightTransition = new TranslateTransition(Duration.seconds(2), barRight);
+            barRightTransition.setToX(800); // Sposta la sbarra destra verso il centro
+
+            // Esegui l'animazione delle sbarre in parallelo
+            ParallelTransition barTransition = new ParallelTransition(barLeftTransition, barRightTransition);
+            barTransition.play(); // Avvia l'animazione delle sbarre
+            System.out.println("Animazione sbarre avviata");
+        }
+
+        // Metodo per fermare le luci della polizia e rimuovere le sbarre
+        private void stopPoliceLights() {
+            System.out.println("Ferma animazione luci della polizia");
+            mainPane.getChildren().remove(policeLightBox); // Rimuove il rettangolo delle luci dalla schermata
+            mainPane.getChildren().removeAll(barRight,barLeft); // Rimuove il rettangolo delle luci dalla schermata
+        }
+
+        //Creates the blinking effect on the overlay
+        private void applyBlinkingEffect(Rectangle overlay) {
+            // Creazione dell'animazione di fade in/out per il lampeggio
+            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), overlay);
+            fadeTransition.setFromValue(1.0);
+            fadeTransition.setToValue(0.2);
+            fadeTransition.setCycleCount(FadeTransition.INDEFINITE);
+            fadeTransition.setAutoReverse(true);
+            fadeTransition.play();
+        }
+
+    //Displays player data in the top textArea
+    public void displayPlayerInfo(Player player) {
+        // Ottieni il colore del giocatore
+        Color playerColor = getPlayerColor(player.getPlayerID());
+
+        String playerInfoStr[] = player.toStringArray();
+
+        switch(player.getPlayerID()) {
+            case 1:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer1.png")));break;
+            case 2:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer2.png")));break;
+            case 3:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer3.png")));break;
+            case 4:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer4.png")));break;
+            case 5:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer5.png")));break;
+            case 6:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer6.png")));break;
+        }
+
+        nameLabel.setText(playerInfoStr[0]);
+        moneyLabel.setText(playerInfoStr[1]);
+        colorBox.setFill(playerColor);
+    }
+
+    // Metodo per ottenere il colore in base al playerID
+    private Color getPlayerColor(int playerID) {
+        return playerColors.getOrDefault(playerID, Color.GRAY); // Colore di default in caso di errore
+    }
+
+    //Displays the current player's Box infos
+    public void displayBoxInfo(Player player) {
+        String boxInfoStr = "Ti trovi su:\n" + player.getPosition().getDescription();
+        boxInfo.setText(boxInfoStr);
+    }
+
+    //metodo per aggiornare il boxInfo
+    public void updateBoxInfo(String message) {
+        boxInfo.setText(message);
+    }
+
+    //Makes the player buy any purchasable box (properties, stations, societies)
+    public void buyCurrentBox() {
+        // Ottieni il giocatore corrente
+        Player currentPlayer = game.getPlayerInTurn();
+
+        // Ottieni la casella su cui si trova il giocatore
+        Box currentBox = currentPlayer.getPosition();
+
+        // Controlla se la casella corrente è una PurchasableBox
+        if (currentBox instanceof PurchasableBox purchasableBox) {
+
+            game.buyPurchasableBox(purchasableBox);
+            displayPlayerInfo(currentPlayer);
+            displayBoxInfo(currentPlayer);
+            updateBoxInfo("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "€!");
+            createPropertyMarkerFromID(game.getPlayerInTurn().getPlayerID());
+            setBuyBtn(true);
+        } else {
+            // Messaggio per casella non acquistabile
+            updateBoxInfo("Questa casella non è acquistabile.");
+        }
+    }
+
+    //Makes the player exit from prison after a payment
+    public void exitFromPrison()  {
+        //paga €50 per uscire ed esci dalla prigione
+        game.getPlayerInTurn().exitFromPrison();
+        game.checkPlayerAfterPayment(game.getPlayerInTurn());
+
+        //disabilita il pulsante per pagare una volta uscito di prigione
+        payPrisonBtn.setDisable(true);
+        payPrisonBtn.setVisible(false);
+
+        //attiva i dadi
+        diceBtn.setDisable(false);
+
+        //aggiorna i display
+        updateBoxInfo("hai pagato €50 ora puoi muoverti dalla prigione");
+        displayPlayerInfo(game.getPlayerInTurn());
+    }
+
 
 
     // Metodo per mostrare il dialogo delle azioni
@@ -943,7 +877,6 @@ public class BoardController implements Initializable, Serializable {
         isDefaultImage = !isDefaultImage;
     }
 
-
     //Builds on the property that has been directly clicked on the board
     public void buildOnProperty(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
@@ -962,7 +895,10 @@ public class BoardController implements Initializable, Serializable {
         removeAllOverlayRectangles();
     }
 
-    public void displayConstructionsOnSmallBoard(int row, int col){
+        //OVERLAY
+
+        //crea overlay per la decisione di dove costruire
+        public void displayConstructionsOnSmallBoard(int row, int col){
         int pos = convertGridCoordsToPosition(row, col);
         Property property = (Property) game.getBoard().getBoxFromIndex(pos);
         // Ottieni il numero di case sulla proprietà
@@ -1158,39 +1094,103 @@ public class BoardController implements Initializable, Serializable {
 
     }
 
-    //Creates the green overlays on the buildable properties
-    public void createConstructionOverlay(int row, int col) {
-        // Crea il rettangolo semi-trasparente
-        Rectangle overlay = new Rectangle(126, 150);
-        overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
-        overlay.getStyleClass().add("property-overlay");
+        //Creates the green overlays on the buildable properties
+        public void createConstructionOverlay(int row, int col) {
+            // Crea il rettangolo semi-trasparente
+            Rectangle overlay = new Rectangle(126, 150);
+            overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
+            overlay.getStyleClass().add("property-overlay");
 
-        // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
-        if (col == 0 || col == boardGrid.getColumnCount() - 1) {
-            overlay.setRotate(90);
+            // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
+            if (col == 0 || col == boardGrid.getColumnCount() - 1) {
+                overlay.setRotate(90);
+            }
+
+            // Aggiungi la StackPane al GridPane
+            boardGrid.add(overlay, col, row);
+
+            // Applica l'animazione di lampeggio
+            applyBlinkingEffect(overlay);
+
+            overlay.setOnMouseClicked(event -> {
+                buildOnProperty(row, col);
+            });
         }
 
-        // Aggiungi la StackPane al GridPane
-        boardGrid.add(overlay, col, row);
 
-        // Applica l'animazione di lampeggio
-        applyBlinkingEffect(overlay);
 
-        overlay.setOnMouseClicked(event -> {
-            buildOnProperty(row, col);
-        });
-    }
+        //Removes all the overlays on the properties
+        public void removeAllOverlayRectangles() {
+            // Ottieni la lista di tutti i figli del GridPane
+            ObservableList<Node> children = boardGrid.getChildren();
 
-    //Creates the blinking effect on the overlay
-    private void applyBlinkingEffect(Rectangle overlay) {
-        // Creazione dell'animazione di fade in/out per il lampeggio
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), overlay);
-        fadeTransition.setFromValue(1.0);
-        fadeTransition.setToValue(0.2);
-        fadeTransition.setCycleCount(FadeTransition.INDEFINITE);
-        fadeTransition.setAutoReverse(true);
-        fadeTransition.play();
-    }
+            // Usa un iteratore per evitare ConcurrentModificationException
+            Iterator<Node> iterator = children.iterator();
+
+            while (iterator.hasNext()) {
+                Node child = iterator.next();
+
+                // Controlla se il figlio è un'istanza di Rectangle
+                if (child instanceof Rectangle && child.getStyleClass().contains("property-overlay")) {
+                    iterator.remove(); // Rimuovi il rettangolo dalla griglia
+                }
+            }
+        }
+
+        //rimuove gli overlay delle proprietà ipotecate
+        public void removeNotAvailableBoxOverlay(int row, int col) {
+            // Ottieni la lista di tutti i figli del GridPane
+            ObservableList<Node> children = boardGrid.getChildren();
+
+            // Usa un iteratore per evitare ConcurrentModificationException
+            Iterator<Node> iterator = children.iterator();
+
+            while (iterator.hasNext()) {
+                Node child = iterator.next();
+
+                // Verifica se il nodo si trova nella cella specificata
+                Integer nodeRow = GridPane.getRowIndex(child);
+                Integer nodeCol = GridPane.getColumnIndex(child);
+
+                // Assicura che rowIndex e colIndex non siano null (valore di default se non impostato è 0)
+                if (nodeRow == null) nodeRow = 0;
+                if (nodeCol == null) nodeCol = 0;
+
+                // Controlla se il figlio è un'istanza di Rectangle e si trova nella cella specificata
+                if (child instanceof Rectangle && child.getStyleClass().contains("notAvailableBoxOverlay")
+                        && nodeRow == row && nodeCol == col) {
+                    iterator.remove(); // Rimuovi il rettangolo dalla griglia
+                    break; // Esci dal loop una volta trovato e rimosso l'overlay
+                }
+            }
+        }
+
+        //crea un overlay per le proprietà a cui si vuole demolire una costruzione
+        public void createDemolitionOverlay(int row, int col) {
+            // Crea il rettangolo semi-trasparente
+            Rectangle overlay = new Rectangle(126, 150);
+            overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
+            overlay.getStyleClass().add("property-overlay");
+
+            // Aggiungi la StackPane al GridPane
+            boardGrid.add(overlay, col, row);
+
+            // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
+            if (col == 0 || col == boardGrid.getColumnCount() - 1) {
+                overlay.setRotate(90);
+                overlay.setTranslateX(12);
+            }
+
+
+
+            // Applica l'animazione di lampeggio
+            applyBlinkingEffect(overlay);
+
+            overlay.setOnMouseClicked(event -> {
+                demolishOnProperty(row, col);
+            });
+        }
+
 
     //Converts the position of a specific Box (giving its index in the board), into coordinates
     public int[] convertPositionToGridCoords(int index) {
@@ -1327,57 +1327,11 @@ public class BoardController implements Initializable, Serializable {
         }
     }
 
-    //Removes all the overlays on the properties
-    public void removeAllOverlayRectangles() {
-        // Ottieni la lista di tutti i figli del GridPane
-        ObservableList<Node> children = boardGrid.getChildren();
-
-        // Usa un iteratore per evitare ConcurrentModificationException
-        Iterator<Node> iterator = children.iterator();
-
-        while (iterator.hasNext()) {
-            Node child = iterator.next();
-
-            // Controlla se il figlio è un'istanza di Rectangle
-            if (child instanceof Rectangle && child.getStyleClass().contains("property-overlay")) {
-                iterator.remove(); // Rimuovi il rettangolo dalla griglia
-            }
-        }
-    }
-
-    //rimuove gli overlay delle proprietà ipotecate
-    public void removeNotAvailableBoxOverlay(int row, int col) {
-        // Ottieni la lista di tutti i figli del GridPane
-        ObservableList<Node> children = boardGrid.getChildren();
-
-        // Usa un iteratore per evitare ConcurrentModificationException
-        Iterator<Node> iterator = children.iterator();
-
-        while (iterator.hasNext()) {
-            Node child = iterator.next();
-
-            // Verifica se il nodo si trova nella cella specificata
-            Integer nodeRow = GridPane.getRowIndex(child);
-            Integer nodeCol = GridPane.getColumnIndex(child);
-
-            // Assicura che rowIndex e colIndex non siano null (valore di default se non impostato è 0)
-            if (nodeRow == null) nodeRow = 0;
-            if (nodeCol == null) nodeCol = 0;
-
-            // Controlla se il figlio è un'istanza di Rectangle e si trova nella cella specificata
-            if (child instanceof Rectangle && child.getStyleClass().contains("notAvailableBoxOverlay")
-                    && nodeRow == row && nodeCol == col) {
-                iterator.remove(); // Rimuovi il rettangolo dalla griglia
-                break; // Esci dal loop una volta trovato e rimosso l'overlay
-            }
-        }
-    }
-
     //quando viene cliccato il tasto demolisci
     public void demolishBtnClick(ActionEvent actionEvent) {
         removeAllOverlayRectangles();
         updateBoxInfo("Clicca sulle proprietà su cui vuoi demolire");
-        ArrayList<Integer> demolishablePropertiesIndex = game.getDemolishableProperties();
+        ArrayList<Integer> demolishablePropertiesIndex = game.getDemolishProperties();
         int[] coords = {0, 0};
         for (int i = 0; i < demolishablePropertiesIndex.size(); i++) {
             coords = convertPositionToGridCoords(demolishablePropertiesIndex.get(i));
@@ -1385,31 +1339,6 @@ public class BoardController implements Initializable, Serializable {
         }
     }
 
-    //crea l'overlay per le proprietà a cui si vuole demolire una costruzione
-    public void createDemolitionOverlay(int row, int col) {
-        // Crea il rettangolo semi-trasparente
-        Rectangle overlay = new Rectangle(126, 150);
-        overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
-        overlay.getStyleClass().add("property-overlay");
-
-        // Aggiungi la StackPane al GridPane
-        boardGrid.add(overlay, col, row);
-
-        // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
-        if (col == 0 || col == boardGrid.getColumnCount() - 1) {
-            overlay.setRotate(90);
-            overlay.setTranslateX(12);
-        }
-
-
-
-        // Applica l'animazione di lampeggio
-        applyBlinkingEffect(overlay);
-
-        overlay.setOnMouseClicked(event -> {
-            demolishOnProperty(row, col);
-        });
-    }
 
     //demolisci una costruzione
     public void demolishOnProperty(int row, int col) {
@@ -1423,7 +1352,7 @@ public class BoardController implements Initializable, Serializable {
         removeAllOverlayRectangles();
     }
 
-    //crea l'overlay per rimuovere l'ipoteca
+    //crea un per rimuovere l'ipoteca
     public void createExtinguishableMortgageOverlay(int row, int col) {
         // Crea il rettangolo semi-trasparente
         Rectangle overlay = new Rectangle(126, 150);
@@ -1457,7 +1386,7 @@ public class BoardController implements Initializable, Serializable {
         removeNotAvailableBoxOverlay(row, col);
     }
 
-    //gestisce il pulsante per estinguire le ipoteche
+    //gestisce il pulsante per estinguere le ipoteche
     public void extinguishBtnClick(ActionEvent actionEvent) {
         removeAllOverlayRectangles();
         updateBoxInfo("Clicca sulle caselle sulle quali vuoi estinguere l'ipoteca");
@@ -1469,7 +1398,7 @@ public class BoardController implements Initializable, Serializable {
         }
     }
 
-    //iniziallizza musica di sottofondo
+    //inizializza musica di sottofondo
     public void initializeBackgroundMusicAndVolumeControl() {
 
         // Inizializza la musica di sottofondo
@@ -1755,7 +1684,24 @@ public class BoardController implements Initializable, Serializable {
         String imageName = "image" + row + "_" + column + ".png";
         return basePath + imageName;
 
+        // Ritorna null se non esiste un'immagine associata alla posizione
+        return null;
     }
 
 
+    public void setVisiblePayPrisonBtn(boolean b) {
+        payPrisonBtn.setVisible(b);
+    }
+
+    public void setDiceBtn(boolean b) {
+        diceBtn.setDisable(b);
+    }
+
+    public void setNextBtn(boolean b) {
+        nextBtn.setDisable(b);
+    }
+
+    public void setBuyBtn(boolean b) {
+        buyBtn.setDisable(b);
+    }
 }
