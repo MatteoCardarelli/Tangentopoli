@@ -1744,36 +1744,18 @@ public class BoardController implements Initializable, Serializable {
     @FXML
     private void deleteImageOfProperties(MouseEvent mouseEvent) {
         Node source = (Node) mouseEvent.getSource();
-        imageProperty.setImage(null);
+        imageProperty.setImage(new Image(getClass().getResourceAsStream("/Img/cardBoxImages/baseImageCardBox.png")));
     }
 
     private String getImagePathForGridPosition(int row, int column) {
-        // Logica che associa le posizioni a immagini specifiche
-        if (row == 0 && column == 0) {
-            return "/img/propertyImage1.png";
-        } else if (row == 0 && column == 1) {
-            return "/img/cardBoxImages/piazzaDuomo.png";
-        } else if (row == 0 && column == 3) {
-            return "/img/cardBoxImages/viaDellaSpiga.png";
-        } else if (row == 1 && column == 5) {
-            return "/img/cardBoxImages/piazzaFontana.png";
-        } else if (row == 2 && column == 5) {
-            return "/img/cardBoxImages/piazzaSanBabila.png";
-        }else if (row == 4 && column == 5) {
-            return "/img/cardBoxImages/piazzaDellaScala.png";
-        }else if (row == 5 && column == 4) {
-            return "/img/cardBoxImages/piazzaDuomo.png";
-        }else if (row == 5 && column == 3) {
-            return "/img/cardBoxImages/piazzaDuomo.png";
-        }else if (row == 1 && column == 0) {
-            return "/img/cardBoxImages/piazzaDuomo.png";
-        }else if (row == 4 && column == 0) {
-            return "/img/cardBoxImages/piazzaDuomo.png";
-        }
+        // Costruisci il nome del file in base alla posizione
+        String basePath = "/img/cardBoxImages/";
 
+        // Genera un nome basato su un indice specifico
+        String imageName = "image" + row + "_" + column + ".png";
+        return basePath + imageName;
 
-        // Ritorna null se non esiste un'immagine associata alla posizione
-        return null;
     }
+
 
 }

@@ -117,57 +117,57 @@
                   <Image url="@../img/smallBoardBoxes/10-corsoGaribaldi.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="180.0" GridPane.columnIndex="4">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="180.0" GridPane.columnIndex="4">
                <image>
                   <Image url="@../img/smallBoardBoxes/IMPREVISTO.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="270.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                <image>
                   <Image url="@../img/smallBoardBoxes/13-mediaset.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" GridPane.columnIndex="2" GridPane.rowIndex="5">
                <image>
                   <Image url="@../img/smallBoardBoxes/11-milanoCentrale.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <image>
                   <Image url="@../img/smallBoardBoxes/PROBABILITA.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                <image>
                   <Image url="@../img/smallBoardBoxes/12-veneziaSL.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="90.0" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                <image>
                   <Image url="@../img/smallBoardBoxes/14-montedison.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="126.0" rotate="180.0" GridPane.columnIndex="2">
+            <ImageView fitHeight="150.0" fitWidth="126.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="180.0" GridPane.columnIndex="2">
                <image>
                   <Image url="@../img/smallBoardBoxes/TANGENTE.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="150.0">
+            <ImageView fitHeight="150.0" fitWidth="150.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties">
                <image>
                   <Image url="@../img/smallBoardBoxes/START!.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="150.0" GridPane.rowIndex="5">
+            <ImageView fitHeight="150.0" fitWidth="150.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" GridPane.rowIndex="5">
                <image>
                   <Image url="@../img/smallBoardBoxes/goToPrison.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="5">
+            <ImageView fitHeight="150.0" fitWidth="150.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" GridPane.columnIndex="5" GridPane.rowIndex="5">
                <image>
                   <Image url="@../img/smallBoardBoxes/PARKING.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="150.0" rotate="270.0" GridPane.columnIndex="5">
+            <ImageView fitHeight="150.0" fitWidth="150.0" onMouseEntered="#setImageOfProperties" onMouseExited="#deleteImageOfProperties" rotate="270.0" GridPane.columnIndex="5">
                <image>
                   <Image url="@../img/smallBoardBoxes/inPrison.png" />
                </image>
@@ -307,7 +307,10 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <ImageView fx:id="imageProperty" fitHeight="484.0" fitWidth="348.0" layoutX="936.0" layoutY="203.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="imageProperty" fitHeight="484.0" fitWidth="348.0" layoutX="936.0" layoutY="214.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/cardBoxImages/baseImageCardBox.png" />
+         </image></ImageView>
       <Button fx:id="mortgageBtn" layoutX="1343.0" layoutY="482.0" mnemonicParsing="false" onAction="#mortgageBtnClick" prefHeight="60.0" prefWidth="220.0" visible="false">
          <font>
             <Font size="1.0" />
@@ -352,6 +355,18 @@
             <ImageView fitHeight="60.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../img/buttonImages/costruisci.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button layoutX="1016.0" layoutY="34.0" mnemonicParsing="false" prefHeight="145.0" prefWidth="174.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+         <font>
+            <Font size="1.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="131.0" fitWidth="122.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/buttonImages/tradeButton.png" />
                </image>
             </ImageView>
          </graphic>
