@@ -57,9 +57,9 @@ public class CPUPlayer extends Player {
 
             //se dopo aver ipotecato ha ancora sotto i 200€ demolisci una propietà casuale
             if (this.getMoney() < 200) {
-                int demolishablePropertiesSize = game.getDemolishableProperties().size();
+                int demolishablePropertiesSize = game.getDemolishProperties().size();
                 if (demolishablePropertiesSize != 0) {
-                    Integer propertyIndex = game.getDemolishableProperties().get(new Random().nextInt(demolishablePropertiesSize));
+                    Integer propertyIndex = game.getDemolishProperties().get(new Random().nextInt(demolishablePropertiesSize));
                     int[] propertyCoords = game.getController().convertPositionToGridCoords(propertyIndex.intValue());
                     game.getController().demolishOnProperty(propertyCoords[0], propertyCoords[1]);
 

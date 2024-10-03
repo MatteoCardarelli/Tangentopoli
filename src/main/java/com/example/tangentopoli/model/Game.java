@@ -1,6 +1,7 @@
 package com.example.tangentopoli.model;
 
 import com.example.tangentopoli.controller.BoardController;
+import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -26,6 +27,8 @@ public class Game implements Serializable {
     private int turn = 0;
     private int playerInTurn=0;
     private ObjectMapper objectMapper;
+    private int diceEqualsCombo = 0;
+    private boolean exitPrisonFlag = false;
 
 
     //FAI SINGLETON
@@ -161,6 +164,98 @@ public class Game implements Serializable {
             checkPlayerAfterPayment(player);
         } else
             player.setPosition(nextPos);
+    }
+
+    // Metodo per iniziare il turno
+    public void startTurn() {
+        diceEqualsCombo = 0;
+        exitPrisonFlag = false;
+        Player currentPlayer = getPlayerInTurn();
+
+        if (currentPlayer.isInPrison()) {
+            if (currentPlayer.getTurnInPrison() == 3) {
+                forcePayPrisonFine(currentPlayer);
+            }
+        }
+
+        // Aggiorna lo stato dei bottoni basato sul giocatore
+        updateButtons(currentPlayer);
+    }
+
+    // Logica di quando i dadi hanno lo stesso valore
+    public void handleDiceEquals(int diceValue1, int diceValue2) {
+        Player currentPlayer = getPlayerInTurn();
+
+        if (exitPrisonFlag) {
+            // Caso in cui il giocatore è uscito di prigione
+            updateButtonsAfterExitPrison();
+        } else if (diceValue1 == diceValue2 && !currentPlayer.isInPrison()) {
+            diceEqualsCombo++;
+            if (currentPlayer instanceof CPUPlayer) {
+                ((CPUPlayer) currentPlayer).setCanLaunchAgain(true);  // CPU può tirare di nuovo
+            }
+
+            if (diceEqualsCombo == 3) {
+                sendToPrison(currentPlayer);  // Manda il giocatore in prigione
+            } else {
+                updateButtonsForReRoll();  // Permetti un nuovo lancio
+            }
+        } else {
+            diceEqualsCombo = 0;
+            updateButtonsAfterMove();  // Aggiorna i bottoni dopo il movimento
+        }
+    }
+
+    private void sendToPrison(Player player) {
+        // Logica per mandare il giocatore in prigione
+        goToPrison(player);
+        disableDiceAndNextButtons();
+    }
+
+    // Metodi di supporto per aggiornare i bottoni, da implementare nella GUI
+    private void updateButtons(Player currentPlayer) {
+        if (currentPlayer.isInPrison()) {
+            boardController.setPayPrisonBtn(false);
+            boardController.setVisiblePayPrisonBtn(true);
+        } else {
+            boardController.setPayPrisonBtn(true);
+            boardController.setVisiblePayPrisonBtn(false);
+        }
+        boardController.setDiceBtn(false);
+        boardController.setNextBtn(true);
+        boardController.setBuyBtn(true);
+    }
+
+    private void updateButtonsAfterExitPrison() {
+        boardController.setDiceBtn(true);
+        boardController.setNextBtn(false);
+        boardController.setBuyBtn(false);
+    }
+
+    // Forza il giocatore a pagare per uscire di prigione se è da 3 turni
+    private void forcePayPrisonFine(Player player) {
+        // Logica per obbligare il giocatore a pagare
+        player.exitFromPrison();
+        // Aggiorna i bottoni di conseguenza
+        disableDiceAndNextButtons();
+    }
+
+    private void updateButtonsForReRoll() {
+        boardController.setDiceBtn(false);
+        boardController.setNextBtn(true);
+        boardController.setBuyBtn(false);
+    }
+
+    private void updateButtonsAfterMove() {
+        boardController.setDiceBtn(true);
+        boardController.setNextBtn(false);
+        boardController.setBuyBtn(false);
+    }
+
+    private void disableDiceAndNextButtons() {
+        boardController.setDiceBtn(true);
+        boardController.setNextBtn(true);
+        boardController.setBuyBtn(true);
     }
 
     private Chance getChance() {
@@ -301,7 +396,7 @@ public class Game implements Serializable {
         getPlayerInTurn().extinguishMortgageBox((PurchasableBox) board.getBoxFromIndex(pos));
     }
 
-    public ArrayList<Integer> getDemolishableProperties() {
+    public ArrayList<Integer> getDemolishProperties() {
         ArrayList<Integer> demolishablePropertiesIndex = new ArrayList<>();
         Player playerInTurn = getPlayerInTurn();
         for (int i = 0; i < board.getSize(); i++) {
@@ -398,6 +493,42 @@ public class Game implements Serializable {
     public void startAuctionLogic(Player player) {
         if(player.getPosition() instanceof PurchasableBox && ((PurchasableBox) player.getPosition()).isPurchased()) {
         }
+    }
+
+    public void exitFromPrisonWithDicesEqual(int diceValue1, int diceValue2) {
+        if (diceValue1==diceValue2 && getPlayerInTurn().isInPrison()){
+            getPlayerInTurn().setInPrison(false);
+
+            //disabilita il lancio anche se i valori sono uguali
+            boardController.setDiceBtn(true);
+            boardController.setNextBtn(false);
+
+            exitPrisonFlag = true ;
+        }
+    }
+
+    public void handlePlayerTurnAfterRol (int diceValue1, int diceValue2){
+        // Se il giocatore è in prigione, disabilita il lancio di nuovo anche con valori uguali
+        if (getPlayerInTurn().isInPrison()) {
+            boardController.setDiceBtn(true);
+            boardController.setNextBtn(false);
+        } else {
+            // Se il valore dei dadi è lo stesso, verifica se il giocatore può rilanciare
+            handleDiceEquals(diceValue1, diceValue2);
+        }
+    }
+
+    public void buyPurchasableBox(PurchasableBox purchasableBox) {
+        // Ottieni il giocatore corrente
+        Player currentPlayer = getPlayerInTurn();
+
+            try {
+                // Tenta di acquistare la casella
+                currentPlayer.buyPurchasableBox(purchasableBox);
+            } catch (NotEnoughMoneyException | BoxAlreadyPurchasedException ignored) {
+
+            }
+
     }
 
 }
