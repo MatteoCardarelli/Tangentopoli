@@ -44,6 +44,7 @@ public class BoardController implements Initializable, Serializable {
     private Rectangle policeLightBox; // Rettangolo per le luci della polizia
     private ImageView barLeft;
     private ImageView barRight;
+    private Rectangle blockRectangle;
 
 
 
@@ -141,7 +142,11 @@ public class BoardController implements Initializable, Serializable {
 
     @FXML
     private ImageView imageRandomized;
+
     private Stage stage;
+
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -416,22 +421,30 @@ public class BoardController implements Initializable, Serializable {
     //Creates the tokens
     public void createPlayerTokens() {
         playerTokens = new ArrayList<>();
-        // Definisci una lista di colori
 
         for (int i = 0; i < playerN; i++) {
+            // Percorso dell'immagine della pedina
+            String imagePath = "/img/pawnImages/pawn" + (i + 1) + ".png";
 
-            String imagePath = "/img/pawn" + (i + 1) + ".png"; // Aggiunto (i + 1) per correggere la numerazione
+            // Carica l'immagine usando un nuovo InputStream ogni volta
             InputStream imageStream = getClass().getResourceAsStream(imagePath);
 
+            // Se l'immagine è stata trovata correttamente
             if (imageStream != null) {
-                ImageView playerToken = new ImageView(new Image(imageStream)); // Carica l'immagine correttamente
+                // Crea una nuova immagine e ImageView per la pedina
+                Image playerImage = new Image(imageStream);
+                ImageView playerToken = new ImageView(playerImage);
+
+                // Stile CSS (se necessario)
                 playerToken.getStyleClass().add((i + 1) + "playerToken");
 
+                // Aggiungi la pedina alla lista
                 playerTokens.add(playerToken);
 
-                boardGrid.add(playerToken, 0, 0); // Posiziona le pedine inizialmente nella cella centrale
+                // Aggiungi la pedina alla griglia della board
+                boardGrid.add(playerToken, 0, 0); // Posiziona le pedine nella cella 0,0
 
-
+                // Imposta la posizione iniziale delle pedine in base al numero di giocatori
                 switch (playerN) {
                     case 2, 3:
                         setPlayerTokenPositionSmall(i, 0, 0); // Sposta il giocatore alla cella iniziale
@@ -445,11 +458,17 @@ public class BoardController implements Initializable, Serializable {
                     default:
                         break;
                 }
+
+            } else {
+                // Se l'immagine non è stata trovata, stampa un errore
+                System.err.println("Immagine non trovata per la pedina: " + imagePath);
             }
         }
 
-        setStage((Stage)mainPane.getScene().getWindow());
+        // Imposta la finestra corrente (Stage)
+        setStage((Stage) mainPane.getScene().getWindow());
     }
+
 
     //Sets the tokens' position on the small board
     public void setPlayerTokenPositionSmall(int playerIndex, int row, int column) {
@@ -461,17 +480,20 @@ public class BoardController implements Initializable, Serializable {
                 playerToken.setFitWidth(100);
                 playerToken.setFitHeight(160);
                 playerToken.setTranslateY(-42.0);
+                playerToken.toFront();
                 break;
             case 1:
-                playerToken.setFitWidth(100);
-                playerToken.setFitHeight(160);
+                playerToken.setFitWidth(80);
+                playerToken.setFitHeight(126);
                 playerToken.setTranslateX(47.0);
+                playerToken.toFront();
                 break;
             case 2:
                 playerToken.setFitWidth(100);
                 playerToken.setFitHeight(160);
                 playerToken.setTranslateX(87.0);
                 playerToken.setTranslateY(-42.0);
+                playerToken.toFront();
                 break;
             default:
                 break;
@@ -1093,47 +1115,7 @@ public class BoardController implements Initializable, Serializable {
             });
         }
 
-        //crea un overlay per la decisione delle caselle da ipotecare
-        public void createMortgageOverlay(int row, int col) {
-            // Crea il rettangolo semi-trasparente
-            Rectangle overlay = new Rectangle(126, 150);
-            overlay.setStyle("-fx-fill: rgba(255,0,0,0.5);");
-            overlay.getStyleClass().add("property-overlay");
-            overlay.getStyleClass().add(game.getPlayerInTurn().getPlayerID() + "mortOverlay");
 
-            // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
-            if (col == 0 || col == boardGrid.getColumnCount() - 1) {
-                overlay.setRotate(90);
-                overlay.setTranslateX(12);
-            }
-
-            // Aggiungi la StackPane al GridPane
-            boardGrid.add(overlay, col, row);
-
-            // Applica l'animazione di lampeggio
-            applyBlinkingEffect(overlay);
-
-            overlay.setOnMouseClicked(event -> {
-                mortgageBox(row, col);
-            });
-        }
-
-        //crea overlay caselle ipotecate
-        private void createNotAvailableBoxOverlay(int row, int col) {
-            // Crea il rettangolo semi-trasparente
-            Rectangle overlay = new Rectangle(126, 150);
-            overlay.setStyle("-fx-fill: rgba(48,46,46,0.5);");
-            overlay.getStyleClass().add("notAvailableBoxOverlay");
-
-            // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
-            if (col == 0 || col == boardGrid.getColumnCount() - 1) {
-                overlay.setRotate(90);
-                overlay.setTranslateX(12);
-            }
-
-            // Aggiungi la StackPane al GridPane
-            boardGrid.add(overlay, col, row);
-        }
 
         //Removes all the overlays on the properties
         public void removeAllOverlayRectangles() {
@@ -1286,6 +1268,49 @@ public class BoardController implements Initializable, Serializable {
             updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
         removeAllOverlayRectangles();
         createNotAvailableBoxOverlay(row, col);
+    }
+
+    //crea l'overlay per la decisione delle caselle da ipotecare
+    public void createMortgageOverlay(int row, int col) {
+        // Crea il rettangolo semi-trasparente
+        Rectangle overlay = new Rectangle(126, 150);
+        overlay.setStyle("-fx-fill: rgba(255,0,0,0.5);");
+        overlay.getStyleClass().add("property-overlay");
+        overlay.getStyleClass().add(game.getPlayerInTurn().getPlayerID() + "mortOverlay");
+
+        // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
+        if (col == 0 || col == boardGrid.getColumnCount() - 1) {
+            overlay.setRotate(90);
+            overlay.setTranslateX(12);
+        }
+
+        // Aggiungi la StackPane al GridPane
+        boardGrid.add(overlay, col, row);
+
+        // Applica l'animazione di lampeggio
+        applyBlinkingEffect(overlay);
+
+        overlay.setOnMouseClicked(event -> {
+            mortgageBox(row, col);
+        });
+    }
+
+    //crea overlay caselle ipotecate
+    private void createNotAvailableBoxOverlay(int row, int col) {
+        // Crea il rettangolo semi-trasparente
+        Rectangle overlay = new Rectangle(126, 150);
+        overlay.setStyle("-fx-fill: rgba(48,46,46,0.5);");
+        overlay.getStyleClass().add("notAvailableBoxOverlay");
+
+
+        // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
+        if (col == 0 || col == boardGrid.getColumnCount() - 1) {
+            overlay.setRotate(90);
+            overlay.setTranslateX(12);
+        }
+
+        // Aggiungi la StackPane al GridPane
+        boardGrid.add(overlay, col, row);
     }
 
     //gestisce il click sulle caselle da ipotecare
