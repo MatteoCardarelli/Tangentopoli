@@ -1,5 +1,6 @@
 package com.example.tangentopoli.controller;
 
+import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
@@ -162,6 +163,7 @@ public class BoardController implements Initializable, Serializable {
         dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/diceImages/dice1.png"))); //inizializzazione dadi
         dice2ImageView.setImage(new Image(getClass().getResourceAsStream("/img/diceImages/dice1.png")));
 
+        cardDialog.toFront();
         nextBtn.setDisable(true);
         buyBtn.setDisable(true);
         payPrisonBtn.setDisable(true);
@@ -825,12 +827,19 @@ public class BoardController implements Initializable, Serializable {
         // Controlla se la casella corrente è una PurchasableBox
         if (currentBox instanceof PurchasableBox purchasableBox) {
 
-            game.buyPurchasableBox(purchasableBox);
-            displayPlayerInfo(currentPlayer);
-            displayBoxInfo(currentPlayer);
-            updateBoxInfo("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "€!");
-            createPropertyMarkerFromID(game.getPlayerInTurn().getPlayerID());
-            setBuyBtn(true);
+            try {
+                game.buyPurchasableBox(purchasableBox);
+                displayPlayerInfo(currentPlayer);
+                displayBoxInfo(currentPlayer);
+                updateBoxInfo("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "€!");
+                createPropertyMarkerFromID(game.getPlayerInTurn().getPlayerID());
+                setBuyBtn(true);
+            } catch (NotEnoughMoneyException e) {
+                updateBoxInfo("Non hai abbastanza soldi!");
+            } catch (BoxAlreadyPurchasedException e) {
+                updateBoxInfo("La casella è già stata acquistata");
+            }
+
         } else {
             // Messaggio per casella non acquistabile
             updateBoxInfo("Questa casella non è acquistabile.");
@@ -1683,9 +1692,6 @@ public class BoardController implements Initializable, Serializable {
         // Genera un nome basato su un indice specifico
         String imageName = "image" + row + "_" + column + ".png";
         return basePath + imageName;
-
-        // Ritorna null se non esiste un'immagine associata alla posizione
-        return null;
     }
 
 

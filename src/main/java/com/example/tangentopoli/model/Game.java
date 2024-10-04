@@ -518,17 +518,10 @@ public class Game implements Serializable {
         }
     }
 
-    public void buyPurchasableBox(PurchasableBox purchasableBox) {
+    public void buyPurchasableBox(PurchasableBox purchasableBox) throws BoxAlreadyPurchasedException, NotEnoughMoneyException {
         // Ottieni il giocatore corrente
         Player currentPlayer = getPlayerInTurn();
-
-            try {
-                // Tenta di acquistare la casella
-                currentPlayer.buyPurchasableBox(purchasableBox);
-            } catch (NotEnoughMoneyException | BoxAlreadyPurchasedException ignored) {
-
-            }
-
+        currentPlayer.buyPurchasableBox(purchasableBox);
     }
 
 }
