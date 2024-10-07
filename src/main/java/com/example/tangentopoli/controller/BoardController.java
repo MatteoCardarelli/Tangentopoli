@@ -1710,4 +1710,47 @@ public class BoardController implements Initializable, Serializable {
     public void setBuyBtn(boolean b) {
         buyBtn.setDisable(b);
     }
+
+    public void updateButtonsForReRoll() {
+        setDiceBtn(false);
+        setNextBtn(true);
+        setBuyBtn(false);
+    }
+
+    public void updateButtonsAfterExitPrison() {
+        setDiceBtn(true);
+        setNextBtn(false);
+        setBuyBtn(false);
+    }
+
+    public void updateButtonsAfterMove() {
+        setDiceBtn(true);
+        setNextBtn(false);
+        setBuyBtn(false);
+    }
+
+    public void disableDiceAndNextButtons() {
+        setDiceBtn(true);
+        setNextBtn(true);
+        setBuyBtn(true);
+    }
+
+    // Metodi di supporto per aggiornare i bottoni, da implementare nella GUI
+    public void updateButtons(Player currentPlayer) {
+        if (currentPlayer.isInPrison()) {
+            setPayPrisonBtn(false);
+            setVisiblePayPrisonBtn(true);
+        } else {
+            setPayPrisonBtn(true);
+            setVisiblePayPrisonBtn(false);
+        }
+        setDiceBtn(false);
+        setNextBtn(true);
+        setBuyBtn(true);
+    }
+
+    public void blockDiceRollBtn() {
+        setDiceBtn(true);
+        setNextBtn(false);
+    }
 }

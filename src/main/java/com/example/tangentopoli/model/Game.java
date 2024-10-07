@@ -188,7 +188,7 @@ public class Game implements Serializable {
 
         if (exitPrisonFlag) {
             // Caso in cui il giocatore è uscito di prigione
-            updateButtonsAfterExitPrison();
+            boardController.updateButtonsAfterExitPrison();
         } else if (diceValue1 == diceValue2 && !currentPlayer.isInPrison()) {
             diceEqualsCombo++;
             if (currentPlayer instanceof CPUPlayer) {
@@ -198,11 +198,11 @@ public class Game implements Serializable {
             if (diceEqualsCombo == 3) {
                 sendToPrison(currentPlayer);  // Manda il giocatore in prigione
             } else {
-                updateButtonsForReRoll();  // Permetti un nuovo lancio
+                boardController.updateButtonsForReRoll();  // Permetti un nuovo lancio
             }
         } else {
             diceEqualsCombo = 0;
-            updateButtonsAfterMove();  // Aggiorna i bottoni dopo il movimento
+            boardController.updateButtonsAfterMove();  // Aggiorna i bottoni dopo il movimento
         }
     }
 
@@ -212,50 +212,12 @@ public class Game implements Serializable {
         disableDiceAndNextButtons();
     }
 
-    // Metodi di supporto per aggiornare i bottoni, da implementare nella GUI
-    private void updateButtons(Player currentPlayer) {
-        if (currentPlayer.isInPrison()) {
-            boardController.setPayPrisonBtn(false);
-            boardController.setVisiblePayPrisonBtn(true);
-        } else {
-            boardController.setPayPrisonBtn(true);
-            boardController.setVisiblePayPrisonBtn(false);
-        }
-        boardController.setDiceBtn(false);
-        boardController.setNextBtn(true);
-        boardController.setBuyBtn(true);
-    }
-
-    private void updateButtonsAfterExitPrison() {
-        boardController.setDiceBtn(true);
-        boardController.setNextBtn(false);
-        boardController.setBuyBtn(false);
-    }
-
     // Forza il giocatore a pagare per uscire di prigione se è da 3 turni
     private void forcePayPrisonFine(Player player) {
         // Logica per obbligare il giocatore a pagare
         player.exitFromPrison();
         // Aggiorna i bottoni di conseguenza
         disableDiceAndNextButtons();
-    }
-
-    private void updateButtonsForReRoll() {
-        boardController.setDiceBtn(false);
-        boardController.setNextBtn(true);
-        boardController.setBuyBtn(false);
-    }
-
-    private void updateButtonsAfterMove() {
-        boardController.setDiceBtn(true);
-        boardController.setNextBtn(false);
-        boardController.setBuyBtn(false);
-    }
-
-    private void disableDiceAndNextButtons() {
-        boardController.setDiceBtn(true);
-        boardController.setNextBtn(true);
-        boardController.setBuyBtn(true);
     }
 
     private Chance getChance() {
