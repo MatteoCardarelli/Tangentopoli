@@ -179,7 +179,7 @@ public class Game implements Serializable {
         }
 
         // Aggiorna lo stato dei bottoni basato sul giocatore
-        updateButtons(currentPlayer);
+        boardController.updateButtons(currentPlayer);
     }
 
     // Logica di quando i dadi hanno lo stesso valore
@@ -209,7 +209,7 @@ public class Game implements Serializable {
     private void sendToPrison(Player player) {
         // Logica per mandare il giocatore in prigione
         goToPrison(player);
-        disableDiceAndNextButtons();
+        boardController.disableDiceAndNextButtons();
     }
 
     // Forza il giocatore a pagare per uscire di prigione se è da 3 turni
@@ -217,7 +217,7 @@ public class Game implements Serializable {
         // Logica per obbligare il giocatore a pagare
         player.exitFromPrison();
         // Aggiorna i bottoni di conseguenza
-        disableDiceAndNextButtons();
+        boardController.disableDiceAndNextButtons();
     }
 
     private Chance getChance() {
