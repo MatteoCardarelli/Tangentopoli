@@ -6,6 +6,7 @@ import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
 import com.example.tangentopoli.model.*;
 import com.example.tangentopoli.serialization.Serializer;
+import com.example.tangentopoli.service.GameService;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -52,7 +53,7 @@ public class BoardController implements Initializable, Serializable {
 
     private int diceValue;
 
-    private Game game;
+    private GameService game;
 
     private MediaPlayer mediaPlayer;
 
@@ -207,7 +208,7 @@ public class BoardController implements Initializable, Serializable {
 
     //GAME LOGIC & SETUP
 
-    public void setGame(Game game) {
+    public void setGame(GameService game) {
         this.game = game;
         setPlayerN();
         displayPlayerInfo(game.getPlayerInTurn());

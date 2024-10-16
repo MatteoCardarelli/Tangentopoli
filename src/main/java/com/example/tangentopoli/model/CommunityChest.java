@@ -1,5 +1,7 @@
 package com.example.tangentopoli.model;
 
+import com.example.tangentopoli.service.GameService;
+
 public class CommunityChest extends Card {
 
     public CommunityChest() {
@@ -8,7 +10,7 @@ public class CommunityChest extends Card {
     }
 
     @Override
-    public void action(Game game) {
+    public void action(GameService game) {
         Player player = game.getPlayerInTurn();
         game.getController().updateBoxInfo(this.toString());
 

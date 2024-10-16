@@ -1,4 +1,5 @@
 package com.example.tangentopoli.model;
+import com.example.tangentopoli.service.GameService;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
@@ -6,10 +7,10 @@ import java.util.Random;
 
 public class CPUPlayer extends Player {
 
-    private Game game;
+    private GameService game;
     private boolean canLaunchAgain = false;
 
-    public CPUPlayer(int playerID, int money, Game game) {
+    public CPUPlayer(int playerID, int money, GameService game) {
         super(playerID, money);
         this.game = game;
     }

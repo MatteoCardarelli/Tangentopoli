@@ -1,5 +1,7 @@
 package com.example.tangentopoli.model;
 
+import com.example.tangentopoli.service.GameService;
+
 import java.io.Serializable;
 
 public abstract class Card implements Serializable {
@@ -19,7 +21,7 @@ public abstract class Card implements Serializable {
 
     }
 
-    public abstract void action(Game game) ;
+    public abstract void action(GameService game) ;
 
     public String getTitle() {
         return title;
