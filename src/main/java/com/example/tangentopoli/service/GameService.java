@@ -23,6 +23,7 @@ import java.util.List;
 public class GameService implements Serializable {
     private ObjectMapper objectMapper;
     private Game game;
+    BoardController boardController;
 
     public GameService(int playersN, boolean CPUPlayers){
         objectMapper = new ObjectMapper();
