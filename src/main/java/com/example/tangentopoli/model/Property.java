@@ -1,6 +1,7 @@
 package com.example.tangentopoli.model;
 
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
+import com.example.tangentopoli.service.PlayerService;
 
 public class Property extends PurchasableBox {
     private int houseN = 0;
@@ -25,7 +26,7 @@ public class Property extends PurchasableBox {
     }
 
     @Override
-    public int calculatePrice() {
+    public int calculatePrice(PlayerService playerService) {
         return rentPrice + (housePrice * houseN) + (hotelPrice * hotelN * 3);
     }
 

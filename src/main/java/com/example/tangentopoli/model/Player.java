@@ -33,73 +33,34 @@ public abstract class Player implements Serializable {
         this.money = money;
     }
 
-    //metodo per restituire il playerID
+    // Getter e Setter per playerID
     public int getPlayerID() {
-        return this.playerID;
+        return playerID;
     }
 
-    //metodo per settare i soldi
-    public void setMoney(int money) {
-        this.money = money;
+    public void setPlayerID(int playerID) {
+        this.playerID = playerID;
     }
 
-    //metodo per restituire i soldi
-    public int getMoney() {
-        return this.money;
+    // Getter e Setter per position
+    public Box getPosition() {
+        return position;
     }
 
-    public ArrayList<PurchasableBox> getPurchasedBoxes() {
-        return this.purchasedBoxes;
-    }
-
-    //metodo per settare un giocatore in prigione
-    public void setInPrison(boolean inPrison) {
-        this.inPrison = inPrison;
-        this.turnInPrison = 0;
-    }
-
-    //metodo per controllare se un giocatore è in prigione
-    public boolean isInPrison() {
-        return this.inPrison;
-    }
-
-    //metodo per settare da quant turni un giocatore è in prigione
-    public void setTurnInPrison() {
-        this.turnInPrison = ++turnInPrison % 4;
-        System.out.println("turno in prigione di player " + getPlayerID() + " " +  turnInPrison);
-    }
-
-    //metodo per restituire da quanti turni il giocatore è in prigione
-    public int getTurnInPrison(){
-        return turnInPrison;
-    }
-
-    //metodo per uscire di prigione pagando
-    public void exitFromPrison()  {
-        if(this.isExitFromPrisonCard()) {
-            this.setInPrison(false);
-            this.setExitFromPrisonCard(false);
-        } else {
-            this.setMoney(this.getMoney()-50);
-            this.setInPrison(false);
-        }
-    }
-
-    //metodo per settare la posizione
     public void setPosition(Box position) {
         this.position = position;
     }
 
-    //metodo per restituire la posizione
-    public Box getPosition() {
-        return this.position;
+    // Getter e Setter per money
+    public int getMoney() {
+        return money;
     }
 
-    //da eliminare a gioco completo
-    public int getLaunchValue() {
-        return this.launchValue;
+    public void setMoney(int money) {
+        this.money = money;
     }
 
+    // Getter e Setter per skipTurn
     public boolean isSkipTurn() {
         return skipTurn;
     }
@@ -108,6 +69,7 @@ public abstract class Player implements Serializable {
         this.skipTurn = skipTurn;
     }
 
+    // Getter e Setter per exitFromPrisonCard
     public boolean isExitFromPrisonCard() {
         return exitFromPrisonCard;
     }
@@ -116,177 +78,73 @@ public abstract class Player implements Serializable {
         this.exitFromPrisonCard = exitFromPrisonCard;
     }
 
-    //metodo per acquistare caselle
-    public void buyPurchasableBox(PurchasableBox purchasableBox) throws NotEnoughMoneyException, BoxAlreadyPurchasedException {
-        if (!purchasableBox.isPurchased() && purchasableBox.getPrice() < this.getMoney()) {
-            this.setMoney(this.getMoney()-purchasableBox.getPrice());
-            purchasedBoxes.add(purchasableBox);
-            purchasableBox.setPurchased(true);
-            purchasableBox.setOwner(this);
-        }
-        else if (purchasableBox.getPrice() >= this.getMoney()) {
-            throw new NotEnoughMoneyException("Non hai abbastanza denaro per acquistare questa proprietà");
-        }
-        else if(purchasableBox.isPurchased()) {
-            throw new BoxAlreadyPurchasedException("Questa proprietà è già stata acquistata");
-        }
-
+    // Getter e Setter per isInCrisis
+    public boolean isInCrisis() {
+        return isInCrisis;
     }
 
-    //metodo per pagare l'affitto
-    public void payRent(BoardController boardController) {
-        // Ottieni la casella su cui si trova il giocatore
-        Box currentBox = this.getPosition();
-
-        //da eliminare a fine gioco
-        launchValue = boardController.getDiceValue();
-        System.out.println(getPlayerID()+" "+launchValue);
-
-
-        // Controlla se la casella corrente è una proprietà acquistabile e se è stata acquistata da un altro giocatore
-        if (currentBox instanceof PurchasableBox purchasableBox && purchasableBox.isPurchased()) {
-            Player owner = purchasableBox.getOwner();
-
-            // Controlla se il proprietario non è il giocatore corrente (per evitare di pagare a se stessi) e verifica che non sia ipotecata
-            if (!owner.equals(this) && !((PurchasableBox) currentBox).isMortgaged()) {
-                int rentToPay = purchasableBox.calculatePrice();
-
-                // Il giocatore corrente paga il proprietario
-                this.setMoney(this.getMoney() - rentToPay);
-                owner.setMoney(owner.getMoney() + rentToPay);
-
-                // Aggiorna le informazioni del giocatore e della casella
-                boardController.displayPlayerInfo(this);
-                boardController.updateBoxInfo("Hai pagato " + rentToPay + "€ di affitto a Player" + owner.getPlayerID() + " per la proprietà " + purchasableBox.getName());
-            }
-        }
+    public void setInCrisis(boolean isInCrisis) {
+        this.isInCrisis = isInCrisis;
     }
 
-    public void payTax(BoardController boardController) {
-        // Ottieni la casella su cui si trova il giocatore
-        Box currentBox = this.getPosition();
-
-        // Controlla se la casella corrente è una casella tasse
-        if (currentBox instanceof Tax taxBox) {
-            int taxAmount = taxBox.getPrice();
-
-            // Sottrai l'importo delle tasse dal denaro del giocatore
-            this.setMoney(this.getMoney() - taxAmount);
-
-            // Aggiorna le informazioni del giocatore e della casella
-            boardController.displayPlayerInfo(this);
-            boardController.updateBoxInfo("Hai pagato " + taxAmount + "€ di tasse per la casella " + taxBox.getName());
-        }
+    // Getter e Setter per crisisMoneyAmount
+    public int getCrisisMoneyAmount() {
+        return crisisMoneyAmount;
     }
 
-    //metodo per contare le stazioni di un giocatore
-    public int countOwnedStations() {
-        int count = 0;
-        for(PurchasableBox b : purchasedBoxes) {
-            if(b.isStation())
-                count++;
-        }
-        return count;
+    public void setCrisisMoneyAmount(int crisisMoneyAmount) {
+        this.crisisMoneyAmount = crisisMoneyAmount;
     }
 
-    //metodo per contare le società di un giocatore
-    public int countOwnedSocieties() {
-        int count = 0;
-        for(PurchasableBox b : purchasedBoxes) {
-            if(b.isSociety())
-                count++;
-        }
-        System.out.println("N" + count);
-        return count;
+    // Getter e Setter per launchValue (da eliminare a fine gioco)
+    public int getLaunchValue() {
+        return launchValue;
     }
 
-    public void buildOnProperty(Property property) throws NotYourPropertyException, MaximumConstructionOnProperty, NotEnoughMoneyException {
-        if(!(purchasedBoxes.contains(property)))
-            throw new NotYourPropertyException();
-        else {
-            int price = property.getCostructionPrice();
-            if(price < this.getMoney()) {
-                property.addConstruction();
-                this.money -= price;
-            }
-            else throw new NotEnoughMoneyException("Non hai abbastanza soldi");
-        }
+    public void setLaunchValue(int launchValue) {
+        this.launchValue = launchValue;
     }
 
-    /*public boolean canMortgage(PurchasableBox box) {
-        // Controlla se la casella è una proprietà
-        if (box instanceof Property property) {
-            // Verifica che la proprietà non abbia case o hotel costruiti sopra
-            return property.getHouseN() == 0 && property.getHotel() == 0 && !property.isMortgaged();
-        }
-        // Le stazioni e le società possono essere ipotecate se non sono già ipotecate
-        return !box.isMortgaged();
-    }*/
-
-    public void mortgageBox(PurchasableBox box) {
-        box.setMortgaged(true);
-        this.money += box.getMortgageValue();
-        purchasedBoxes.remove(box);
-        mortgagedBoxes.add(box);
+    // Getter e Setter per inPrison
+    public boolean isInPrison() {
+        return inPrison;
     }
 
-    // Verifica se il giocatore può rimuovere l'ipoteca su una proprietà
-    public boolean canExtinguishMortgage(PurchasableBox purchasableBox) {
-        if (purchasableBox.isMortgaged()) {
-            int mortgageRemovalCost = purchasableBox.getMortgageValue() + (int)(purchasableBox.getMortgageValue() * 0.1);
-            return this.getMoney() >= mortgageRemovalCost;
-        }
-        return false;
+    public void setInPrison(boolean inPrison) {
+        this.inPrison = inPrison;
     }
 
-    public void extinguishMortgageBox(PurchasableBox purchasableBox) {
-        purchasableBox.setMortgaged(false);
-        this.money -= (purchasableBox.getMortgageValue() + (int)(purchasableBox.getMortgageValue() * 0.1));
-        purchasedBoxes.add(purchasableBox);
-        mortgagedBoxes.remove(purchasableBox);
+    // Getter e Setter per turnInPrison
+    public int getTurnInPrison() {
+        return turnInPrison;
     }
 
-    public boolean canDemolish(Property property) {
-        if(property.getHouseN() == 0 && property.getHotel() == 0)
-            return false;
-        else
-            return true;
+    public void setTurnInPrison(int turnInPrison) {
+        this.turnInPrison = turnInPrison;
+    }
+
+    // Getter e Setter per purchasedBoxes
+    public ArrayList<PurchasableBox> getPurchasedBoxes() {
+        return purchasedBoxes;
+    }
+
+    public void setPurchasedBoxes(ArrayList<PurchasableBox> purchasedBoxes) {
+        this.purchasedBoxes = purchasedBoxes;
+    }
+
+    // Getter e Setter per mortgagedBoxes
+    public ArrayList<PurchasableBox> getMortgagedBoxes() {
+        return mortgagedBoxes;
+    }
+
+    public void setMortgagedBoxes(ArrayList<PurchasableBox> mortgagedBoxes) {
+        this.mortgagedBoxes = mortgagedBoxes;
     }
 
     public String[] toStringArray() {
         String[] strInfo = new String[2];
-        strInfo[0] = "Giocatore " + this.playerID;
-        strInfo[1] =  this.money + "€" ;
+        strInfo[0] = "Giocatore " + playerID;
+        strInfo[1] =  money + "€" ;
         return strInfo;
     }
-
-    public void demolishOnProperty(Property property) {
-        int price = property.getDemolitionPrice();
-        property.demolishConstruction();
-        this.money += price;
-    }
-
-    public void hasLost() {
-        for(PurchasableBox box : this.purchasedBoxes) {
-            box.setOwner(null);
-            box.setPurchased(false);
-            System.out.println("Proprietà resettata: " + box.getName());
-        }
-
-        for(PurchasableBox box : this.mortgagedBoxes) {
-            box.setOwner(null);
-            box.setPurchased(false);
-            box.setMortgaged(false);
-            System.out.println("Proprietà resettata: " + box.getName());
-        }
-        purchasedBoxes.clear();
-        mortgagedBoxes.clear();
-    }
-
-
-    public void pay(int moneyAmount) {
-        this.money += moneyAmount;
-
-    }
-
 }

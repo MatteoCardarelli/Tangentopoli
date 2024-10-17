@@ -1,5 +1,7 @@
 package com.example.tangentopoli.model;
 
+import com.example.tangentopoli.service.PlayerService;
+
 public class Station extends PurchasableBox {
     private int transitPrice;
 
@@ -9,8 +11,8 @@ public class Station extends PurchasableBox {
     }
 
     @Override
-    public int calculatePrice() {
-        int multiplier = getOwner().countOwnedStations();
+    public int calculatePrice(PlayerService playerService) {
+        int multiplier = playerService.countOwnedStations();
         return transitPrice * multiplier;
     }
 }

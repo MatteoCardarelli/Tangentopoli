@@ -1,5 +1,7 @@
 package com.example.tangentopoli.model;
 
+import com.example.tangentopoli.service.PlayerService;
+
 public class Society extends PurchasableBox {
 
 
@@ -8,8 +10,8 @@ public class Society extends PurchasableBox {
     }
 
     @Override
-    public int calculatePrice() {
-        int multiplier = getOwner().countOwnedSocieties() == 2 ? 10 : 4;
+    public int calculatePrice(PlayerService playerService) {
+        int multiplier = playerService.countOwnedSocieties() == 2 ? 10 : 4;
         return multiplier * getOwner().getLaunchValue();
     }
 }

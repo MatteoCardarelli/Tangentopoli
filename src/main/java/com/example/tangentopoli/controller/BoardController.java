@@ -7,6 +7,7 @@ import com.example.tangentopoli.exception.NotYourPropertyException;
 import com.example.tangentopoli.model.*;
 import com.example.tangentopoli.serialization.Serializer;
 import com.example.tangentopoli.service.GameService;
+import com.example.tangentopoli.service.PlayerService;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -269,7 +270,7 @@ public class BoardController implements Initializable, Serializable {
             updateBoxInfo("Non puoi muoverti mentre sei in prigione. Devi tirare i dadi.");
             nextBtn.setDisable(false);
             payPrisonBtn.setDisable(true);
-            playerInTurn.setTurnInPrison();
+            //playerInTurn.setTurnInPrison(true);
         }
 
         Random movement = new Random();
@@ -383,13 +384,13 @@ public class BoardController implements Initializable, Serializable {
         // Aggiorna la posizione della pedina
         switch(playerN){
             case 2, 3:
-                setPlayerTokenPositionSmall(game.getPlayerTurn(), rowPos, columnPos);
+                setPlayerTokenPositionSmall(game.getPlayerInTurnIndex(), rowPos, columnPos);
                 break;
             case 4, 5:
-                setPlayerTokenPositionMedium(game.getPlayerTurn(), rowPos, columnPos);
+                setPlayerTokenPositionMedium(game.getPlayerInTurnIndex(), rowPos, columnPos);
                 break;
             case 6:
-                setPlayerTokenPositionLarge(game.getPlayerTurn(), rowPos, columnPos);
+                setPlayerTokenPositionLarge(game.getPlayerInTurnIndex(), rowPos, columnPos);
                 break;
             default:
                 break;
@@ -397,19 +398,7 @@ public class BoardController implements Initializable, Serializable {
 
         displayBoxInfo(game.getPlayerInTurn());
 
-        //metodo per pagare gli affitti di qualsiasi purchasablebox
-        if (game.getPlayerInTurn().getPosition() instanceof PurchasableBox){
-            game.getPlayerInTurn().payRent(this);
-            game.checkPlayerAfterPayment(game.getPlayerInTurn());
-        }
-        else if (game.getPlayerInTurn().getPosition() instanceof Tax){
-            game.getPlayerInTurn().payTax(this);
-            game.checkPlayerAfterPayment(game.getPlayerInTurn());
-        }
-
-        if (game.getPlayerInTurn() instanceof CPUPlayer){
-            ((CPUPlayer) game.getPlayerInTurn()).takeStrategicDecisions();
-        }
+       game.playerAfterMove();
     }
 
     private ImageView getPlayerTokenFromID(int playerID) {
@@ -604,14 +593,14 @@ public class BoardController implements Initializable, Serializable {
             case 2, 3:
                 //Sincronizza e risolve il conflitto di aggiornamento tra il thread della logica di gioco e il thread dell'interfaccia grafica.
                 Platform.runLater(() -> {
-                    setPlayerTokenPositionSmall(game.getPlayerTurn(), prisonRow, prisonColumn);
+                    setPlayerTokenPositionSmall(game.getPlayerInTurnIndex(), prisonRow, prisonColumn);
                 });
                 break;
             case 4, 5:
-                setPlayerTokenPositionMedium(game.getPlayerTurn(), prisonRow, prisonColumn);
+                setPlayerTokenPositionMedium(game.getPlayerInTurnIndex(), prisonRow, prisonColumn);
                 break;
             case 6:
-                setPlayerTokenPositionLarge(game.getPlayerTurn(), prisonRow, prisonColumn);
+                setPlayerTokenPositionLarge(game.getPlayerInTurnIndex(), prisonRow, prisonColumn);
                 break;
             default:
                 break;
@@ -849,10 +838,8 @@ public class BoardController implements Initializable, Serializable {
 
     //Makes the player exit from prison after a payment
     public void exitFromPrison()  {
-        //paga €50 per uscire ed esci dalla prigione
-        game.getPlayerInTurn().exitFromPrison();
-        game.checkPlayerAfterPayment(game.getPlayerInTurn());
 
+        game.exitFromPrison();
         //disabilita il pulsante per pagare una volta uscito di prigione
         payPrisonBtn.setDisable(true);
         payPrisonBtn.setVisible(false);
@@ -1737,7 +1724,7 @@ public class BoardController implements Initializable, Serializable {
     }
 
     // Metodi di supporto per aggiornare i bottoni, da implementare nella GUI
-    public void updateButtons(Player currentPlayer) {
+    public void updateButtons(PlayerService currentPlayer) {
         if (currentPlayer.isInPrison()) {
             setPayPrisonBtn(false);
             setVisiblePayPrisonBtn(true);

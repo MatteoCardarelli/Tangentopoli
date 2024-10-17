@@ -1,5 +1,7 @@
 package com.example.tangentopoli.model;
 
+import com.example.tangentopoli.service.PlayerService;
+
 import java.io.Serializable;
 
 public abstract class PurchasableBox implements Box, Serializable {
@@ -59,7 +61,7 @@ public abstract class PurchasableBox implements Box, Serializable {
 
     public void setOwner(Player owner) {this.owner = owner;}
 
-    public abstract int calculatePrice();
+    public abstract int calculatePrice(PlayerService playerService);
 
     // Restituisce se la proprietà è ipotecata
     public boolean isMortgaged() {

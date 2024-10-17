@@ -88,8 +88,12 @@ public class Game implements Serializable {
     }
 
     // Getter e Setter per playerInTurn
-    public int getPlayerInTurn() {
+    public int getPlayerInTurnIndex() {
         return playerInTurn;
+    }
+
+    public Player getPlayerInTurn() {
+        return players.get(playerInTurn);
     }
 
     public void setPlayerInTurn(int playerInTurn) {

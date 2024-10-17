@@ -15,15 +15,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class GameService implements Serializable {
     private ObjectMapper objectMapper;
     private Game game;
     BoardController boardController;
+    private Map<Integer, PlayerService> playerServiceMap = new HashMap<>();
 
     public GameService(int playersN, boolean CPUPlayers){
         objectMapper = new ObjectMapper();
@@ -63,6 +61,7 @@ public class GameService implements Serializable {
             for (int i = 0; i < playersN; i++) {
                 HumanPlayer player = new HumanPlayer(i+1, 1000);
                 game.getPlayers().add(player);
+                playerServiceMap.put(player.getPlayerID(), new PlayerService(player));
                 player.setPosition(game.getBoard().getBoxFromIndex(0));   //Set player to start position
             }
         }
@@ -71,15 +70,22 @@ public class GameService implements Serializable {
                 if (i==0) {
                     HumanPlayer player = new HumanPlayer(i + 1, 1000);
                     game.getPlayers().add(player);
+                    playerServiceMap.put(player.getPlayerID(), new PlayerService(player));
                     player.setPosition(game.getBoard().getBoxFromIndex(0));   //Set player to start position
                 }
                 else {
                     CPUPlayer player = new CPUPlayer(i + 1, 1000, this);
                     game.getPlayers().add(player);
+                    //Crea CPUPlayerService
+                    playerServiceMap.put(player.getPlayerID(), new PlayerService(player));
                     player.setPosition(game.getBoard().getBoxFromIndex(0)); //Set player to start position
                 }
             }
         }
+    }
+
+    public PlayerService getPlayerService(int playerID) {
+        return playerServiceMap.get(playerID);
     }
 
     public int getPlayersN() {
@@ -95,7 +101,7 @@ public class GameService implements Serializable {
     }
 
     public void changeTurn() {
-        game.setPlayerInTurn((game.getPlayerInTurn() + 1) % game.getPlayers().size());
+        game.setPlayerInTurn((game.getPlayerInTurnIndex() + 1) % game.getPlayers().size());
         game.setTurn(game.getTurn() + 1);
         if(getPlayerInTurn().isSkipTurn()) {
             getPlayerInTurn().setSkipTurn(false);
@@ -112,11 +118,11 @@ public class GameService implements Serializable {
     }*/
 
     public Player getPlayerInTurn() {
-        return game.getPlayers().get(game.getPlayerInTurn());
+        return game.getPlayerInTurn();
     }
 
     //Restituisce la posizione del giocatore im turno (all'interno dell'ArrayList di giocatori)
-    public int getPlayerTurn() { return game.getPlayerInTurn(); }
+    public int getPlayerInTurnIndex() { return game.getPlayerInTurnIndex(); }
 
     //sostituire il valore con player in turn
     public void goToPrison(Player player) {
@@ -162,7 +168,7 @@ public class GameService implements Serializable {
     public void startTurn() {
         game.setDiceEqualsCombo(0);
         game.setExitPrisonFlag(false);
-        Player currentPlayer = getPlayerInTurn();
+        PlayerService currentPlayer = getPlayerService(getPlayerInTurn().getPlayerID());
 
         if (currentPlayer.isInPrison()) {
             if (currentPlayer.getTurnInPrison() == 3) {
@@ -205,7 +211,7 @@ public class GameService implements Serializable {
     }
 
     // Forza il giocatore a pagare per uscire di prigione se è da 3 turni
-    private void forcePayPrisonFine(Player player) {
+    private void forcePayPrisonFine(PlayerService player) {
         // Logica per obbligare il giocatore a pagare
         player.exitFromPrison();
         // Aggiorna i bottoni di conseguenza
@@ -315,16 +321,19 @@ public class GameService implements Serializable {
     }
 
     public void buildOnProperty(int pos) throws NotYourPropertyException, MaximumConstructionOnProperty, NotEnoughMoneyException {
-        getPlayerInTurn().buildOnProperty((Property) game.getBoard().getBoxFromIndex(pos));
+        PlayerService player = getPlayerService(getPlayerInTurn().getPlayerID());
+        player.buildOnProperty((Property) game.getBoard().getBoxFromIndex(pos));
     }
 
     public void mortgageBox(int pos) {
-        getPlayerInTurn().mortgageBox((PurchasableBox) game.getBoard().getBoxFromIndex(pos));
+        PlayerService player = getPlayerService(getPlayerInTurn().getPlayerID());
+        player.mortgageBox((PurchasableBox) game.getBoard().getBoxFromIndex(pos));
     }
 
     public ArrayList<Integer> getExtinguishableBoxes() {
         ArrayList<Integer> extinguishablePropertiesIndex = new ArrayList<>();
         Player playerInTurn = getPlayerInTurn();
+        PlayerService player = getPlayerService(playerInTurn.getPlayerID());
 
         // Itera su tutte le caselle della board
         for (int i = 0; i < game.getBoard().getSize(); i++) {
@@ -338,7 +347,7 @@ public class GameService implements Serializable {
                 if (purchasableBox.getOwner() == playerInTurn) {
 
                     // Verifica se la proprietà è ipotecata e può essere riscattata
-                    if (playerInTurn.canExtinguishMortgage(purchasableBox)) {
+                    if (player.canExtinguishMortgage(purchasableBox)) {
                         extinguishablePropertiesIndex.add(i);
                     }
                 }
@@ -349,10 +358,12 @@ public class GameService implements Serializable {
     }
 
     public void extinguishMortgageBox(int pos) {
-        getPlayerInTurn().extinguishMortgageBox((PurchasableBox) game.getBoard().getBoxFromIndex(pos));
+        PlayerService player = getPlayerService(getPlayerInTurn().getPlayerID());
+        player.extinguishMortgageBox((PurchasableBox) game.getBoard().getBoxFromIndex(pos));
     }
 
     public ArrayList<Integer> getDemolishProperties() {
+        PlayerService player = playerServiceMap.get(game.getPlayerInTurn().getPlayerID());
         ArrayList<Integer> demolishablePropertiesIndex = new ArrayList<>();
         Player playerInTurn = getPlayerInTurn();
         for (int i = 0; i < game.getBoard().getSize(); i++) {
@@ -360,7 +371,7 @@ public class GameService implements Serializable {
             if (box instanceof Property) {
                 Property property = (Property) box;
                 if (property.getOwner() == playerInTurn) {
-                    if (playerInTurn.canDemolish(property)) {
+                    if (player.canDemolish(property)) {
                         demolishablePropertiesIndex.add(i);
                     }
                 }
@@ -370,18 +381,20 @@ public class GameService implements Serializable {
     }
 
     public void demolishOnProperty(int pos) {
-        getPlayerInTurn().demolishOnProperty((Property) game.getBoard().getBoxFromIndex(pos));
+        PlayerService player = playerServiceMap.get(game.getPlayerInTurn().getPlayerID());
+        player.demolishOnProperty((Property) game.getBoard().getBoxFromIndex(pos));
     }
 
-    public void loseGame(Player player) {
+    public void loseGame(Player p) {
+        PlayerService player = playerServiceMap.get(p.getPlayerID());
         player.hasLost();
         game.getPlayers().remove(player);
         System.out.println("Loser id: " + player.getPlayerID()+"dall Array");
         if(game.getPlayers().size() < 2) {
-            boardController.loseGame(player);
+            boardController.loseGame(p);
             boardController.gameEnd();
         } else {
-            boardController.loseGame(player);
+            boardController.loseGame(p);
         }
     }
 
@@ -477,7 +490,8 @@ public class GameService implements Serializable {
     public void buyPurchasableBox(PurchasableBox purchasableBox) throws BoxAlreadyPurchasedException, NotEnoughMoneyException {
         // Ottieni il giocatore corrente
         Player currentPlayer = getPlayerInTurn();
-        currentPlayer.buyPurchasableBox(purchasableBox);
+        PlayerService player = playerServiceMap.get(currentPlayer.getPlayerID());
+        player.buyPurchasableBox(purchasableBox);
     }
 
     public void setController(BoardController boardController) {
@@ -490,5 +504,33 @@ public class GameService implements Serializable {
 
     public ArrayList<Player> getPlayers() {
         return game.getPlayers();
+    }
+
+    public void playerAfterMove(){
+        Player playerInTurn = game.getPlayerInTurn();
+        PlayerService player = playerServiceMap.get(playerInTurn.getPlayerID());
+        //metodo per pagare gli affitti di qualsiasi purchasablebox
+        if (player.getPosition() instanceof PurchasableBox){
+            player.payRent(boardController);
+            checkPlayerAfterPayment(game.getPlayerInTurn());
+        }
+        else if (game.getPlayerInTurn().getPosition() instanceof Tax){
+            player.payTax(boardController);
+            checkPlayerAfterPayment(game.getPlayerInTurn());
+        }
+
+        if (game.getPlayerInTurn() instanceof CPUPlayer){
+            ((CPUPlayer) game.getPlayerInTurn()).takeStrategicDecisions();
+        }
+    }
+
+    public void exitFromPrison() {
+        Player playerInTurn = game.getPlayerInTurn();
+        PlayerService player = playerServiceMap.get(playerInTurn.getPlayerID());
+
+        //paga €50 per uscire ed esci dalla prigione
+        player.exitFromPrison();
+        checkPlayerAfterPayment(playerInTurn);
+
     }
 }
