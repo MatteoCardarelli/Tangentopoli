@@ -78,9 +78,6 @@ public class Property extends PurchasableBox {
     }
 
     public boolean hasBuildings() {
-        if(hotelN !=0 || houseN !=0)
-            return true;
-        else
-            return false;
+        return(hotelN !=0 || houseN !=0);
     }
 }

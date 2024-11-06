@@ -38,15 +38,15 @@ public class GameService implements Serializable {
         try {
             // Carica e deserializza le carte Chance
             File chanceFile = new File(chanceJsonPath);
-            ArrayList<Chance> chanceCards = objectMapper.readValue(chanceFile, new TypeReference<ArrayList<Chance>>() {});
-            Collections.shuffle(chanceCards);
-            game.setChanceCards(chanceCards);
+            ArrayList<ChanceService> chanceServiceCards = objectMapper.readValue(chanceFile, new TypeReference<ArrayList<ChanceService>>() {});
+            Collections.shuffle(chanceServiceCards);
+            game.setChanceCards(chanceServiceCards);
 
             // Carica e deserializza le carte CommunityChest
             File communityChestFile = new File(communityChestJsonPath);
-            ArrayList<CommunityChest> communityChestCards = objectMapper.readValue(communityChestFile, new TypeReference<ArrayList<CommunityChest>>() {});
-            Collections.shuffle(communityChestCards);
-            game.setCommunityChestCards(communityChestCards);
+            ArrayList<CommunityChestService> communityChestServiceCards = objectMapper.readValue(communityChestFile, new TypeReference<ArrayList<CommunityChestService>>() {});
+            Collections.shuffle(communityChestServiceCards);
+            game.setCommunityChestCards(communityChestServiceCards);
 
             // Ora hai due liste separate di carte
         } catch (IOException e) {
@@ -77,7 +77,7 @@ public class GameService implements Serializable {
                     CPUPlayer player = new CPUPlayer(i + 1, 1000, this);
                     game.getPlayers().add(player);
                     //Crea CPUPlayerService
-                    playerServiceMap.put(player.getPlayerID(), new PlayerService(player));
+                    playerServiceMap.put(player.getPlayerID(), new CPUPlayerService(player));
                     player.setPosition(game.getBoard().getBoxFromIndex(0)); //Set player to start position
                 }
             }
@@ -113,19 +113,26 @@ public class GameService implements Serializable {
 
         game.setPlayerInTurn((game.getPlayerInTurnIndex() + 1) % game.getPlayers().size());
         game.setTurn(game.getTurn() + 1);
-        if(getPlayerInTurn().isSkipTurn()) {
-            getPlayerInTurn().setSkipTurn(false);
-            changeTurn();
+        Player playerInTurn = game.getPlayerInTurn();
+        PlayerService playerService = playerServiceMap.get(playerInTurn.getPlayerID());
+
+        // Controllo per il salto del turno
+        if (playerInTurn.isSkipTurn()) {
+            playerInTurn.setSkipTurn(false);
+            changeTurn(); // Ricorsione per cambiare turno se il giocatore deve saltare
+            return;
         }
 
-        if (getPlayerInTurn() instanceof CPUPlayer){
-            ((CPUPlayer) getPlayerInTurn()).moveBot();  // Muovi il bot
+        // Verifica se il giocatore corrente è un bot
+        if (playerInTurn instanceof CPUPlayer && playerService instanceof CPUPlayerService) {
+            ((CPUPlayerService) playerService).moveBot();  // Muovi il bot
         }
 
 
 
 
     }
+
 
     /*public int getTurn(){
         return turn;
@@ -232,22 +239,22 @@ public class GameService implements Serializable {
         boardController.disableDiceAndNextButtons();
     }
 
-    private Chance getChance() {
-        ArrayList<Chance> chanceCards = game.getChanceCards();
-        Chance chanceCard = chanceCards.get(0);
+    private ChanceService getChance() {
+        ArrayList<ChanceService> chanceServiceCards = game.getChanceCards();
+        ChanceService chanceServiceCard = chanceServiceCards.get(0);
         //Positions the first element at the end of the list and shifts all the previous elements
-        chanceCards.add(chanceCards.size()-1, chanceCards.remove(0));
-        chanceCard.action(this);
-        return chanceCard;
+        chanceServiceCards.add(chanceServiceCards.size()-1, chanceServiceCards.remove(0));
+        chanceServiceCard.action(this);
+        return chanceServiceCard;
     }
 
-    private CommunityChest getCommunityChest()  {
-        ArrayList<CommunityChest> communityChestCards = game.getCommunityChestCards();
-        CommunityChest communityChest = communityChestCards.get(0);
+    private CommunityChestService getCommunityChest()  {
+        ArrayList<CommunityChestService> communityChestServiceCards = game.getCommunityChestCards();
+        CommunityChestService communityChestService = communityChestServiceCards.get(0);
         //Positions the first element at the end of the list and shifts all the previous elements
-        communityChestCards.add(communityChestCards.size()-1, communityChestCards.remove(0));
-        communityChest.action(this);
-        return communityChest;
+        communityChestServiceCards.add(communityChestServiceCards.size()-1, communityChestServiceCards.remove(0));
+        communityChestService.action(this);
+        return communityChestService;
     }
 
     public ArrayList<Integer> getBuildableProperties() {
@@ -536,8 +543,9 @@ public class GameService implements Serializable {
             checkPlayerAfterPayment(game.getPlayerInTurn());
         }
 
-        if (game.getPlayerInTurn() instanceof CPUPlayer){
-            ((CPUPlayer) game.getPlayerInTurn()).takeStrategicDecisions();
+        if (game.getPlayerInTurn() instanceof CPUPlayer && player instanceof CPUPlayerService){
+
+            ((CPUPlayerService) player).takeStrategicDecisions();
         }
     }
 
