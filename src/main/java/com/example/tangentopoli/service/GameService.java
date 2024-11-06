@@ -101,6 +101,16 @@ public class GameService implements Serializable {
     }
 
     public void changeTurn() {
+
+        if(getPlayerInTurn().getPosition() instanceof PurchasableBox purchasableBox) {
+            if (!purchasableBox.isOwned()) {
+                // Metodo che avvia l'asta o l'azione desiderata per la proprietà corrente
+
+                PurchasableBox box = (PurchasableBox) getPlayerInTurn().getPosition();
+                triggerAuction(box);
+            }
+        }
+
         game.setPlayerInTurn((game.getPlayerInTurnIndex() + 1) % game.getPlayers().size());
         game.setTurn(game.getTurn() + 1);
         if(getPlayerInTurn().isSkipTurn()) {
@@ -111,6 +121,10 @@ public class GameService implements Serializable {
         if (getPlayerInTurn() instanceof CPUPlayer){
             ((CPUPlayer) getPlayerInTurn()).moveBot();  // Muovi il bot
         }
+
+
+
+
     }
 
     /*public int getTurn(){
@@ -459,10 +473,13 @@ public class GameService implements Serializable {
         return players;
     }*/
 
-    public void startAuctionLogic(Player player) {
-        if(player.getPosition() instanceof PurchasableBox && ((PurchasableBox) player.getPosition()).isPurchased()) {
-        }
+    // Metodo che avvia l'asta o l'azione desiderata per la proprietà corrente
+    private void triggerAuction(PurchasableBox property) {
+        System.out.println("Inizia l'asta per la proprietà " + property.getName());
+        // Apri una finestra d'asta tramite il boardController
+        boardController.openNewWindow("/fxml/AuctionBoard.fxml", "Asta per la proprietà " + property.getName());
     }
+
 
     public void exitFromPrisonWithDicesEqual(int diceValue1, int diceValue2) {
         if (diceValue1==diceValue2 && getPlayerInTurn().isInPrison()){
@@ -533,4 +550,5 @@ public class GameService implements Serializable {
         checkPlayerAfterPayment(playerInTurn);
 
     }
+
 }

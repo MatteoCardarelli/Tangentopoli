@@ -1,5 +1,6 @@
 package com.example.tangentopoli.controller;
 
+import com.example.tangentopoli.engine.GameEngine;
 import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
@@ -27,6 +28,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.media.MediaPlayer;
@@ -48,8 +50,6 @@ public class BoardController implements Initializable, Serializable {
     private ImageView barLeft;
     private ImageView barRight;
     private Rectangle blockRectangle;
-
-
 
 
     private int diceValue;
@@ -149,8 +149,6 @@ public class BoardController implements Initializable, Serializable {
     private Stage stage;
 
 
-
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -224,7 +222,7 @@ public class BoardController implements Initializable, Serializable {
 
     public void setStage(Stage stage) {
         this.stage = stage;
-        stage.setOnCloseRequest(windowEvent ->{
+        stage.setOnCloseRequest(windowEvent -> {
             askSaveConfirmation();
         });
     }
@@ -284,7 +282,7 @@ public class BoardController implements Initializable, Serializable {
         diceValue = diceValue1 + diceValue2;
 
         //se il giocatore è in prigione e fa un lancio doppio esce e non può ritirare
-        game.exitFromPrisonWithDicesEqual(diceValue1,diceValue2);
+        game.exitFromPrisonWithDicesEqual(diceValue1, diceValue2);
 
         // Crea l'animazione di rotazione per il primo dado
         RotateTransition rotateTransition1 = new RotateTransition(Duration.seconds(1), dice1ImageView);
@@ -329,9 +327,9 @@ public class BoardController implements Initializable, Serializable {
 
         // Aggiungi un listener per eseguire il movimento del giocatore dopo il completamento delle animazioni
         parallelTransition.setOnFinished(event -> {
-                movePlayer(diceValue);
+            movePlayer(diceValue);
 
-                game.handlePlayerTurnAfterRol(diceValue1,diceValue2);
+            game.handlePlayerTurnAfterRol(diceValue1, diceValue2);
         });
 
         // Avvia la transizione parallela (che avvierà tutte le animazioni)
@@ -341,7 +339,7 @@ public class BoardController implements Initializable, Serializable {
     //PLAYER MOVEMENT & TOKENS GENERATION
 
     //Moves the player
-    public void movePlayer(int diceValue)  {
+    public void movePlayer(int diceValue) {
 
         if (game.getPlayerInTurn().isInPrison() || game.getPlayerInTurn().isSkipTurn()) return;
 
@@ -374,15 +372,14 @@ public class BoardController implements Initializable, Serializable {
         game.movePlayer(diceValue);
 
 
-
         //If the player is on the GoToPrison box
-        if(rowPos == maxR-1 && columnPos == 0) {
+        if (rowPos == maxR - 1 && columnPos == 0) {
             sendToPrison();
             payPrisonBtn.setDisable(false);
         }
 
         // Aggiorna la posizione della pedina
-        switch(playerN){
+        switch (playerN) {
             case 2, 3:
                 setPlayerTokenPositionSmall(game.getPlayerInTurnIndex(), rowPos, columnPos);
                 break;
@@ -398,13 +395,13 @@ public class BoardController implements Initializable, Serializable {
 
         displayBoxInfo(game.getPlayerInTurn());
 
-       game.playerAfterMove();
+        game.playerAfterMove();
     }
 
     private ImageView getPlayerTokenFromID(int playerID) {
         ImageView playerToken = playerTokens.get(0);
-        for(ImageView token: playerTokens) {
-            if(token.getStyleClass().contains(playerID + "playerToken"))
+        for (ImageView token : playerTokens) {
+            if (token.getStyleClass().contains(playerID + "playerToken"))
                 playerToken = token;
         }
 
@@ -570,9 +567,7 @@ public class BoardController implements Initializable, Serializable {
         stopTimeline.play();
 
 
-
-
-        if (diceEqualsCombo==3){
+        if (diceEqualsCombo == 3) {
             updateBoxInfo("Hai ottenuto tre doppi consecutivi! Vai direttamente in prigione.");
             diceEqualsCombo = 0;  // Resetta il conteggio dei doppi consecutivi
         } else {
@@ -613,7 +608,6 @@ public class BoardController implements Initializable, Serializable {
         // Ottieni il colore del giocatore
         ImageView playerToken = getPlayerTokenFromID(playerID);
         Color playerColor = getPlayerColor(game.getPlayerInTurn().getPlayerID());
-
 
 
         // Ottieni la posizione attuale del giocatore
@@ -673,15 +667,15 @@ public class BoardController implements Initializable, Serializable {
 
     //DISPLAY
 
-        //BUTTON
+    //BUTTON
 
-        public void setPayPrisonBtn(boolean b) {
+    public void setPayPrisonBtn(boolean b) {
         payPrisonBtn.setDisable(b);
     }
 
-        //ANIMATION
+    //ANIMATION
 
-        private void startPoliceLights() {
+    private void startPoliceLights() {
 
         // Crea il rettangolo per le luci della polizia (rettangolo rosso/trasparente visibile per debug)
         policeLightBox = new Rectangle(1600, 900);
@@ -713,61 +707,61 @@ public class BoardController implements Initializable, Serializable {
         startBarsTimeline.play();
     }
 
-        // Metodo per avviare l'animazione delle sbarre
-        private void startBarAnimation() {
-            System.out.println("Inizio animazione sbarre");
+    // Metodo per avviare l'animazione delle sbarre
+    private void startBarAnimation() {
+        System.out.println("Inizio animazione sbarre");
 
-            // Crea le immagini delle sbarre
-             barLeft = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/prisonBars.png")));
-             barRight = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/prisonBars.png")));
+        // Crea le immagini delle sbarre
+        barLeft = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/prisonBars.png")));
+        barRight = new ImageView(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/prisonBars.png")));
 
-            // Imposta la dimensione delle sbarre
-            barLeft.setFitHeight(900);
-            barLeft.setFitWidth(800);
-            barRight.setFitHeight(900);
-            barRight.setFitWidth(800);
+        // Imposta la dimensione delle sbarre
+        barLeft.setFitHeight(900);
+        barLeft.setFitWidth(800);
+        barRight.setFitHeight(900);
+        barRight.setFitWidth(800);
 
-            // Posiziona le sbarre inizialmente fuori dallo schermo
-            barLeft.setTranslateX(-800); // A sinistra fuori schermo
-            barRight.setTranslateX(1600); // A destra fuori schermo
+        // Posiziona le sbarre inizialmente fuori dallo schermo
+        barLeft.setTranslateX(-800); // A sinistra fuori schermo
+        barRight.setTranslateX(1600); // A destra fuori schermo
 
-            // Aggiungi le sbarre al mainPane
-            mainPane.getChildren().addAll(barLeft, barRight);
-            barLeft.toFront(); // Porta le sbarre in primo piano
-            barRight.toFront();
+        // Aggiungi le sbarre al mainPane
+        mainPane.getChildren().addAll(barLeft, barRight);
+        barLeft.toFront(); // Porta le sbarre in primo piano
+        barRight.toFront();
 
-            System.out.println("Sbarre aggiunte e portate in primo piano");
+        System.out.println("Sbarre aggiunte e portate in primo piano");
 
-            // Animazione per chiudere le sbarre
-            TranslateTransition barLeftTransition = new TranslateTransition(Duration.seconds(2), barLeft);
-            barLeftTransition.setToX(0); // Sposta la sbarra sinistra verso il centro
+        // Animazione per chiudere le sbarre
+        TranslateTransition barLeftTransition = new TranslateTransition(Duration.seconds(2), barLeft);
+        barLeftTransition.setToX(0); // Sposta la sbarra sinistra verso il centro
 
-            TranslateTransition barRightTransition = new TranslateTransition(Duration.seconds(2), barRight);
-            barRightTransition.setToX(800); // Sposta la sbarra destra verso il centro
+        TranslateTransition barRightTransition = new TranslateTransition(Duration.seconds(2), barRight);
+        barRightTransition.setToX(800); // Sposta la sbarra destra verso il centro
 
-            // Esegui l'animazione delle sbarre in parallelo
-            ParallelTransition barTransition = new ParallelTransition(barLeftTransition, barRightTransition);
-            barTransition.play(); // Avvia l'animazione delle sbarre
-            System.out.println("Animazione sbarre avviata");
-        }
+        // Esegui l'animazione delle sbarre in parallelo
+        ParallelTransition barTransition = new ParallelTransition(barLeftTransition, barRightTransition);
+        barTransition.play(); // Avvia l'animazione delle sbarre
+        System.out.println("Animazione sbarre avviata");
+    }
 
-        // Metodo per fermare le luci della polizia e rimuovere le sbarre
-        private void stopPoliceLights() {
-            System.out.println("Ferma animazione luci della polizia");
-            mainPane.getChildren().remove(policeLightBox); // Rimuove il rettangolo delle luci dalla schermata
-            mainPane.getChildren().removeAll(barRight,barLeft); // Rimuove il rettangolo delle luci dalla schermata
-        }
+    // Metodo per fermare le luci della polizia e rimuovere le sbarre
+    private void stopPoliceLights() {
+        System.out.println("Ferma animazione luci della polizia");
+        mainPane.getChildren().remove(policeLightBox); // Rimuove il rettangolo delle luci dalla schermata
+        mainPane.getChildren().removeAll(barRight, barLeft); // Rimuove il rettangolo delle luci dalla schermata
+    }
 
-        //Creates the blinking effect on the overlay
-        private void applyBlinkingEffect(Rectangle overlay) {
-            // Creazione dell'animazione di fade in/out per il lampeggio
-            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), overlay);
-            fadeTransition.setFromValue(1.0);
-            fadeTransition.setToValue(0.2);
-            fadeTransition.setCycleCount(FadeTransition.INDEFINITE);
-            fadeTransition.setAutoReverse(true);
-            fadeTransition.play();
-        }
+    //Creates the blinking effect on the overlay
+    private void applyBlinkingEffect(Rectangle overlay) {
+        // Creazione dell'animazione di fade in/out per il lampeggio
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), overlay);
+        fadeTransition.setFromValue(1.0);
+        fadeTransition.setToValue(0.2);
+        fadeTransition.setCycleCount(FadeTransition.INDEFINITE);
+        fadeTransition.setAutoReverse(true);
+        fadeTransition.play();
+    }
 
     //Displays player data in the top textArea
     public void displayPlayerInfo(Player player) {
@@ -776,13 +770,25 @@ public class BoardController implements Initializable, Serializable {
 
         String playerInfoStr[] = player.toStringArray();
 
-        switch(player.getPlayerID()) {
-            case 1:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer1.png")));break;
-            case 2:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer2.png")));break;
-            case 3:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer3.png")));break;
-            case 4:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer4.png")));break;
-            case 5:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer5.png")));break;
-            case 6:imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer6.png")));break;
+        switch (player.getPlayerID()) {
+            case 1:
+                imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer1.png")));
+                break;
+            case 2:
+                imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer2.png")));
+                break;
+            case 3:
+                imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer3.png")));
+                break;
+            case 4:
+                imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer4.png")));
+                break;
+            case 5:
+                imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer5.png")));
+                break;
+            case 6:
+                imageForScreen.setImage(new Image(getClass().getResourceAsStream("/img/playerImages/imgForPlayer6.png")));
+                break;
         }
 
         nameLabel.setText(playerInfoStr[0]);
@@ -837,7 +843,7 @@ public class BoardController implements Initializable, Serializable {
     }
 
     //Makes the player exit from prison after a payment
-    public void exitFromPrison()  {
+    public void exitFromPrison() {
 
         game.exitFromPrison();
         //disabilita il pulsante per pagare una volta uscito di prigione
@@ -851,7 +857,6 @@ public class BoardController implements Initializable, Serializable {
         updateBoxInfo("hai pagato €50 ora puoi muoverti dalla prigione");
         displayPlayerInfo(game.getPlayerInTurn());
     }
-
 
 
     // Metodo per mostrare il dialogo delle azioni
@@ -881,21 +886,23 @@ public class BoardController implements Initializable, Serializable {
         try {
             game.buildOnProperty(pos);
             displayPlayerInfo(game.getPlayerInTurn());
-            displayConstructionsOnSmallBoard(row,col);
+            displayConstructionsOnSmallBoard(row, col);
             updateBoxInfo("Hai costruito su " + game.getBoard().getBoxFromIndex(pos).getName());
         } catch (NotYourPropertyException e) {
             updateBoxInfo("Non possiedi questa proprietà");
         } catch (MaximumConstructionOnProperty e) {
             updateBoxInfo("Hai raggiunto il limite di costruzioni su questa casella");
-        } catch (NotEnoughMoneyException e){updateBoxInfo("Non hai abbastanza soldi per costruire");}
+        } catch (NotEnoughMoneyException e) {
+            updateBoxInfo("Non hai abbastanza soldi per costruire");
+        }
 
         removeAllOverlayRectangles();
     }
 
-        //OVERLAY
+    //OVERLAY
 
-        //crea overlay per la decisione di dove costruire
-        public void displayConstructionsOnSmallBoard(int row, int col){
+    //crea overlay per la decisione di dove costruire
+    public void displayConstructionsOnSmallBoard(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
         Property property = (Property) game.getBoard().getBoxFromIndex(pos);
         // Ottieni il numero di case sulla proprietà
@@ -1091,107 +1098,105 @@ public class BoardController implements Initializable, Serializable {
 
     }
 
-        //Creates the green overlays on the buildable properties
-        public void createConstructionOverlay(int row, int col) {
-            // Crea il rettangolo semi-trasparente
-            Rectangle overlay = new Rectangle(126, 150);
-            overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
-            overlay.getStyleClass().add("property-overlay");
+    //Creates the green overlays on the buildable properties
+    public void createConstructionOverlay(int row, int col) {
+        // Crea il rettangolo semi-trasparente
+        Rectangle overlay = new Rectangle(126, 150);
+        overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
+        overlay.getStyleClass().add("property-overlay");
 
-            // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
-            if (col == 0 || col == boardGrid.getColumnCount() - 1) {
-                overlay.setRotate(90);
+        // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
+        if (col == 0 || col == boardGrid.getColumnCount() - 1) {
+            overlay.setRotate(90);
+        }
+
+        // Aggiungi la StackPane al GridPane
+        boardGrid.add(overlay, col, row);
+
+        // Applica l'animazione di lampeggio
+        applyBlinkingEffect(overlay);
+
+        overlay.setOnMouseClicked(event -> {
+            buildOnProperty(row, col);
+        });
+    }
+
+
+    //Removes all the overlays on the properties
+    public void removeAllOverlayRectangles() {
+        // Ottieni la lista di tutti i figli del GridPane
+        ObservableList<Node> children = boardGrid.getChildren();
+
+        // Usa un iteratore per evitare ConcurrentModificationException
+        Iterator<Node> iterator = children.iterator();
+
+        while (iterator.hasNext()) {
+            Node child = iterator.next();
+
+            // Controlla se il figlio è un'istanza di Rectangle
+            if (child instanceof Rectangle && child.getStyleClass().contains("property-overlay")) {
+                iterator.remove(); // Rimuovi il rettangolo dalla griglia
             }
+        }
+    }
 
-            // Aggiungi la StackPane al GridPane
-            boardGrid.add(overlay, col, row);
+    //rimuove gli overlay delle proprietà ipotecate
+    public void removeNotAvailableBoxOverlay(int row, int col) {
+        // Ottieni la lista di tutti i figli del GridPane
+        ObservableList<Node> children = boardGrid.getChildren();
 
-            // Applica l'animazione di lampeggio
-            applyBlinkingEffect(overlay);
+        // Usa un iteratore per evitare ConcurrentModificationException
+        Iterator<Node> iterator = children.iterator();
 
-            overlay.setOnMouseClicked(event -> {
-                buildOnProperty(row, col);
-            });
+        while (iterator.hasNext()) {
+            Node child = iterator.next();
+
+            // Verifica se il nodo si trova nella cella specificata
+            Integer nodeRow = GridPane.getRowIndex(child);
+            Integer nodeCol = GridPane.getColumnIndex(child);
+
+            // Assicura che rowIndex e colIndex non siano null (valore di default se non impostato è 0)
+            if (nodeRow == null) nodeRow = 0;
+            if (nodeCol == null) nodeCol = 0;
+
+            // Controlla se il figlio è un'istanza di Rectangle e si trova nella cella specificata
+            if (child instanceof Rectangle && child.getStyleClass().contains("notAvailableBoxOverlay")
+                    && nodeRow == row && nodeCol == col) {
+                iterator.remove(); // Rimuovi il rettangolo dalla griglia
+                break; // Esci dal loop una volta trovato e rimosso l'overlay
+            }
+        }
+    }
+
+    //crea un overlay per le proprietà a cui si vuole demolire una costruzione
+    public void createDemolitionOverlay(int row, int col) {
+        // Crea il rettangolo semi-trasparente
+        Rectangle overlay = new Rectangle(126, 150);
+        overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
+        overlay.getStyleClass().add("property-overlay");
+
+        // Aggiungi la StackPane al GridPane
+        boardGrid.add(overlay, col, row);
+
+        // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
+        if (col == 0 || col == boardGrid.getColumnCount() - 1) {
+            overlay.setRotate(90);
+            overlay.setTranslateX(12);
         }
 
 
+        // Applica l'animazione di lampeggio
+        applyBlinkingEffect(overlay);
 
-        //Removes all the overlays on the properties
-        public void removeAllOverlayRectangles() {
-            // Ottieni la lista di tutti i figli del GridPane
-            ObservableList<Node> children = boardGrid.getChildren();
-
-            // Usa un iteratore per evitare ConcurrentModificationException
-            Iterator<Node> iterator = children.iterator();
-
-            while (iterator.hasNext()) {
-                Node child = iterator.next();
-
-                // Controlla se il figlio è un'istanza di Rectangle
-                if (child instanceof Rectangle && child.getStyleClass().contains("property-overlay")) {
-                    iterator.remove(); // Rimuovi il rettangolo dalla griglia
-                }
-            }
-        }
-
-        //rimuove gli overlay delle proprietà ipotecate
-        public void removeNotAvailableBoxOverlay(int row, int col) {
-            // Ottieni la lista di tutti i figli del GridPane
-            ObservableList<Node> children = boardGrid.getChildren();
-
-            // Usa un iteratore per evitare ConcurrentModificationException
-            Iterator<Node> iterator = children.iterator();
-
-            while (iterator.hasNext()) {
-                Node child = iterator.next();
-
-                // Verifica se il nodo si trova nella cella specificata
-                Integer nodeRow = GridPane.getRowIndex(child);
-                Integer nodeCol = GridPane.getColumnIndex(child);
-
-                // Assicura che rowIndex e colIndex non siano null (valore di default se non impostato è 0)
-                if (nodeRow == null) nodeRow = 0;
-                if (nodeCol == null) nodeCol = 0;
-
-                // Controlla se il figlio è un'istanza di Rectangle e si trova nella cella specificata
-                if (child instanceof Rectangle && child.getStyleClass().contains("notAvailableBoxOverlay")
-                        && nodeRow == row && nodeCol == col) {
-                    iterator.remove(); // Rimuovi il rettangolo dalla griglia
-                    break; // Esci dal loop una volta trovato e rimosso l'overlay
-                }
-            }
-        }
-
-        //crea un overlay per le proprietà a cui si vuole demolire una costruzione
-        public void createDemolitionOverlay(int row, int col) {
-            // Crea il rettangolo semi-trasparente
-            Rectangle overlay = new Rectangle(126, 150);
-            overlay.setStyle("-fx-fill: rgba(26,255,0,0.5);");
-            overlay.getStyleClass().add("property-overlay");
-
-            // Aggiungi la StackPane al GridPane
-            boardGrid.add(overlay, col, row);
-
-            // Se il rettangolo si trova sulle colonne laterali, ruotalo di 90 gradi
-            if (col == 0 || col == boardGrid.getColumnCount() - 1) {
-                overlay.setRotate(90);
-                overlay.setTranslateX(12);
-            }
-
-
-
-            // Applica l'animazione di lampeggio
-            applyBlinkingEffect(overlay);
-
-            overlay.setOnMouseClicked(event -> {
-                demolishOnProperty(row, col);
-            });
-        }
+        overlay.setOnMouseClicked(event -> {
+            demolishOnProperty(row, col);
+        });
+    }
 
 
     //Converts the position of a specific Box (giving its index in the board), into coordinates
     public int[] convertPositionToGridCoords(int index) {
-        int maxC =  boardGrid.getColumnCount();
+        int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
         int totalPerimeter = 2 * (maxC + maxR - 2);
         int row = 0;
@@ -1214,7 +1219,7 @@ public class BoardController implements Initializable, Serializable {
             row = (maxR - 1) - (index - (2 * maxC + maxR - 3));
             col = 0;
         }
-        return new int[] { row, col };
+        return new int[]{row, col};
     }
 
     //converte le coordinate della pedina sulla griglia in una posizione
@@ -1224,7 +1229,7 @@ public class BoardController implements Initializable, Serializable {
         int totalPerimeter = 2 * (maxC + maxR - 2);
 
         // Verifica che le coordinate siano valide
-        if (row < 0  || row >= maxR || col < 0 || col >= maxC) {
+        if (row < 0 || row >= maxR || col < 0 || col >= maxC) {
             throw new IllegalArgumentException("Coordinate fuori dai limiti della griglia");
         }
 
@@ -1262,9 +1267,9 @@ public class BoardController implements Initializable, Serializable {
     //ipoteca le proprietà
     public void mortgageBox(int row, int col) {
         int pos = convertGridCoordsToPosition(row, col);
-            game.mortgageBox(pos);
-            displayPlayerInfo(game.getPlayerInTurn());
-            updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
+        game.mortgageBox(pos);
+        displayPlayerInfo(game.getPlayerInTurn());
+        updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
         removeAllOverlayRectangles();
         createNotAvailableBoxOverlay(row, col);
     }
@@ -1343,7 +1348,7 @@ public class BoardController implements Initializable, Serializable {
 
         game.demolishOnProperty(pos);
         displayPlayerInfo(game.getPlayerInTurn());
-        displayConstructionsOnSmallBoard(row,col);
+        displayConstructionsOnSmallBoard(row, col);
         updateBoxInfo("Hai demolito su " + game.getBoard().getBoxFromIndex(pos).getName());
 
         removeAllOverlayRectangles();
@@ -1434,7 +1439,7 @@ public class BoardController implements Initializable, Serializable {
         Random imageRandom = new Random();
         int randomized = imageRandom.nextInt(2) + 1;
 
-        imageRandomized.setImage(new Image(getClass().getResourceAsStream("/img/cardImage"+randomized+".png")));
+        imageRandomized.setImage(new Image(getClass().getResourceAsStream("/img/cardImage" + randomized + ".png")));
 
         // Crea l'immagine della carta se non esiste già
         if (cardImg == null) {
@@ -1464,9 +1469,9 @@ public class BoardController implements Initializable, Serializable {
             rotateTransition.setToAngle(0);
 
             TranslateTransition translateTransition2 = new TranslateTransition(Duration.seconds(0.3), cardImg);
-                translateTransition2.setDelay(Duration.millis(500));
-                translateTransition2.setToX(505); // Imposta la distanza X di traslazione
-                translateTransition2.setToY(162); // Imposta la distanza Y di traslazione
+            translateTransition2.setDelay(Duration.millis(500));
+            translateTransition2.setToX(505); // Imposta la distanza X di traslazione
+            translateTransition2.setToY(162); // Imposta la distanza Y di traslazione
 
             ScaleTransition scaleTransitionImg = new ScaleTransition(Duration.seconds(0.3), cardImg);
             scaleTransitionImg.setDelay(Duration.millis(300));
@@ -1484,9 +1489,9 @@ public class BoardController implements Initializable, Serializable {
                     scaleTransitionDialog
             );
 
-                sequentialTransition.play();
+            sequentialTransition.play();
 
-            } else {
+        } else {
             // Imposta l'immagine della carta
             cardImg.setImage(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/communitychestop.png")));
             cardImg.setX(550);
@@ -1538,7 +1543,7 @@ public class BoardController implements Initializable, Serializable {
         openCardDialog();
         cardTitle.setText(card.getTitle());
         cardDescription.setText(card.getDescription());
-        }
+    }
 
     //perde un giocatore
     public void loseGame(Player player) {
@@ -1657,7 +1662,6 @@ public class BoardController implements Initializable, Serializable {
         Integer column = GridPane.getColumnIndex(source) != null ? GridPane.getColumnIndex(source) : 0;
 
 
-
         // Cambia l'immagine in base alla posizione
         String imagePath = getImagePathForGridPosition(row, column);
         if (imagePath != null) {
@@ -1741,4 +1745,31 @@ public class BoardController implements Initializable, Serializable {
         setDiceBtn(true);
         setNextBtn(false);
     }
+
+    // Metodo per aprire una nuova finestra
+    public void openNewWindow(String fxmlPath, String title) {
+        try {
+            // Carica il file FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+
+            // Crea una nuova istanza di Stage (finestra)
+            Stage newWindow = new Stage();
+            newWindow.setTitle(title);
+            newWindow.setScene(new Scene(root));
+
+            // Se vuoi che la finestra blocchi l'interazione con la principale, rendila modale
+            newWindow.initModality(Modality.APPLICATION_MODAL);
+
+            // Mostra la nuova finestra senza chiudere la finestra principale
+            newWindow.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
 }

@@ -59,6 +59,10 @@ public abstract class PurchasableBox implements Box, Serializable {
 
     public Player getOwner() {return owner;}
 
+    public boolean isOwned(){
+        return owner != null;
+    }
+
     public void setOwner(Player owner) {this.owner = owner;}
 
     public abstract int calculatePrice(PlayerService playerService);

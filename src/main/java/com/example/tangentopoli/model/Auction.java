@@ -30,8 +30,6 @@ public class Auction {
 
     public void setWinner(int winner) {this.winner = winner;}
 
-    public void startAuction(ArrayList<Player> players){
 
-    }
 
 }
