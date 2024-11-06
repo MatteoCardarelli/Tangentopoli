@@ -6,6 +6,7 @@ import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
 import com.example.tangentopoli.model.*;
 import com.example.tangentopoli.serialization.Serializer;
+import com.example.tangentopoli.service.CommunityChestService;
 import com.example.tangentopoli.service.GameService;
 import com.example.tangentopoli.service.PlayerService;
 import javafx.animation.*;
@@ -1443,7 +1444,7 @@ public class BoardController implements Initializable, Serializable {
             cardImg.setPreserveRatio(true); // Mantiene le proporzioni dell'immagine
             mainPane.getChildren().add(cardImg); // Aggiungi l'immagine al layout principale
         }
-        if (card instanceof CommunityChest) {
+        if (card instanceof CommunityChestService) {
             // Imposta l'immagine della carta
             cardImg.setImage(new Image(getClass().getResourceAsStream("/img/animationAndGameBaseImages/chanceimgop.png")));
             cardImg.setX(240);

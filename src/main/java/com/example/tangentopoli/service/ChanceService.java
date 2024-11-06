@@ -1,11 +1,11 @@
-package com.example.tangentopoli.model;
+package com.example.tangentopoli.service;
 
-import com.example.tangentopoli.service.GameService;
-import com.example.tangentopoli.service.PlayerService;
+import com.example.tangentopoli.model.Card;
+import com.example.tangentopoli.model.Player;
 
-public class Chance extends Card {
+public class ChanceService extends Card {
 
-    public Chance(){
+    public ChanceService(){
         super();
     };
 

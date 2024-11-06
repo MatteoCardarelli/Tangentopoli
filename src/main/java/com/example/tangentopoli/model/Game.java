@@ -1,28 +1,17 @@
 package com.example.tangentopoli.model;
 
-import com.example.tangentopoli.controller.BoardController;
-import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
-import com.example.tangentopoli.exception.NotEnoughMoneyException;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
-import com.example.tangentopoli.exception.NotYourPropertyException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
-import java.io.IOException;
+import com.example.tangentopoli.service.ChanceService;
+import com.example.tangentopoli.service.CommunityChestService;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 
 
 public class Game implements Serializable {
     private Board board;
     private ArrayList<Player> players;
-    private ArrayList<CommunityChest> communityChestCards = new ArrayList<>();
-    private ArrayList<Chance> chanceCards = new ArrayList<>();
+    private ArrayList<CommunityChestService> communityChestServiceCards = new ArrayList<>();
+    private ArrayList<ChanceService> chanceServiceCards = new ArrayList<>();
     private int turn = 0;
     private int playerInTurn=0;
     private int diceEqualsCombo = 0;
@@ -61,21 +50,21 @@ public class Game implements Serializable {
     }
 
     // Getter e Setter per communityChestCards
-    public ArrayList<CommunityChest> getCommunityChestCards() {
-        return communityChestCards;
+    public ArrayList<CommunityChestService> getCommunityChestCards() {
+        return communityChestServiceCards;
     }
 
-    public void setCommunityChestCards(ArrayList<CommunityChest> communityChestCards) {
-        this.communityChestCards = communityChestCards;
+    public void setCommunityChestCards(ArrayList<CommunityChestService> communityChestServiceCards) {
+        this.communityChestServiceCards = communityChestServiceCards;
     }
 
     // Getter e Setter per chanceCards
-    public ArrayList<Chance> getChanceCards() {
-        return chanceCards;
+    public ArrayList<ChanceService> getChanceCards() {
+        return chanceServiceCards;
     }
 
-    public void setChanceCards(ArrayList<Chance> chanceCards) {
-        this.chanceCards = chanceCards;
+    public void setChanceCards(ArrayList<ChanceService> chanceServiceCards) {
+        this.chanceServiceCards = chanceServiceCards;
     }
 
     // Getter e Setter per turn

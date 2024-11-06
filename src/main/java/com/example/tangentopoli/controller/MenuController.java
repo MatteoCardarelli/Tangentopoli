@@ -37,7 +37,7 @@ public class MenuController implements Initializable {
     private Slider selectPlayerN;
 
     //decide quale tabellone aprire e inizializza il GameEngine
-    public void startNewGame(ActionEvent event) throws IOException {
+    public void startNewGame(ActionEvent event) {
         try {
             String path="";
             switch ((int)selectPlayerN.getValue()) {

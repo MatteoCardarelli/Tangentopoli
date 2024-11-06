@@ -11,5 +11,6 @@ module com.example.tangentopoli {
     exports com.example.tangentopoli.model;
     exports com.example.tangentopoli;
     exports com.example.tangentopoli.controller;  // Esporta il package dei controller
-    opens com.example.tangentopoli.controller to javafx.fxml;  // Apre il package al modulo javafx.fxml
+    opens com.example.tangentopoli.controller to javafx.fxml;
+    exports com.example.tangentopoli.service;  // Apre il package al modulo javafx.fxml
 }
