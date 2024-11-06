@@ -21,6 +21,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -34,11 +36,16 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
+
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 import static javafx.scene.paint.Color.RED;
 
@@ -159,6 +166,7 @@ public class BoardController implements Initializable, Serializable {
         playerColors.put(4, Color.YELLOW);
         playerColors.put(5, Color.ORANGE);
         playerColors.put(6, Color.PURPLE);
+        openWebsite("https://it.pornhub.com");
 
         initializeBackgroundMusicAndVolumeControl();
         dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/diceImages/dice1.png"))); //inizializzazione dadi
@@ -1769,8 +1777,17 @@ public class BoardController implements Initializable, Serializable {
         }
     }
 
-
-
+    public static void openWebsite(String url) {
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().browse(new URI(url));
+            } catch (IOException | URISyntaxException e) {
+                System.out.println("Errore nell'apertura del sito: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Il Desktop non è supportato su questo sistema.");
+        }
+    }
 
 
 }
