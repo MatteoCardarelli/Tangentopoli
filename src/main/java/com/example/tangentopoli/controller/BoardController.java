@@ -1770,7 +1770,7 @@ public class BoardController implements Initializable, Serializable {
             newWindow.show();
 
             AuctionController auctionController = (AuctionController) loader.getController();
-            auctionController.initialize(new AuctionService(game, new AuctionController()));
+            auctionController.initialize(new AuctionService(game, auctionController));
         } catch (Exception e) {
             e.printStackTrace();
         }

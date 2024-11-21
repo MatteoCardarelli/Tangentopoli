@@ -90,12 +90,7 @@ public class AuctionService {
         if (playersInAuction == null || playersInAuction.isEmpty()) {
             throw new IllegalStateException("Nessun giocatore rimasto per passare al turno successivo.");
         }
-
-        if (playersInAuction.size() > 1) {
-            currentTurnIndex = (currentTurnIndex + 1) % playersInAuction.size();
-        } else {
-            concludeAuction();
-        }
+        currentTurnIndex = (currentTurnIndex + 1) % playersInAuction.size();
     }
 
 

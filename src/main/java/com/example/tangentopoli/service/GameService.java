@@ -111,7 +111,7 @@ public class GameService implements Serializable {
             }
         }
 
-        game.setPlayerInTurn((game.getPlayerInTurnIndex() + 1) % game.getPlayers().size());
+        game.setPlayerInTurnIndex((game.getPlayerInTurnIndex() + 1) % game.getPlayers().size());
         game.setTurn(game.getTurn() + 1);
         PlayerService playerService = playerServiceMap.get(game.getPlayerInTurn().getPlayerID());
 

@@ -13,7 +13,7 @@ public class Game implements Serializable {
     private ArrayList<CommunityChestService> communityChestServiceCards = new ArrayList<>();
     private ArrayList<ChanceService> chanceServiceCards = new ArrayList<>();
     private int turn = 0;
-    private int playerInTurn=0;
+    private int playerInTurnIndex =0;
     private int diceEqualsCombo = 0;
     private boolean exitPrisonFlag = false;
 
@@ -78,15 +78,15 @@ public class Game implements Serializable {
 
     // Getter e Setter per playerInTurn
     public int getPlayerInTurnIndex() {
-        return playerInTurn;
+        return playerInTurnIndex;
     }
 
     public Player getPlayerInTurn() {
-        return players.get(playerInTurn);
+        return players.get(playerInTurnIndex);
     }
 
-    public void setPlayerInTurn(int playerInTurn) {
-        this.playerInTurn = playerInTurn;
+    public void setPlayerInTurnIndex(int playerInTurnIndex) {
+        this.playerInTurnIndex = playerInTurnIndex;
     }
 
     // Getter e Setter per diceEqualsCombo
