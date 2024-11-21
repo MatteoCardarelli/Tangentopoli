@@ -31,6 +31,10 @@ public class PlayerService {
         return player.getMoney();
     }
 
+    public String getImagePath(){
+        return player.getImagePath();
+    }
+
     public ArrayList<PurchasableBox> getPurchasedBoxes() {
         return player.getPurchasedBoxes();
     }
@@ -114,6 +118,13 @@ public class PlayerService {
             throw new BoxAlreadyPurchasedException("Questa proprietà è già stata acquistata");
         }
 
+    }
+
+    public void setAsAuctionWinner(PurchasableBox purchasableBox,int money){
+        player.setMoney(player.getMoney() - money);
+        player.getPurchasedBoxes().add(purchasableBox);
+        purchasableBox.setPurchased(true);
+        purchasableBox.setOwner(player);
     }
 
     //metodo per pagare l'affitto
@@ -253,7 +264,6 @@ public class PlayerService {
         player.getPurchasedBoxes().clear();
         player.getMortgagedBoxes().clear();
     }
-
 
     public void pay(int moneyAmount) {
         player.setMoney(player.getMoney() + moneyAmount);

@@ -9,31 +9,43 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="auctionWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tangentopoli.controller.AuctionController">
    <children>
-      <Button layoutX="352.0" layoutY="286.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="47.0" text="+1" />
-      <Button layoutX="407.0" layoutY="286.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="47.0" text="+10" />
-      <Button layoutX="467.0" layoutY="286.0" mnemonicParsing="false" text="+100" />
-      <Button layoutX="399.0" layoutY="328.0" mnemonicParsing="false" text="RITIRATI" />
+      <Button layoutX="568.0" layoutY="413.0" mnemonicParsing="false" onAction="#handleBidPlus1" prefHeight="34.0" prefWidth="83.0" text="+1" />
+      <Button layoutX="694.0" layoutY="416.0" mnemonicParsing="false" onAction="#handleBidPlus10" prefHeight="34.0" prefWidth="83.0" text="+10" />
+      <Button layoutX="823.0" layoutY="415.0" mnemonicParsing="false" onAction="#handleBidPlus100" prefHeight="34.0" prefWidth="69.0" text="+100" />
+      <Button layoutX="686.0" layoutY="469.0" mnemonicParsing="false" onAction="#handlePassTurn" prefHeight="34.0" prefWidth="96.0" text="RITIRATI" />
       <Label layoutX="248.0" layoutY="224.0" prefHeight="17.0" prefWidth="104.0" />
-      <ImageView fitHeight="48.0" fitWidth="65.0" layoutX="337.0" layoutY="224.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="48.0" fitWidth="65.0" layoutX="434.0" layoutY="463.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/animationAndGameBaseImages/cashIcon.png" />
          </image>
       </ImageView>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="360.0" layoutX="14.0" layoutY="20.0" stroke="BLACK" strokeType="INSIDE" width="250.0" />
-      <Label alignment="TOP_LEFT" layoutX="410.0" layoutY="224.0" prefHeight="48.0" prefWidth="80.0" text="10">
+      <Label fx:id="maxBidCounter" alignment="TOP_LEFT" layoutX="499.0" layoutY="462.0" prefHeight="48.0" prefWidth="80.0" text="10">
          <font>
             <Font size="39.0" />
          </font>
       </Label>
-      <Circle fill="DODGERBLUE" layoutX="431.0" layoutY="106.0" radius="86.0" stroke="BLACK" strokeType="INSIDE" />
-      <Label layoutX="358.0" layoutY="200.0" text="TURNO DEL GIOCATORE " />
-      <ImageView fitHeight="32.0" fitWidth="37.0" layoutX="277.0" layoutY="356.0" pickOnBounds="true" preserveRatio="true">
+      <Circle fill="DODGERBLUE" layoutX="735.0" layoutY="187.0" radius="162.0" stroke="BLACK" strokeType="INSIDE" />
+      <Label fx:id="onTurnPlayerLabel" layoutX="660.0" layoutY="374.0" text="TURNO DEL GIOCATORE " />
+      <ImageView fitHeight="52.0" fitWidth="75.0" layoutX="436.0" layoutY="524.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/animationAndGameBaseImages/trofeo.png" />
          </image>
       </ImageView>
-      <Label layoutX="310.0" layoutY="364.0" text="GIOCATORE" />
+      <Label fx:id="winnerLabel" layoutX="500.0" layoutY="535.0" prefHeight="32.0" prefWidth="150.0" text="GIOCATORE" />
+      <ImageView fx:id="currentPlayerImageView" fitHeight="259.0" fitWidth="290.0" layoutX="591.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fitHeight="71.0" fitWidth="87.0" layoutX="771.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/animationAndGameBaseImages/cashIcon.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="cashOfPlayer" alignment="TOP_LEFT" layoutX="870.0" layoutY="28.0" prefHeight="48.0" prefWidth="80.0" text="10">
+         <font>
+            <Font size="39.0" />
+         </font>
+      </Label>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="560.0" layoutX="14.0" layoutY="20.0" stroke="BLACK" strokeType="INSIDE" width="396.0" />
+      <ImageView fx:id="imageOfPropertyOnAuction" fitHeight="560.0" fitWidth="390.0" layoutX="19.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

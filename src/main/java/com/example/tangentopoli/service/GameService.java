@@ -113,24 +113,19 @@ public class GameService implements Serializable {
 
         game.setPlayerInTurn((game.getPlayerInTurnIndex() + 1) % game.getPlayers().size());
         game.setTurn(game.getTurn() + 1);
-        Player playerInTurn = game.getPlayerInTurn();
-        PlayerService playerService = playerServiceMap.get(playerInTurn.getPlayerID());
+        PlayerService playerService = playerServiceMap.get(game.getPlayerInTurn().getPlayerID());
 
         // Controllo per il salto del turno
-        if (playerInTurn.isSkipTurn()) {
-            playerInTurn.setSkipTurn(false);
+        if (playerService.isSkipTurn()) {
+            playerService.setSkipTurn(false);
             changeTurn(); // Ricorsione per cambiare turno se il giocatore deve saltare
             return;
         }
 
         // Verifica se il giocatore corrente è un bot
-        if (playerInTurn instanceof CPUPlayer && playerService instanceof CPUPlayerService) {
+        if (playerService instanceof CPUPlayerService) {
             ((CPUPlayerService) playerService).moveBot();  // Muovi il bot
         }
-
-
-
-
     }
 
 
@@ -144,6 +139,10 @@ public class GameService implements Serializable {
 
     //Restituisce la posizione del giocatore im turno (all'interno dell'ArrayList di giocatori)
     public int getPlayerInTurnIndex() { return game.getPlayerInTurnIndex(); }
+
+    public Map<Integer, PlayerService> getPlayerServiceMap() {
+        return playerServiceMap;
+    }
 
     //sostituire il valore con player in turn
     public void goToPrison(Player player) {
@@ -484,7 +483,7 @@ public class GameService implements Serializable {
     private void triggerAuction(PurchasableBox property) {
         System.out.println("Inizia l'asta per la proprietà " + property.getName());
         // Apri una finestra d'asta tramite il boardController
-        boardController.openNewWindow("/fxml/AuctionBoard.fxml", "Asta per la proprietà " + property.getName());
+        boardController.openAuctionWindow("Asta per la proprietà " + property.getName());
     }
 
 

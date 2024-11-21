@@ -25,12 +25,14 @@ public abstract class Player implements Serializable {
     private int turnInPrison = 0;
     private ArrayList<PurchasableBox> purchasedBoxes = new ArrayList<>();
     private ArrayList<PurchasableBox> mortgagedBoxes = new ArrayList<>();
+    private String playerImage = "/img/playerImages/";
 
 
     //costruttore
     public Player(int playerID, int money) {
         this.playerID = playerID;
         this.money = money;
+        this.playerImage += "imgForPlayer" + playerID + ".png";
     }
 
     // Getter e Setter per playerID
@@ -139,6 +141,10 @@ public abstract class Player implements Serializable {
 
     public void setMortgagedBoxes(ArrayList<PurchasableBox> mortgagedBoxes) {
         this.mortgagedBoxes = mortgagedBoxes;
+    }
+
+    public String getImagePath() {
+        return this.playerImage;
     }
 
     public String[] toStringArray() {

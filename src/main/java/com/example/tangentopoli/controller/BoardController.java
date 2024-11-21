@@ -1,12 +1,12 @@
 package com.example.tangentopoli.controller;
 
-import com.example.tangentopoli.engine.GameEngine;
 import com.example.tangentopoli.exception.BoxAlreadyPurchasedException;
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
 import com.example.tangentopoli.model.*;
 import com.example.tangentopoli.serialization.Serializer;
+import com.example.tangentopoli.service.AuctionService;
 import com.example.tangentopoli.service.CommunityChestService;
 import com.example.tangentopoli.service.GameService;
 import com.example.tangentopoli.service.PlayerService;
@@ -37,12 +37,9 @@ import javafx.util.Duration;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
 
-import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -166,7 +163,6 @@ public class BoardController implements Initializable, Serializable {
         playerColors.put(4, Color.YELLOW);
         playerColors.put(5, Color.ORANGE);
         playerColors.put(6, Color.PURPLE);
-        openWebsite("https://it.pornhub.com");
 
         initializeBackgroundMusicAndVolumeControl();
         dice1ImageView.setImage(new Image(getClass().getResourceAsStream("/img/diceImages/dice1.png"))); //inizializzazione dadi
@@ -1756,12 +1752,12 @@ public class BoardController implements Initializable, Serializable {
     }
 
     // Metodo per aprire una nuova finestra
-    public void openNewWindow(String fxmlPath, String title) {
+    public void openAuctionWindow(String title) {
+        String fxmlPath = "/fxml/AuctionBoard.fxml";
         try {
             // Carica il file FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-
             // Crea una nuova istanza di Stage (finestra)
             Stage newWindow = new Stage();
             newWindow.setTitle(title);
@@ -1772,22 +1768,12 @@ public class BoardController implements Initializable, Serializable {
 
             // Mostra la nuova finestra senza chiudere la finestra principale
             newWindow.show();
+
+            AuctionController auctionController = (AuctionController) loader.getController();
+            auctionController.initialize(new AuctionService(game, new AuctionController()));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public static void openWebsite(String url) {
-        if (Desktop.isDesktopSupported()) {
-            try {
-                Desktop.getDesktop().browse(new URI(url));
-            } catch (IOException | URISyntaxException e) {
-                System.out.println("Errore nell'apertura del sito: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Il Desktop non è supportato su questo sistema.");
-        }
-    }
-
 
 }
