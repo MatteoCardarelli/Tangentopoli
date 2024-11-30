@@ -608,20 +608,31 @@ public class BoardController implements Initializable, Serializable {
 
     }
 
+    public int getCurrentPlayerRow() {
+        ImageView playerToken = getPlayerTokenFromID(game.getPlayerInTurn().getPlayerID());
+        return GridPane.getRowIndex(playerToken);
+    }
+
+    public int getCurrentPlayerColumn() {
+        ImageView playerToken = getPlayerTokenFromID(game.getPlayerInTurn().getPlayerID());
+        return GridPane.getColumnIndex(playerToken);
+    }
+
     //metodo che crea e posiziona i marker di acquisto
-    public void createPropertyMarkerFromID(int playerID) {
+    public void createPropertyMarkerFromID(PlayerService currentPlayer, int rowPos, int columnPos) {
         // Ottieni il colore del giocatore
-        ImageView playerToken = getPlayerTokenFromID(playerID);
-        Color playerColor = getPlayerColor(game.getPlayerInTurn().getPlayerID());
+        //ImageView playerToken = getPlayerTokenFromID(playerID);
+        Color playerColor = getPlayerColor(currentPlayer.getPlayerID());
 
 
         // Ottieni la posizione attuale del giocatore
-        Player currentPlayer = game.getPlayerInTurn();
-        Box currentBox = currentPlayer.getPosition();
+        //Player currentPlayer = game.getPlayerInTurn();
+        //Box currentBox = currentPlayer.getPosition();
+
 
         // Ottieni la posizione della casella nella griglia
-        int rowPos = GridPane.getRowIndex(playerToken);   // Assicurati che la tua classe Box abbia il metodo getRow()
-        int columnPos = GridPane.getColumnIndex(playerToken); // Assicurati che la tua classe Box abbia il metodo getColumn()
+        //int rowPos = GridPane.getRowIndex(playerToken);   // Assicurati che la tua classe Box abbia il metodo getRow()
+        //int columnPos = GridPane.getColumnIndex(playerToken); // Assicurati che la tua classe Box abbia il metodo getColumn()
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
 
@@ -629,7 +640,7 @@ public class BoardController implements Initializable, Serializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(128, 20); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.getStyleClass().add(playerID + "propertyMarker");
+            propertyMarker.getStyleClass().add(currentPlayer.getPlayerID() + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(0);  // Sposta il rettangolo verso destra di 30 pixel
@@ -640,7 +651,7 @@ public class BoardController implements Initializable, Serializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(20, 125); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.getStyleClass().add(playerID + "propertyMarker");
+            propertyMarker.getStyleClass().add(currentPlayer.getPlayerID() + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(150);  // Sposta il rettangolo verso destra di 30 pixel
@@ -651,7 +662,7 @@ public class BoardController implements Initializable, Serializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(125, 20); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.getStyleClass().add(playerID + "propertyMarker");
+            propertyMarker.getStyleClass().add(currentPlayer.getPlayerID() + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(0);  // Sposta il rettangolo verso destra di 30 pixel
@@ -662,7 +673,7 @@ public class BoardController implements Initializable, Serializable {
             // Crea un rettangolo che rappresenta la proprietà acquistata
             Rectangle propertyMarker = new Rectangle(20, 125); // Rettangolo 10x10
             propertyMarker.setFill(playerColor); // Imposta il colore del rettangolo
-            propertyMarker.getStyleClass().add(playerID + "propertyMarker");
+            propertyMarker.getStyleClass().add(currentPlayer.getPlayerID() + "propertyMarker");
 
             boardGrid.add(propertyMarker, columnPos, rowPos);
             propertyMarker.setTranslateX(-20);  // Sposta il rettangolo verso destra di 30 pixel
@@ -802,7 +813,7 @@ public class BoardController implements Initializable, Serializable {
     }
 
     // Metodo per ottenere il colore in base al playerID
-    private Color getPlayerColor(int playerID) {
+    public Color getPlayerColor(int playerID) {
         return playerColors.getOrDefault(playerID, Color.GRAY); // Colore di default in caso di errore
     }
 
@@ -833,7 +844,7 @@ public class BoardController implements Initializable, Serializable {
                 displayPlayerInfo(currentPlayer);
                 displayBoxInfo(currentPlayer);
                 updateBoxInfo("Hai acquistato " + purchasableBox.getName() + " per " + purchasableBox.getPrice() + "€!");
-                createPropertyMarkerFromID(game.getPlayerInTurn().getPlayerID());
+                createPropertyMarkerFromID(game.getPlayerService(game.getPlayerInTurn().getPlayerID()), getCurrentPlayerRow(), getCurrentPlayerColumn());
                 setBuyBtn(true);
             } catch (NotEnoughMoneyException e) {
                 updateBoxInfo("Non hai abbastanza soldi!");
@@ -1770,7 +1781,7 @@ public class BoardController implements Initializable, Serializable {
             newWindow.show();
 
             AuctionController auctionController = (AuctionController) loader.getController();
-            auctionController.initialize(new AuctionService(game, auctionController));
+            auctionController.initialize(new AuctionService(game, auctionController), this, getCurrentPlayerRow(), getCurrentPlayerColumn());
         } catch (Exception e) {
             e.printStackTrace();
         }

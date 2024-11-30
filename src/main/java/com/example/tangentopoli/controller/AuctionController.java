@@ -18,6 +18,9 @@ import java.util.ResourceBundle;
 public class AuctionController implements Initializable {
 
     private AuctionService auctionService;
+    private BoardController boardController;
+    private int boxOnAuctionRow;
+    private int boxOnAuctionCol;
 
     @FXML
     AnchorPane auctionWindow;
@@ -37,13 +40,19 @@ public class AuctionController implements Initializable {
     @FXML
     ImageView currentPlayerImageView;
 
+    @FXML
+    Circle bidderCircleFrame;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
        // imageOfPropertyOnAuctiom.setImage();
     }
 
-    public void initialize(AuctionService auctionService) {
+    public void initialize(AuctionService auctionService, BoardController boardController, int boxOnAuctionRow, int boxOnAuctionCol) {
         this.auctionService = auctionService;
+        this.boardController = boardController;
+        this.boxOnAuctionRow = boxOnAuctionRow;
+        this.boxOnAuctionCol = boxOnAuctionCol;
         updateUIForCurrentPlayer();
     }
 
@@ -76,6 +85,8 @@ public class AuctionController implements Initializable {
         currentPlayerImageView.setScaleX(1.1);
         currentPlayerImageView.setScaleY(1.1);
 
+        bidderCircleFrame.setFill(boardController.getPlayerColor(currentPlayer.getPlayerID()));
+
 
         currentPlayerImageView.setImage(playerImage);
         currentPlayerImageView.setClip(clip);
@@ -103,7 +114,6 @@ public class AuctionController implements Initializable {
     // Metodo per passare il turno
     public void handlePassTurn() {
         auctionService.pass();
-        nextTurn();
     }
 
     public void closeAuctionWindow(){
@@ -118,4 +128,8 @@ public class AuctionController implements Initializable {
     }
 
 
+    public void updatePurchasedBoxUI(PlayerService auctionWinner) {
+        boardController.createPropertyMarkerFromID(auctionWinner, boxOnAuctionRow, boxOnAuctionCol);
+        System.out.println("Vince Giocatore" + auctionWinner.getPlayerID() + " Colore " + boardController.getPlayerColor(auctionWinner.getPlayerID()));
+    }
 }

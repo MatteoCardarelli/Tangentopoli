@@ -21,7 +21,7 @@ public class GameService implements Serializable {
     private ObjectMapper objectMapper;
     private Game game;
     BoardController boardController;
-    private Map<Integer, PlayerService> playerServiceMap = new HashMap<>();
+    private Map<Integer, PlayerService> playerServiceMap = new HashMap<>(); //Maps the PlayerService to its relative PlayerID
 
     public GameService(int playersN, boolean CPUPlayers){
         objectMapper = new ObjectMapper();

@@ -24,7 +24,7 @@ public class AuctionService {
          // Copia della lista originale
         this.currentBid = 10;
         this.highestBidder = null;
-        this.currentTurnIndex = gameService.getPlayerInTurnIndex();
+        this.currentTurnIndex = (gameService.getPlayerInTurnIndex() + 1) % playersInAuction.size();
         this.propertyOnAuction = (PurchasableBox) gameService.getPlayerInTurn().getPosition();
         this.auctionController = auctionController;
     }
@@ -32,7 +32,7 @@ public class AuctionService {
     public int getCurrentBid() {return currentBid;}
 
     public PlayerService getCurrentPlayer() {
-        if (playersInAuction == null || playersInAuction.isEmpty()) {
+        /*if (playersInAuction == null || playersInAuction.isEmpty()) {
             throw new IllegalStateException("La lista dei giocatori in asta è vuota.");
         }
         if (currentTurnIndex < 0 || currentTurnIndex >= playersInAuction.size()) {
@@ -40,7 +40,7 @@ public class AuctionService {
                     "Indice del giocatore corrente non valido: " + currentTurnIndex +
                             " (dimensione lista: " + playersInAuction.size() + ")"
             );
-        }
+        }*/
         return playersInAuction.get(currentTurnIndex);
     }
 
@@ -54,7 +54,8 @@ public class AuctionService {
     public boolean placeBid(int bidAmount) {
         if (bidAmount > currentBid && bidAmount < getCurrentPlayer().getMoney()) {
             currentBid = bidAmount;
-            highestBidder = playersInAuction.get(currentTurnIndex);
+            highestBidder = getCurrentPlayer();
+            System.out.println("Offerta più alta Giocatore" + highestBidder.getPlayerID());
             nextTurn(); // Passa al turno successivo
             return true;
         } else {
@@ -82,7 +83,7 @@ public class AuctionService {
         }
 
         // Aggiorna il turno
-        nextTurn();
+        auctionController.nextTurn();
     }
 
 
@@ -97,13 +98,10 @@ public class AuctionService {
     private void concludeAuction() {
         if (highestBidder != null) {
             highestBidder.setAsAuctionWinner(propertyOnAuction, currentBid);
-
+            auctionController.updatePurchasedBoxUI(highestBidder);
         } else {
             System.out.println("Nessun vincitore per l'asta.");
         }
         auctionController.closeAuctionWindow();
     }
-
-
-
 }
