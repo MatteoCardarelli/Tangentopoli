@@ -3,7 +3,9 @@ package com.example.tangentopoli.model;
 import com.example.tangentopoli.exception.MaximumConstructionOnProperty;
 import com.example.tangentopoli.service.PlayerService;
 
-public class Property extends PurchasableBox {
+import java.io.Serializable;
+
+public class Property extends PurchasableBox implements Serializable {
     private int houseN = 0;
     private int hotelN = 0;
     private int housePrice;

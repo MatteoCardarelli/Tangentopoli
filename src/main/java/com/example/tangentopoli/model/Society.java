@@ -2,7 +2,9 @@ package com.example.tangentopoli.model;
 
 import com.example.tangentopoli.service.PlayerService;
 
-public class Society extends PurchasableBox {
+import java.io.Serializable;
+
+public class Society extends PurchasableBox implements Serializable {
 
 
     public Society(String name, int price, int mortgageValue) {

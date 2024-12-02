@@ -1,8 +1,9 @@
 package com.example.tangentopoli.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Auction {
+public class Auction implements Serializable {
     private int cashout;
     private int bid;
     private int winner;

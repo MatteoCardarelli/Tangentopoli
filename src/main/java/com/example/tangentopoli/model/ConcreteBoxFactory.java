@@ -2,7 +2,9 @@ package com.example.tangentopoli.model;
 
 import javafx.scene.image.Image;
 
-public class ConcreteBoxFactory implements BoxFactory {
+import java.io.Serializable;
+
+public class ConcreteBoxFactory implements BoxFactory, Serializable {
 
     @Override
     public Property createProperty(String name, int price, int rentPrice, int mortgageValue, String color) {

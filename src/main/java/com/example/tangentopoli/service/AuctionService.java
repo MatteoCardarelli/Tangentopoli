@@ -5,18 +5,19 @@ import com.example.tangentopoli.model.Auction;
 import com.example.tangentopoli.model.Player;
 import com.example.tangentopoli.model.PurchasableBox;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AuctionService {
+public class AuctionService implements Serializable {
     private ArrayList<PlayerService> playersInAuction;
     private int currentBid;
     private PlayerService highestBidder;
     private int currentTurnIndex;
     private PurchasableBox propertyOnAuction;
-    private AuctionController auctionController;
+    private transient AuctionController auctionController;
     int currentPlayerIndex=0;
 
     public AuctionService(GameService gameService, AuctionController auctionController) {

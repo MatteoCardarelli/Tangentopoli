@@ -7,9 +7,10 @@ import com.example.tangentopoli.exception.NotEnoughMoneyException;
 import com.example.tangentopoli.exception.NotYourPropertyException;
 import com.example.tangentopoli.model.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PlayerService {
+public class PlayerService implements Serializable {
     Player player;
 
     public PlayerService(Player player) {

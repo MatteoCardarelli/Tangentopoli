@@ -12,6 +12,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.application.Platform;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 

@@ -5,9 +5,10 @@ import com.example.tangentopoli.model.PurchasableBox;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class CPUPlayerService extends PlayerService {
+public class CPUPlayerService extends PlayerService implements Serializable {
     CPUPlayer cpuPlayer;
     GameService game;
 
@@ -47,7 +48,7 @@ public class CPUPlayerService extends PlayerService {
                 int mortgageableBoxessSize = game.getMortgageableBoxes().size();
                 if (mortgageableBoxessSize != 0) {
                     Integer propertyIndex = game.getMortgageableBoxes().get(new Random().nextInt(mortgageableBoxessSize));
-                    int[] propertyCoords = game.getController().convertPositionToGridCoords(propertyIndex.intValue());
+                    int[] propertyCoords = game.getController().convertPositionIndexToGridCoords(propertyIndex.intValue());
                     game.getController().mortgageBox(propertyCoords[0], propertyCoords[1]);
 
                 }
@@ -58,7 +59,7 @@ public class CPUPlayerService extends PlayerService {
                 int demolishablePropertiesSize = game.getDemolishProperties().size();
                 if (demolishablePropertiesSize != 0) {
                     Integer propertyIndex = game.getDemolishProperties().get(new Random().nextInt(demolishablePropertiesSize));
-                    int[] propertyCoords = game.getController().convertPositionToGridCoords(propertyIndex.intValue());
+                    int[] propertyCoords = game.getController().convertPositionIndexToGridCoords(propertyIndex.intValue());
                     game.getController().demolishOnProperty(propertyCoords[0], propertyCoords[1]);
 
                 }
@@ -69,7 +70,7 @@ public class CPUPlayerService extends PlayerService {
                 int extinguishablePropertiesSize = game.getExtinguishableBoxes().size();
                 if (extinguishablePropertiesSize != 0) {
                     Integer propertyIndex = game.getExtinguishableBoxes().get(new Random().nextInt(extinguishablePropertiesSize));
-                    int[] propertyCoords = game.getController().convertPositionToGridCoords(propertyIndex.intValue());
+                    int[] propertyCoords = game.getController().convertPositionIndexToGridCoords(propertyIndex.intValue());
                     game.getController().extinguishMortgageBox(propertyCoords[0], propertyCoords[1]);
                 }
             }
@@ -79,7 +80,7 @@ public class CPUPlayerService extends PlayerService {
             int buildableProperiesSize = game.getBuildableProperties().size();
             if (buildableProperiesSize != 0) {
                 Integer propertyIndex = game.getBuildableProperties().get(new Random().nextInt(buildableProperiesSize));
-                int[] propertyCoords = game.getController().convertPositionToGridCoords(propertyIndex.intValue());
+                int[] propertyCoords = game.getController().convertPositionIndexToGridCoords(propertyIndex.intValue());
                 game.getController().buildOnProperty(propertyCoords[0], propertyCoords[1]);
             }
 

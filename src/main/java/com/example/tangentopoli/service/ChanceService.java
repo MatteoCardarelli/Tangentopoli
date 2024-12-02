@@ -3,7 +3,9 @@ package com.example.tangentopoli.service;
 import com.example.tangentopoli.model.Card;
 import com.example.tangentopoli.model.Player;
 
-public class ChanceService extends Card {
+import java.io.Serializable;
+
+public class ChanceService extends Card implements Serializable {
 
     public ChanceService(){
         super();

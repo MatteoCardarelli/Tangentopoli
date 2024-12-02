@@ -20,8 +20,9 @@ import java.util.*;
 public class GameService implements Serializable {
     private ObjectMapper objectMapper;
     private Game game;
-    BoardController boardController;
-    private Map<Integer, PlayerService> playerServiceMap = new HashMap<>(); //Maps the PlayerService to its relative PlayerID
+    transient BoardController boardController;
+    private Map<Integer, PlayerService> playerServiceMap = new HashMap<>();//Maps the PlayerService to its relative PlayerID
+    private int initialPlayersN;
 
     public GameService(int playersN, boolean CPUPlayers){
         objectMapper = new ObjectMapper();
@@ -29,6 +30,7 @@ public class GameService implements Serializable {
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         this.game = new Game();
         game.setBoard(new Board(playersN));
+        initialPlayersN = playersN;
 
         createPlayers(playersN, CPUPlayers);
         loadCards("src/main/resources/serialization/cards/chances.json", "src/main/resources/serialization/cards/communityChests.json");
@@ -450,7 +452,7 @@ public class GameService implements Serializable {
             propertiesWithBuildings = getPropertiesWithBuildings();
             if (!propertiesWithBuildings.isEmpty()) {
                 for (int propertyIndex : propertiesWithBuildings) {
-                    int[] coords = boardController.convertPositionToGridCoords(propertyIndex);
+                    int[] coords = boardController.convertPositionIndexToGridCoords(propertyIndex);
                     boardController.demolishOnProperty(coords[0], coords[1]);
                     System.out.println("AAA");
                 }
@@ -464,7 +466,7 @@ public class GameService implements Serializable {
             for (int propertyIndex : mortgageableProperties) {
                 if(player.getMoney() > 0)
                     break;
-                int[] coords = boardController.convertPositionToGridCoords(propertyIndex);
+                int[] coords = boardController.convertPositionIndexToGridCoords(propertyIndex);
                 boardController.mortgageBox(coords[0], coords[1]);
             }
         }
@@ -558,4 +560,8 @@ public class GameService implements Serializable {
 
     }
 
+
+    public int getInitialPlayersN() {
+        return this.initialPlayersN;
+    }
 }

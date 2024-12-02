@@ -3,7 +3,9 @@ package com.example.tangentopoli.service;
 import com.example.tangentopoli.model.Card;
 import com.example.tangentopoli.model.Player;
 
-public class CommunityChestService extends Card {
+import java.io.Serializable;
+
+public class CommunityChestService extends Card implements Serializable {
 
     public CommunityChestService() {
         super();

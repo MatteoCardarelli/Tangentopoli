@@ -39,14 +39,13 @@ import javafx.scene.media.Media;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
 
 import static javafx.scene.paint.Color.RED;
 
-public class BoardController implements Initializable, Serializable {
+public class BoardController implements Initializable {
     public Label cardTitle;
     public Label cardDescription;
     public Button cardBtn;
@@ -417,7 +416,7 @@ public class BoardController implements Initializable, Serializable {
     public void createPlayerTokens() {
         playerTokens = new ArrayList<>();
 
-        for (int i = 0; i < playerN; i++) {
+        for (int i = 0; i < game.getPlayersN(); i++) {
             // Percorso dell'immagine della pedina
             String imagePath = "/img/pawnImages/pawn" + (i + 1) + ".png";
 
@@ -897,7 +896,7 @@ public class BoardController implements Initializable, Serializable {
 
     //Builds on the property that has been directly clicked on the board
     public void buildOnProperty(int row, int col) {
-        int pos = convertGridCoordsToPosition(row, col);
+        int pos = convertGridCoordsToPositionIndex(row, col);
 
         try {
             game.buildOnProperty(pos);
@@ -919,7 +918,7 @@ public class BoardController implements Initializable, Serializable {
 
     //crea overlay per la decisione di dove costruire
     public void displayConstructionsOnSmallBoard(int row, int col) {
-        int pos = convertGridCoordsToPosition(row, col);
+        int pos = convertGridCoordsToPositionIndex(row, col);
         Property property = (Property) game.getBoard().getBoxFromIndex(pos);
         // Ottieni il numero di case sulla proprietà
         int numberOfHouses = property.getHouseN();
@@ -1211,7 +1210,7 @@ public class BoardController implements Initializable, Serializable {
 
 
     //Converts the position of a specific Box (giving its index in the board), into coordinates
-    public int[] convertPositionToGridCoords(int index) {
+    public int[] convertPositionIndexToGridCoords(int index) {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
         int totalPerimeter = 2 * (maxC + maxR - 2);
@@ -1238,8 +1237,10 @@ public class BoardController implements Initializable, Serializable {
         return new int[]{row, col};
     }
 
+
+
     //converte le coordinate della pedina sulla griglia in una posizione
-    public int convertGridCoordsToPosition(int row, int col) {
+    public int convertGridCoordsToPositionIndex(int row, int col) {
         int maxC = boardGrid.getColumnCount();
         int maxR = boardGrid.getRowCount();
         int totalPerimeter = 2 * (maxC + maxR - 2);
@@ -1275,14 +1276,14 @@ public class BoardController implements Initializable, Serializable {
         ArrayList<Integer> buildablePropertiesIndex = game.getBuildableProperties();
         int[] coords = {0, 0};
         for (int i = 0; i < buildablePropertiesIndex.size(); i++) {
-            coords = convertPositionToGridCoords(buildablePropertiesIndex.get(i));
+            coords = convertPositionIndexToGridCoords(buildablePropertiesIndex.get(i));
             createConstructionOverlay(coords[0], coords[1]);
         }
     }
 
     //ipoteca le proprietà
     public void mortgageBox(int row, int col) {
-        int pos = convertGridCoordsToPosition(row, col);
+        int pos = convertGridCoordsToPositionIndex(row, col);
         game.mortgageBox(pos);
         displayPlayerInfo(game.getPlayerInTurn());
         updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
@@ -1340,7 +1341,7 @@ public class BoardController implements Initializable, Serializable {
         ArrayList<Integer> mortgageableProperties = game.getMortgageableBoxes();
         int[] coords = {0, 0};
         for (int i = 0; i < mortgageableProperties.size(); i++) {
-            coords = convertPositionToGridCoords(mortgageableProperties.get(i));
+            coords = convertPositionIndexToGridCoords(mortgageableProperties.get(i));
             createMortgageOverlay(coords[0], coords[1]);
         }
     }
@@ -1352,7 +1353,7 @@ public class BoardController implements Initializable, Serializable {
         ArrayList<Integer> demolishablePropertiesIndex = game.getDemolishProperties();
         int[] coords = {0, 0};
         for (int i = 0; i < demolishablePropertiesIndex.size(); i++) {
-            coords = convertPositionToGridCoords(demolishablePropertiesIndex.get(i));
+            coords = convertPositionIndexToGridCoords(demolishablePropertiesIndex.get(i));
             createDemolitionOverlay(coords[0], coords[1]);
         }
     }
@@ -1360,7 +1361,7 @@ public class BoardController implements Initializable, Serializable {
 
     //demolisci una costruzione
     public void demolishOnProperty(int row, int col) {
-        int pos = convertGridCoordsToPosition(row, col);
+        int pos = convertGridCoordsToPositionIndex(row, col);
 
         game.demolishOnProperty(pos);
         displayPlayerInfo(game.getPlayerInTurn());
@@ -1396,7 +1397,7 @@ public class BoardController implements Initializable, Serializable {
 
     //estingue un'ipoteca
     public void extinguishMortgageBox(int row, int col) {
-        int pos = convertGridCoordsToPosition(row, col);
+        int pos = convertGridCoordsToPositionIndex(row, col);
         game.extinguishMortgageBox(pos);
         displayPlayerInfo(game.getPlayerInTurn());
         updateBoxInfo("Hai ipotecato " + game.getBoard().getBoxFromIndex(pos).getName());
@@ -1411,7 +1412,7 @@ public class BoardController implements Initializable, Serializable {
         ArrayList<Integer> extinguishableProperties = game.getExtinguishableBoxes();
         int[] coords = {0, 0};
         for (int i = 0; i < extinguishableProperties.size(); i++) {
-            coords = convertPositionToGridCoords(extinguishableProperties.get(i));
+            coords = convertPositionIndexToGridCoords(extinguishableProperties.get(i));
             createExtinguishableMortgageOverlay(coords[0], coords[1]);
         }
     }
@@ -1787,4 +1788,55 @@ public class BoardController implements Initializable, Serializable {
         }
     }
 
+    public void setLoadedGame(GameService gameService) {
+        this.game = gameService;
+        this.playerN = gameService.getInitialPlayersN();
+
+        // Imposta la finestra corrente (Stage)
+        setStage((Stage) mainPane.getScene().getWindow());
+
+        createPlayerTokens();
+
+        // Load players onto the board
+        for (int i = 0; i < gameService.getPlayers().size(); i++) {
+            Player player = gameService.getPlayers().get(i);
+            Box position = player.getPosition();
+            int[] coords = convertPositionIndexToGridCoords(gameService.getBoard().getBoxIndex(position));
+
+
+            // Aggiorna la posizione della pedina
+            switch (playerN) {
+                case 2, 3:
+                    setPlayerTokenPositionSmall(player.getPlayerID()-1, coords[0], coords[1]);
+                    break;
+                case 4, 5:
+                    setPlayerTokenPositionMedium(player.getPlayerID()-1, coords[0], coords[1]);
+                    break;
+                case 6:
+                    setPlayerTokenPositionLarge(player.getPlayerID()-1, coords[0], coords[1]);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Restore properties ownership
+        for (int i = 0; i < gameService.getPlayers().size(); i++) {
+            Player player = gameService.getPlayers().get(i);
+
+            for (PurchasableBox property : player.getPurchasedBoxes()) {
+                int[] coords = convertPositionIndexToGridCoords(gameService.getBoard().getBoxIndex(property));
+                createPropertyMarkerFromID(gameService.getPlayerService(player.getPlayerID()), coords[0], coords[1]);
+                displayConstructionsOnSmallBoard(coords[0], coords[1]);
+            }
+
+            for (PurchasableBox property : player.getMortgagedBoxes()) {
+                int[] coords = convertPositionIndexToGridCoords(gameService.getBoard().getBoxIndex(property));
+                createNotAvailableBoxOverlay(coords[0], coords[1]);
+            }
+        }
+
+        displayBoxInfo(game.getPlayerInTurn());
+        displayPlayerInfo(game.getPlayerInTurn());
+    }
 }
